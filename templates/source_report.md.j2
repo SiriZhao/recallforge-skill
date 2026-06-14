@@ -1,0 +1,5 @@
+# 资料来源与解析报告
+
+{% for doc in documents %}
+- {{ doc.source_file }}：{{ doc.doc_type }}，块数 {{ doc.blocks|length }}
+{% endfor %}

@@ -1,0 +1,6 @@
+# 考试考点图谱
+
+{% for point in points %}
+## {{ point.exam_point_id }} {{ point.topic_name }}
+- 可能题型：{{ point.exam_forms|join(", ") }}
+{% endfor %}

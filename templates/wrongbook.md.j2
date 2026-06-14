@@ -1,0 +1,6 @@
+# 错题本
+
+{% for w in wrongs %}
+## {{ w.question_id }}
+- 错因：{{ w.wrong_reason }}
+{% endfor %}
