@@ -326,6 +326,111 @@ def command_workspace(args) -> None:
             )
         return
 
+    if action == "diagnostic":
+        from .knowledge.build import build_course_intelligence
+        from .student.diagnostic import build_diagnostic_plan
+        from .student.store import load_student_model
+
+        try:
+            build_result = build_course_intelligence(root, args.course, persist=False)
+        except FileNotFoundError as exc:
+            print(f"error: {exc}")
+            return
+        model = load_student_model(root, args.course)
+        plan = build_diagnostic_plan(
+            args.course,
+            build_result.topics,
+            model,
+            minutes=args.minutes,
+            locale=workspace_mod.load_workspace_state(root).user_locale,
+        )
+        print(f"diagnostic: ~{plan.estimated_minutes} minutes, {len(plan.items)} items")
+        for item in plan.items:
+            print(f"  - {item.topic_name} ({item.question_type}) : {item.reason}")
+        return
+
+    if action == "answer":
+        from .student.sessions import AnswerResult, record_answer, record_wrongbook_entry
+        from .student.store import load_student_model, save_student_model
+
+        model = load_student_model(root, args.course)
+        result = AnswerResult(
+            topic_id=args.topic,
+            correct=args.correct,
+            difficulty=args.difficulty,
+            used_hint=args.hint,
+            mistake_type=args.mistake_type,
+            question_type=args.question_type,
+            is_new_form=args.new_form,
+        )
+        record_answer(model, result)
+        if not args.correct:
+            entry = record_wrongbook_entry(
+                model,
+                result,
+                question_text=args.question or "(self-reported wrong answer)",
+                correct_answer=args.correct_answer or "",
+                user_answer=args.user_answer or "",
+            )
+            # persist to wrongbook.json (only real wrong answers)
+            from .state.course import load_course_json
+            from .state import course as course_mod
+
+            course_path = course_mod.course_dir(root, args.course)
+            wrongbook = load_course_json(course_path, "wrongbook.json", {}) or {}
+            entries = wrongbook.get("entries", []) or []
+            entries.append(entry)
+            wrongbook["entries"] = entries
+            course_mod._write_json(course_path / "wrongbook.json", wrongbook)
+            print(f"wrongbook entry recorded for topic {args.topic}")
+        save_student_model(root, args.course, model)
+        tm = model.topics[args.topic]
+        print(f"topic {args.topic}: mastery={tm.mastery} score={tm.mastery_score} "
+              f"attempted={tm.questions_attempted} accuracy={tm.accuracy}")
+        return
+
+    if action == "plan-v4":
+        from .planner.orchestrator import generate_daily_plan_v4, render_plan_v4
+
+        try:
+            plan = generate_daily_plan_v4(
+                root,
+                args.date,
+                total_hours_override=args.hours,
+                skip_courses=getattr(args, "skip", None) or None,
+            )
+        except Exception as exc:
+            print(f"error: {exc}")
+            return
+        print(render_plan_v4(plan, workspace_mod.load_workspace_state(root).user_locale))
+        if args.json:
+            print(json.dumps(to_dict(plan), ensure_ascii=False, indent=2))
+        return
+
+    if action == "replan":
+        from .planner.events import record_replan_event
+        from .models import ReplanEvent
+
+        event = ReplanEvent(
+            event_type=args.event_type,
+            course_id=args.course,
+            detail={
+                "new_date": args.new_date,
+                "target_score": args.target_score,
+                "daily_total_hours": args.hours,
+            },
+        )
+        record_replan_event(root, event)
+        print(f"replan event recorded: {args.event_type}")
+        return
+
+    if action == "nl":
+        from .planner.nl import parse_command
+
+        command = parse_command(args.text)
+        print(f"parsed: action={command.action} course={command.course_id} value={command.value}")
+        return
+
     raise SystemExit(f"unknown workspace action: {action}")
 
 
@@ -417,3 +522,49 @@ def add_workspace_parser(subparsers) -> None:
     build.add_argument("--course", required=True)
     build.add_argument("--days-to-exam", type=int, default=None)
     build.set_defaults(func=command_workspace)
+
+    diag = ws_sub.add_parser("diagnostic", help="build a 10-20 minute diagnostic test")
+    diag.add_argument("--dir", required=True)
+    diag.add_argument("--course", required=True)
+    diag.add_argument("--minutes", type=int, default=15)
+    diag.set_defaults(func=command_workspace)
+
+    answer = ws_sub.add_parser("answer", help="record a real answer into the student model")
+    answer.add_argument("--dir", required=True)
+    answer.add_argument("--course", required=True)
+    answer.add_argument("--topic", required=True)
+    answer.add_argument("--correct", action="store_true")
+    answer.add_argument("--difficulty", type=int, default=2)
+    answer.add_argument("--hint", action="store_true")
+    answer.add_argument("--mistake-type", default=None)
+    answer.add_argument("--question-type", default="short_answer")
+    answer.add_argument("--new-form", action="store_true")
+    answer.add_argument("--question", default=None)
+    answer.add_argument("--user-answer", default=None)
+    answer.add_argument("--correct-answer", default=None)
+    answer.set_defaults(func=command_workspace)
+
+    plan4 = ws_sub.add_parser("plan-v4", help="formal exam-week daily plan (topic-level)")
+    plan4.add_argument("--dir", required=True)
+    plan4.add_argument("--date", default=None)
+    plan4.add_argument("--hours", type=float, default=None)
+    plan4.add_argument("--skip", action="append", default=None)
+    plan4.add_argument("--json", action="store_true")
+    plan4.set_defaults(func=command_workspace)
+
+    replan = ws_sub.add_parser("replan", help="record a dynamic event that triggers replanning")
+    replan.add_argument("--dir", required=True)
+    replan.add_argument("--event-type", required=True,
+                        choices=["quiz_completed", "wrong_answer", "topic_mastered", "new_material",
+                                 "new_past_exam", "exam_rescheduled", "hours_changed",
+                                 "target_changed", "course_completed"])
+    replan.add_argument("--course", default=None)
+    replan.add_argument("--new-date", default=None)
+    replan.add_argument("--target-score", type=int, default=None)
+    replan.add_argument("--hours", type=float, default=None)
+    replan.set_defaults(func=command_workspace)
+
+    nl = ws_sub.add_parser("nl", help="parse bilingual natural-language control (zh/en)")
+    nl.add_argument("--dir", required=True)
+    nl.add_argument("--text", required=True)
+    nl.set_defaults(func=command_workspace)

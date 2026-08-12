@@ -115,7 +115,21 @@ def create_course(
             "updated_at": _now_iso(),
         },
     )
-    _write_json(root / "student_state.json", asdict(CourseStudentState(course_id=course_id)))
+    _write_json(
+        root / "student_state.json",
+        {
+            "student_id": "student-default",
+            "course_id": course_id,
+            "topics": {},
+            "weak_points": [],
+            "strong_points": [],
+            "wrong_patterns": [],
+            "review_history": [],
+            "diagnostic_completed": False,
+            "mastery": {},
+            "last_updated": _now_iso(),
+        },
+    )
     _write_json(root / "wrongbook.json", asdict(CourseWrongbook(course_id=course_id)))
     _write_json(
         root / "evidence_store.json",

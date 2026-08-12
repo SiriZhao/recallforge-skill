@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.5.0
+
+- Added persistent per-course Student Model (`exam_review_skill/student/`):
+  composite mastery (accuracy + difficulty + independence/hints + recency + repeat
+  errors + transfer + question-type coverage), per-topic stats, forgetting risk;
+  no data -> `unknown` (never a pretend 0.5); only real answer sessions mutate it.
+- Added session answer recording + wrongbook entries (real wrong answers only,
+  fabricated content rejected).
+- Added 10-20 minute diagnostic test selection by knowledge-graph coverage
+  (unknown/weak topics first).
+- Added single-course adaptive planner with topic-level Study Blocks
+  (course / topic / duration / reason / task / practice / completion criterion).
+- Upgraded the Exam Week Orchestrator to a real scheduler: cross-course priority
+  (urgency / score gain / risk / target gap / learning cost / forgetting /
+  maintenance), never a mechanical time average, with anti-starvation minimum
+  maintenance + cram mode.
+- Added dynamic replan events (quiz_completed, wrong_answer, topic_mastered,
+  new_material, new_past_exam, exam_rescheduled, hours_changed, target_changed,
+  course_completed); exam-day completion releases a course's future time to others.
+- Added bilingual natural-language user control (zh/en): skip / pin / reduce /
+  change target / change hours; user override always beats the planner.
+- Added CLI commands: `workspace diagnostic`, `workspace answer`, `workspace
+  plan-v4`, `workspace replan`, `workspace nl`.
+- Updated schemas: course student state (v4 per-topic mastery) and global study
+  plan (topic-level blocks).
+
 ## 0.4.0
 
 - Added the exam brain (`exam_review_skill/knowledge/`): topic-centric Course

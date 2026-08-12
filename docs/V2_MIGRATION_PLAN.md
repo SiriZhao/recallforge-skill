@@ -111,21 +111,44 @@ Acceptance (all PASS, tested): see `docs/V2_ROUND3_REPORT.md`. 95 tests green.
 Note: v3 Topic/ExamPoint renamed to `KnowledgeTopic`/`ExamPointModel` to coexist
 with the v0 batch-pipeline classes until Round 6 removes the legacy path.
 
-## Round 4 — Student Model + Wrongbook + Practice/Tutor loop
+## Round 4 — DONE (Student Model + 多课程 Adaptive Planner)
+
+Scope delivered per the Round 4 master instruction:
+
+* Persistent per-course Student Model with composite mastery (accuracy + difficulty
+  + independence/hints + recency + repeat errors + transfer + type coverage),
+  per-topic statistics, forgetting risk. No data -> `unknown`, never a pretend 0.5.
+* Diagnostic test (10-20 min) selecting topics by graph coverage, unknown/weak first.
+* Single-course adaptive planner (exam date, target, time, risk radar, mastery,
+  forgetting, coverage, wrongbook) with topic-level Study Blocks (course / topic /
+  duration / reason / task / practice / completion criterion).
+* Formal Exam Week Orchestrator: cross-course priority (urgency / score gain / risk /
+  target gap / learning cost / forgetting / maintenance), not simple average, with
+  anti-starvation minimum maintenance + cram mode.
+* Dynamic replan events (quiz_completed, wrong_answer, topic_mastered, new_material,
+  new_past_exam, exam_rescheduled, hours_changed, target_changed, course_completed);
+  exam-day completion releases the course's future time to others.
+* User control wins over the planner: skip / pin / reduce / change target / change
+  hours, all parsed from bilingual natural language (zh/en).
+* CLI: `workspace diagnostic / answer / plan-v4 / replan / nl`.
+
+Acceptance (all PASS, tested): 5 scenarios (A-E) + composite-mastery / diagnostic /
+session / events / NL tests. 121 tests green.
+
+## Round 5 — Practice Engine + Tutor + Wrongbook UI loop
 
 Scope (next):
 
-1. Student Model: mastery updated only from real answer sessions; derived
-   weak/strong points; per-topic statistics (feeds the Round 3 risk radar).
-2. Wrongbook: only real wrong answers (no fabricated entries).
-3. Practice Engine + Tutor + Diagnosis -> Student Model -> Wrongbook -> replanning.
-4. CLI: session recording commands.
+1. Practice Engine: evidence-grounded question generation + answer recording +
+   grading + wrong-reason classification (reusing the Round 4 student model).
+2. Tutor: evidence-grounded, level-adaptive explanation for a target topic.
+3. Wrongbook UI commands: list / redo / remove; spaced-repetition scheduling.
+4. Feedback loop: practice session -> student model -> wrongbook -> replan.
 
 Acceptance:
 
-* Student model mutates only from recorded sessions.
-* Wrongbook contains zero fabricated entries.
 * A practice session updates the student model and triggers a changed plan.
+* Questions/answers resolve to evidence (traceability test).
 
 ## Round 5 — Exam Week Orchestrator + Adaptive Planner + Cram
 

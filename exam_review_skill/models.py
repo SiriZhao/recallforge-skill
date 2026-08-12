@@ -340,6 +340,9 @@ class PlanBlock:
     goal: str
     done_when: str
     source: str = "planner"
+    topic_id: str | None = None
+    topic_name: str | None = None
+    practice: str | None = None
 
 
 @dataclass
@@ -532,3 +535,138 @@ class CoverageReport:
     low_confidence_topics: list[str] = field(default_factory=list)
     verdict: str = "insufficient"
     generated_at: str = field(default_factory=_now_iso)
+
+
+# ---------------------------------------------------------------------------
+# V4 Student Model + Adaptive Planner (Round 4)
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class TopicMastery:
+    """Per-topic mastery. mastery is a composite (never equal to raw accuracy) and
+    stays 'unknown' until real answer data exists. Never pretended to be 0.5."""
+
+    topic_id: str
+    mastery: str = "unknown"  # unknown | novice | developing | proficient
+    mastery_score: float | None = None  # 0..1 composite, None while unknown
+    confidence: float = 0.0
+    questions_attempted: int = 0
+    accuracy: float | None = None
+    difficulty_coverage: dict[str, int] = field(default_factory=dict)  # {"1": n, "2": n, ...}
+    hint_dependency: float | None = None  # fraction of correct answers that needed a hint
+    last_reviewed: str | None = None
+    wrong_count: int = 0
+    mistake_types: list[str] = field(default_factory=list)
+    forgetting_risk: float = 0.0
+    transfer_performance: dict[str, int] = field(default_factory=dict)  # {"same_form": n, "new_form": n}
+    question_type_coverage: dict[str, int] = field(default_factory=dict)
+    updated_at: str = field(default_factory=_now_iso)
+
+    def to_state(self) -> dict:
+        return {
+            "topic_id": self.topic_id,
+            "mastery": self.mastery,
+            "mastery_score": self.mastery_score,
+            "confidence": self.confidence,
+            "questions_attempted": self.questions_attempted,
+            "accuracy": self.accuracy,
+            "difficulty_coverage": self.difficulty_coverage,
+            "hint_dependency": self.hint_dependency,
+            "last_reviewed": self.last_reviewed,
+            "wrong_count": self.wrong_count,
+            "mistake_types": self.mistake_types,
+            "forgetting_risk": self.forgetting_risk,
+            "transfer_performance": self.transfer_performance,
+            "question_type_coverage": self.question_type_coverage,
+            "updated_at": self.updated_at,
+        }
+
+
+@dataclass
+class StudentModel:
+    """Persistent per-course student model. Only real answer sessions may mutate it."""
+
+    course_id: str
+    student_id: str = "student-default"
+    topics: dict[str, TopicMastery] = field(default_factory=dict)
+    weak_points: list[str] = field(default_factory=list)
+    strong_points: list[str] = field(default_factory=list)
+    wrong_patterns: list[str] = field(default_factory=list)
+    review_history: list[dict] = field(default_factory=list)
+    diagnostic_completed: bool = False
+    last_updated: str = field(default_factory=lambda: date.today().isoformat())
+
+    def to_state(self) -> dict:
+        return {
+            "student_id": self.student_id,
+            "course_id": self.course_id,
+            "topics": {tid: tm.to_state() for tid, tm in self.topics.items()},
+            "weak_points": self.weak_points,
+            "strong_points": self.strong_points,
+            "wrong_patterns": self.wrong_patterns,
+            "review_history": self.review_history,
+            "diagnostic_completed": self.diagnostic_completed,
+            "last_updated": self.last_updated,
+        }
+
+
+@dataclass
+class StudyBlock:
+    """One concrete study block: course, topic, duration, reason, task, practice,
+    and completion criterion - the unit the orchestrator schedules."""
+
+    block_id: str
+    course_id: str
+    topic_id: str
+    topic_name: str
+    duration_hours: float
+    reason: str
+    task: str
+    practice: str
+    completion_criterion: str
+    kind: str = "study"  # study | review | practice | cram | maintenance | diagnostic | wrongbook
+    start: str | None = None
+    end: str | None = None
+    priority: str = "C"
+    evidence_refs: list[str] = field(default_factory=list)
+
+
+@dataclass
+class CoursePlan:
+    """Single-course adaptive plan - the decision 'what to study next in this course'."""
+
+    course_id: str
+    blocks: list[StudyBlock] = field(default_factory=list)
+    strategy: str = "unknown"
+    generated_at: str = field(default_factory=_now_iso)
+    rationale: list[str] = field(default_factory=list)
+
+
+@dataclass
+class DiagnosticItem:
+    topic_id: str
+    topic_name: str
+    reason: str
+    question_type: str = "short_answer"
+    difficulty: int = 2
+
+
+@dataclass
+class DiagnosticPlan:
+    course_id: str
+    items: list[DiagnosticItem] = field(default_factory=list)
+    estimated_minutes: int = 15
+    rationale: list[str] = field(default_factory=list)
+    generated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class ReplanEvent:
+    """A dynamic event that should trigger re-planning."""
+
+    event_type: str  # quiz_completed | wrong_answer | topic_mastered | new_material |
+    # | new_past_exam | exam_rescheduled | hours_changed | target_changed | course_completed
+    course_id: str | None = None
+    detail: dict = field(default_factory=dict)
+    occurred_at: str = field(default_factory=_now_iso)

@@ -16,9 +16,12 @@
         "properties": {
           "block_id": { "type": "string" },
           "course_id": { "type": "string" },
+          "topic_id": { "type": ["string", "null"] },
+          "topic_name": { "type": ["string", "null"] },
+          "practice": { "type": ["string", "null"] },
           "start": { "type": "string" },
           "end": { "type": "string" },
-          "kind": { "enum": ["study", "review", "cram", "maintenance", "wrongbook"] },
+          "kind": { "enum": ["study", "review", "practice", "cram", "maintenance", "diagnostic", "wrongbook"] },
           "why": { "type": "string" },
           "risk": { "type": "string" },
           "goal": { "type": "string" },

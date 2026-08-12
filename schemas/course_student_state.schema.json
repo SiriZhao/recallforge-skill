@@ -1,12 +1,36 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CourseStudentState",
-  "description": "Per-course student model. Mastery is updated only from real answer sessions; level stays 'unknown' until real attempts exist.",
+  "description": "Per-course persistent student model (v4). Mastery is a composite (not raw accuracy) updated only from real answer sessions; level stays 'unknown' until real attempts exist.",
   "type": "object",
-  "required": ["student_id", "course_id", "mastery", "weak_points", "strong_points", "wrong_patterns", "review_history", "last_updated"],
+  "required": ["student_id", "course_id", "topics", "weak_points", "strong_points", "wrong_patterns", "review_history", "last_updated"],
   "properties": {
     "student_id": { "type": "string" },
     "course_id": { "type": "string" },
+    "topics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["topic_id", "mastery"],
+        "properties": {
+          "topic_id": { "type": "string" },
+          "mastery": { "enum": ["unknown", "novice", "developing", "proficient"] },
+          "mastery_score": { "type": ["number", "null"] },
+          "confidence": { "type": "number" },
+          "questions_attempted": { "type": "integer", "minimum": 0 },
+          "accuracy": { "type": ["number", "null"] },
+          "difficulty_coverage": { "type": "object" },
+          "hint_dependency": { "type": ["number", "null"] },
+          "last_reviewed": { "type": ["string", "null"] },
+          "wrong_count": { "type": "integer", "minimum": 0 },
+          "mistake_types": { "type": "array", "items": { "type": "string" } },
+          "forgetting_risk": { "type": "number" },
+          "transfer_performance": { "type": "object" },
+          "question_type_coverage": { "type": "object" },
+          "updated_at": { "type": "string" }
+        }
+      }
+    },
     "mastery": {
       "type": "object",
       "additionalProperties": {
