@@ -1,7 +1,0 @@
-# 课程知识索引
-
-{% for topic in topics %}
-## {{ topic.topic_id }} {{ topic.topic_name }}
-- 章节：{{ topic.chapter or "未标注" }}
-- 来源：{{ topic.source_refs }}
-{% endfor %}

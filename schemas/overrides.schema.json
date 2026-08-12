@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OverridesStore",
+  "description": "Per-date user overrides. The scheduler re-plans when any override applies.",
+  "type": "object",
+  "required": ["workspace_id", "overrides", "updated_at"],
+  "properties": {
+    "workspace_id": { "type": "string" },
+    "overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date"],
+        "properties": {
+          "date": { "type": "string" },
+          "skip_courses": { "type": "array", "items": { "type": "string" } },
+          "total_hours": { "type": ["number", "null"] },
+          "course_hours": { "type": "object", "additionalProperties": { "type": "number" } },
+          "target_scores": { "type": "object", "additionalProperties": { "type": "integer" } },
+          "exam_date_changes": { "type": "object", "additionalProperties": { "type": "string" } },
+          "note": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

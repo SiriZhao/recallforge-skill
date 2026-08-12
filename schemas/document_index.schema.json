@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DocumentIndex",
+  "description": "Per-course document index (multimodal ingestion output lands here in Round 2).",
+  "type": "object",
+  "required": ["course_id", "documents", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["document_id", "source_file"],
+        "properties": {
+          "document_id": { "type": "string" },
+          "source_file": { "type": "string" },
+          "doc_type": { "type": "string" },
+          "language": { "type": "string" },
+          "page_count": { "type": "integer" }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

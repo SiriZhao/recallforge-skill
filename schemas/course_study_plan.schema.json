@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CourseStudyPlan",
+  "description": "Per-course adaptive plan (rebuilt after each session).",
+  "type": "object",
+  "required": ["course_id", "plan", "generated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "plan": { "type": "array", "items": { "type": "object" } },
+    "generated_at": { "type": "string" }
+  }
+}

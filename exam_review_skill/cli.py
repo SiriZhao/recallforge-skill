@@ -22,6 +22,7 @@ from .risk_radar import build_risk_radar
 from .state_manager import load_student_state, read_json, save_student_state, update_history, write_json
 from .teacher_style import generate_teacher_style
 from .wrongbook import build_wrongbook
+from .workspace_cli import add_workspace_parser, command_workspace
 
 
 def run_pipeline(args: argparse.Namespace) -> None:
@@ -120,6 +121,7 @@ def command_variants(args: argparse.Namespace) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="exam-review-skill", description="输入课程资料，输出提分路径。")
     sub = parser.add_subparsers(dest="command", required=True)
+    add_workspace_parser(sub)
     run = sub.add_parser("run", help="完整运行")
     run.add_argument("--input", required=True)
     run.add_argument("--output", required=True)

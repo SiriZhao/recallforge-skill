@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KnowledgeGraph",
+  "description": "Per-course concept graph, strictly course-scoped.",
+  "type": "object",
+  "required": ["course_id", "concepts", "edges", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "concepts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["concept_id", "name"],
+        "properties": {
+          "concept_id": { "type": "string" },
+          "name": { "type": "string" },
+          "chapter": { "type": ["string", "null"] },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } },
+          "inferred": { "type": "boolean" }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "target", "relation"],
+        "properties": {
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "relation": { "type": "string" },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

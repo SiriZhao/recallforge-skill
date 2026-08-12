@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExamCalendar",
+  "description": "Global exam calendar. Supports no exam date, two exams on one day, consecutive days, and completed exams.",
+  "type": "object",
+  "required": ["workspace_id", "entries", "updated_at"],
+  "properties": {
+    "workspace_id": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["course_id"],
+        "properties": {
+          "course_id": { "type": "string" },
+          "exam_date": { "type": ["string", "null"] },
+          "exam_time": { "type": ["string", "null"] },
+          "status": { "enum": ["scheduled", "completed", "canceled"] },
+          "weight": { "type": "number" },
+          "note": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

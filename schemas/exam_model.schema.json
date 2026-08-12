@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExamModel",
+  "description": "Per-course exam intelligence, evidence-grounded.",
+  "type": "object",
+  "required": ["course_id", "exam_points", "past_exam_refs", "coverage", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "exam_points": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["exam_point_id", "concept_ids"],
+        "properties": {
+          "exam_point_id": { "type": "string" },
+          "concept_ids": { "type": "array", "items": { "type": "string" } },
+          "exam_forms": { "type": "array", "items": { "type": "string" } },
+          "frequency": { "type": "integer", "minimum": 0 },
+          "priority": { "enum": ["S", "A", "B", "C"] },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } },
+          "inferred": { "type": "boolean" }
+        }
+      }
+    },
+    "past_exam_refs": { "type": "array", "items": { "type": "object" } },
+    "coverage": { "type": "object", "additionalProperties": { "type": "number" } },
+    "updated_at": { "type": "string" }
+  }
+}

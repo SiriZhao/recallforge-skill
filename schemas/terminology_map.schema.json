@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TerminologyMap",
+  "description": "Per-course bilingual terminology map. Enables mixed-language topic normalization without re-translation.",
+  "type": "object",
+  "required": ["course_id", "terms", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "terms": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["names"],
+        "properties": {
+          "names": { "type": "object", "additionalProperties": { "type": "string" } },
+          "aliases": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

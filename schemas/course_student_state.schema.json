@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CourseStudentState",
+  "description": "Per-course student model. Mastery is updated only from real answer sessions; level stays 'unknown' until real attempts exist.",
+  "type": "object",
+  "required": ["student_id", "course_id", "mastery", "weak_points", "strong_points", "wrong_patterns", "review_history", "last_updated"],
+  "properties": {
+    "student_id": { "type": "string" },
+    "course_id": { "type": "string" },
+    "mastery": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["level"],
+        "properties": {
+          "level": { "enum": ["unknown", "novice", "developing", "proficient"] },
+          "correct": { "type": "integer", "minimum": 0 },
+          "attempts": { "type": "integer", "minimum": 0 },
+          "last_seen": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "weak_points": { "type": "array", "items": { "type": "string" } },
+    "strong_points": { "type": "array", "items": { "type": "string" } },
+    "wrong_patterns": { "type": "array", "items": { "type": "string" } },
+    "review_history": { "type": "array", "items": { "type": "object" } },
+    "last_updated": { "type": "string" }
+  }
+}

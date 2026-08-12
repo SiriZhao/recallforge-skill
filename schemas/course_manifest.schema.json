@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CourseManifest",
+  "description": "Per-course manifest. Knowledge content lives only inside this course's directory.",
+  "type": "object",
+  "required": ["course_id", "course_name", "source_languages", "target_score", "status", "created_at", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "course_name": { "type": "string" },
+    "course_name_localized": { "type": "object", "additionalProperties": { "type": "string" } },
+    "source_languages": { "type": "array", "items": { "type": "string" } },
+    "exam_date": { "type": ["string", "null"] },
+    "exam_time": { "type": ["string", "null"] },
+    "target_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "current_estimated_score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+    "daily_preference": { "type": "number", "minimum": 0 },
+    "importance_override": { "type": ["number", "null"], "minimum": 0, "maximum": 2 },
+    "material_count": { "type": "integer", "minimum": 0 },
+    "topic_count": { "type": "integer", "minimum": 0 },
+    "status": { "enum": ["active", "completed", "paused"] },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  }
+}

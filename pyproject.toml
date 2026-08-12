@@ -4,21 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "exam-review-skill"
-version = "0.1.0"
+version = "0.2.0"
 description = "Exam-oriented Codex Skill for building high-efficiency university final review systems."
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-  "jinja2>=3.1.0",
-  "pydantic>=2.0.0"
-]
+dependencies = []
 
 [project.optional-dependencies]
 docx = ["python-docx>=1.1.0"]
 pdf = ["pypdf>=4.0.0"]
 pptx = ["python-pptx>=0.6.23"]
 ocr = ["pytesseract>=0.3.10", "Pillow>=10.0.0"]
-test = ["pytest>=8.0.0"]
+test = ["pytest>=8.0.0", "jsonschema>=4.20.0"]
 
 [project.scripts]
 exam-review-skill = "exam_review_skill.cli:main"

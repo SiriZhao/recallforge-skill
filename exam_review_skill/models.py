@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import date
+from datetime import date, datetime
 from typing import Any
 
 
@@ -185,3 +185,187 @@ def to_dict(obj: Any) -> Any:
     if isinstance(obj, dict):
         return {k: to_dict(v) for k, v in obj.items()}
     return obj
+
+
+# ---------------------------------------------------------------------------
+# V2 state models (Round 1: multi-course workspace + bilingual foundation)
+# All schema keys are stable English identifiers. UI/output localize later.
+# ---------------------------------------------------------------------------
+
+
+def _now_iso() -> str:
+    """ISO-8601 timestamp with timezone, second precision."""
+    return datetime.now().astimezone().isoformat(timespec="seconds")
+
+
+@dataclass
+class WorkspaceState:
+    workspace_id: str
+    user_locale: str = "zh-CN"
+    content_language: str = "auto"
+    output_language: str = "zh-CN"
+    daily_total_hours: float = 6.0
+    courses: list[str] = field(default_factory=list)
+    created_at: str = field(default_factory=_now_iso)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class ExamCalendarEntry:
+    course_id: str
+    exam_date: str | None = None
+    exam_time: str | None = None
+    status: str = "scheduled"
+    weight: float = 1.0
+    note: str | None = None
+
+
+@dataclass
+class ExamCalendar:
+    workspace_id: str
+    entries: list[ExamCalendarEntry] = field(default_factory=list)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class CourseManifest:
+    course_id: str
+    course_name: str
+    course_name_localized: dict[str, str] = field(default_factory=dict)
+    source_languages: list[str] = field(default_factory=list)
+    exam_date: str | None = None
+    exam_time: str | None = None
+    target_score: int = 80
+    current_estimated_score: int | None = None
+    daily_preference: float = 1.0
+    importance_override: float | None = None
+    material_count: int = 0
+    topic_count: int = 0
+    status: str = "active"
+    created_at: str = field(default_factory=_now_iso)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class CourseStudentState:
+    student_id: str = "student-default"
+    course_id: str = ""
+    mastery: dict[str, dict] = field(default_factory=dict)
+    weak_points: list[str] = field(default_factory=list)
+    strong_points: list[str] = field(default_factory=list)
+    wrong_patterns: list[str] = field(default_factory=list)
+    review_history: list[dict] = field(default_factory=list)
+    last_updated: str = field(default_factory=lambda: date.today().isoformat())
+
+
+@dataclass
+class CourseWrongbook:
+    course_id: str = ""
+    entries: list[dict] = field(default_factory=list)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class DocumentIndex:
+    course_id: str = ""
+    documents: list[dict] = field(default_factory=list)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class KnowledgeGraph:
+    course_id: str = ""
+    concepts: list[dict] = field(default_factory=list)
+    edges: list[dict] = field(default_factory=list)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class ExamModel:
+    course_id: str = ""
+    exam_points: list[dict] = field(default_factory=list)
+    past_exam_refs: list[dict] = field(default_factory=list)
+    coverage: dict[str, float] = field(default_factory=dict)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class CourseStudyPlan:
+    course_id: str = ""
+    plan: list[dict] = field(default_factory=list)
+    generated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class TerminologyMapState:
+    course_id: str = ""
+    terms: dict[str, dict] = field(default_factory=dict)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class SessionRecord:
+    session_id: str
+    course_id: str
+    date: str
+    kind: str
+    items: list[dict] = field(default_factory=list)
+    answers: list[dict] = field(default_factory=list)
+    diagnosis: dict[str, Any] = field(default_factory=dict)
+    started_at: str = field(default_factory=_now_iso)
+    ended_at: str | None = None
+
+
+@dataclass
+class DayOverride:
+    date: str
+    skip_courses: list[str] = field(default_factory=list)
+    total_hours: float | None = None
+    course_hours: dict[str, float] = field(default_factory=dict)
+    target_scores: dict[str, int] = field(default_factory=dict)
+    exam_date_changes: dict[str, str] = field(default_factory=dict)
+    note: str | None = None
+
+
+@dataclass
+class PlanBlock:
+    block_id: str
+    course_id: str
+    start: str
+    end: str
+    kind: str
+    why: str
+    risk: str
+    goal: str
+    done_when: str
+    source: str = "planner"
+
+
+@dataclass
+class GlobalStudyPlan:
+    workspace_id: str
+    date: str
+    total_hours: float
+    blocks: list[PlanBlock] = field(default_factory=list)
+    allocation: dict[str, float] = field(default_factory=dict)
+    notes: list[str] = field(default_factory=list)
+    overrides_applied: list[str] = field(default_factory=list)
+    generated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class CourseSignal:
+    """Transparent scheduling signal for one course (heuristic, not a precise model)."""
+    course_id: str
+    days_to_exam: int | None
+    urgency: float
+    target_gap: float
+    mastery_gap: float
+    risk_signal: float
+    expected_gain: float
+    learning_cost_hours: float
+    forgetting_risk: float
+    unfinished_work: float
+    coverage: float | None
+    priority: float = 0.0
+    allocation_hours: float = 0.0

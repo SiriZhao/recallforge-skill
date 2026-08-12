@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WorkspaceState",
+  "description": "Top-level exam-week workspace. Holds only identity, languages, time budget, and course ids - never course knowledge.",
+  "type": "object",
+  "required": ["workspace_id", "user_locale", "content_language", "output_language", "daily_total_hours", "courses", "created_at", "updated_at"],
+  "properties": {
+    "workspace_id": { "type": "string" },
+    "user_locale": { "type": "string" },
+    "content_language": { "type": "string" },
+    "output_language": { "type": "string" },
+    "daily_total_hours": { "type": "number", "minimum": 0 },
+    "courses": { "type": "array", "items": { "type": "string" } },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" }
+  }
+}

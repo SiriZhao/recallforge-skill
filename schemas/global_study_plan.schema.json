@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GlobalStudyPlan",
+  "description": "One day's cross-course global study plan with per-block rationale.",
+  "type": "object",
+  "required": ["workspace_id", "date", "total_hours", "blocks", "allocation", "notes", "overrides_applied", "generated_at"],
+  "properties": {
+    "workspace_id": { "type": "string" },
+    "date": { "type": "string" },
+    "total_hours": { "type": "number", "minimum": 0 },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["block_id", "course_id", "start", "end", "kind", "why", "risk", "goal", "done_when", "source"],
+        "properties": {
+          "block_id": { "type": "string" },
+          "course_id": { "type": "string" },
+          "start": { "type": "string" },
+          "end": { "type": "string" },
+          "kind": { "enum": ["study", "review", "cram", "maintenance", "wrongbook"] },
+          "why": { "type": "string" },
+          "risk": { "type": "string" },
+          "goal": { "type": "string" },
+          "done_when": { "type": "string" },
+          "source": { "enum": ["planner", "user_override"] }
+        }
+      }
+    },
+    "allocation": { "type": "object", "additionalProperties": { "type": "number" } },
+    "notes": { "type": "array", "items": { "type": "string" } },
+    "overrides_applied": { "type": "array", "items": { "type": "string" } },
+    "generated_at": { "type": "string" }
+  }
+}

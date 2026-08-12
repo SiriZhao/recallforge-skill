@@ -1,3 +1,3 @@
-jinja2>=3.1.0
-pydantic>=2.0.0
-pytest>=8.0.0
+# Development / test requirements. The v2 core is stdlib-only.
+# Optional runtime extras (docx / pdf / pptx / ocr) are defined in pyproject.toml.
+-e .[test]

@@ -22,31 +22,60 @@
 Acceptance: six audit questions answered PASS with source-level evidence; baseline
 4 tests still pass.
 
-## Round 1 — Foundation: state layers, provider abstraction, sandbox isolation
+## Round 1 — DONE (multi-course workspace + bilingual foundation)
 
-Scope:
+Scope delivered per the Round 1 master instruction:
 
-1. Add `Workspace`, `Course`, `Session` state model + JSON schemas
-   (`schemas/workspace.schema.json`, `course.schema.json`, `session.schema.json`,
-   `evidence.schema.json`), with a state manager that enforces course isolation.
-2. Rework `providers/` abstraction: define the v2 `BaseProvider` interface; add real
+* Workspace layer: `workspace_state.json`, `exam_calendar.json`,
+  `global_study_plan.json`, `overrides.json` + schemas.
+* True multi-course model: isolated `courses/<id>/` with manifest, document index,
+  knowledge graph, exam model, student state, wrongbook, study plan, sessions,
+  terminology map.
+* Course Manifest with all required fields and exam edge cases.
+* Exam Week Orchestrator: transparent heuristic scheduler with anti-starvation,
+  daily global plan (per-block why/risk/goal/done-when), user overrides.
+* i18n foundation: stable English keys, zh-CN/en-US catalogs (extensible),
+  LanguageProfile (UI/source/output), per-course terminology maps, mixed-language
+  topic normalization.
+* Sandbox/mock contamination guard on every real-state write.
+* Dead code removed (`templates/*.j2`, unused jinja2/pydantic); deps cleaned;
+  version 0.2.0.
+
+Acceptance (all PASS, tested): multi-course workspace; course isolation; global
+exam calendar; cross-course planner skeleton; zh locale; en locale; mixed-language
+model; stable internal schemas.
+
+See `docs/V2_ROUND1_REPORT.md`. 48 tests green.
+
+Provider abstraction + real providers were **deferred to Round 2** (multimodal
+ingestion is their first consumer).
+
+## Round 2 — Multimodal Ingestion + Evidence Store + Course Knowledge Model
+
+Scope (updated):
+
+1. Rework `providers/` abstraction: define the v2 `BaseProvider` interface; add real
    OpenAI (Responses API) and DeepSeek providers with config validation
    (`EXAM_REVIEW_PROVIDER` now honored; fail closed when unset/invalid).
-3. Move `MockLLMProvider` behind an explicit `sandbox` flag that never writes to real
+2. Move `MockLLMProvider` behind an explicit `sandbox` flag that never writes to real
    workspace/course state; add a contamination guard test.
-4. Remove dead code: `templates/*.j2`, unused `jinja2`/`pydantic` deps; clean
-   `requirements.txt` split (runtime vs test).
-5. i18n skeleton: locale catalogs (`en`/`zh`) + neutral output filenames.
-6. CLI: `workspace init`, `course add/ingest` stubs that create real state files.
+3. Multimodal ingestion: render PDF pages / PPTX slides / images and send to the
+   multimodal provider; structured evidence output (text/table/formula/diagram/
+   handwriting). Local OCR kept only as low-confidence fallback.
+4. Evidence Store: persist evidence units with stable IDs, checksums, language tags,
+   and course scoping.
+5. Course Knowledge Model: concept graph with evidence-linked nodes/edges; semantic
+   deduplication (reusing the Round 1 terminology maps); `inferred` flagging.
+6. CLI: `workspace ingest` command that creates real evidence + knowledge state.
 
 Acceptance:
 
 * No mock output can persist into course/student state (automated test).
-* `workspace.json` + course dirs + session dirs created by CLI and validated by
-  schema tests.
-* Existing 4 tests still pass; new state-integrity tests pass.
+* A bilingual fixture course produces evidence-grounded concepts with no keyword
+  garbage.
+* Every concept has ≥1 evidence ref or `inferred=true`.
 
-Commit: `feat: v2 workspace/course/session state and provider isolation`
+Commit: `feat: multimodal ingestion, evidence store, and knowledge model`
 
 ## Round 2 — Multimodal Ingestion + Evidence Store + Course Knowledge Model
 
