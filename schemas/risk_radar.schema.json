@@ -1,1 +1,30 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"RiskRadar","type":"array","items":{"type":"object","required":["exam_point_id","topic_name","priority","source_refs"],"properties":{"exam_point_id":{"type":"string"},"topic_name":{"type":"string"},"chapter":{"type":["string","null"]},"exam_probability":{"type":"number"},"score_potential":{"type":"integer"},"difficulty":{"type":"integer"},"current_mastery":{"type":"string"},"traps":{"type":"array"},"priority":{"enum":["S","A","B","C"]},"review_action":{"type":"string"},"source_refs":{"type":"array"},"rationale":{"type":"string"}}}}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RiskRadar",
+  "description": "Explainable S/A/B/C risk radar. Every item carries its full rationale.",
+  "type": "object",
+  "required": ["items", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["exam_point_id", "topic_id", "topic_name", "priority", "priority_rationale"],
+        "properties": {
+          "exam_point_id": { "type": "string" },
+          "topic_id": { "type": "string" },
+          "topic_name": { "type": "string" },
+          "priority": { "enum": ["S", "A", "B", "C"] },
+          "priority_rationale": { "type": "array", "items": { "type": "string" } },
+          "importance": { "type": "integer" },
+          "likelihood_estimate": { "type": "number" },
+          "past_exam_frequency": { "type": "integer" },
+          "teacher_emphasis": { "type": "string" },
+          "evidence": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

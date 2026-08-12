@@ -1,21 +1,46 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "KnowledgeGraph",
-  "description": "Per-course concept graph, strictly course-scoped.",
+  "description": "Per-course topic-centric knowledge graph. Topic is the core object; evidence (chunks/pages) is only the proof. Strictly course-scoped.",
   "type": "object",
-  "required": ["course_id", "concepts", "edges", "updated_at"],
+  "required": ["course_id", "topics", "edges", "updated_at"],
   "properties": {
     "course_id": { "type": "string" },
-    "concepts": {
+    "topics": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["concept_id", "name"],
+        "required": ["topic_id", "canonical_name", "evidence", "inferred"],
         "properties": {
-          "concept_id": { "type": "string" },
-          "name": { "type": "string" },
+          "topic_id": { "type": "string" },
+          "canonical_name": { "type": "string" },
+          "localized_names": { "type": "object", "additionalProperties": { "type": "string" } },
+          "aliases": { "type": "array", "items": { "type": "string" } },
           "chapter": { "type": ["string", "null"] },
-          "evidence_refs": { "type": "array", "items": { "type": "string" } },
+          "prerequisites": { "type": "array", "items": { "type": "string" } },
+          "definitions": { "type": "array", "items": { "type": "object" } },
+          "formulas": { "type": "array", "items": { "type": "object" } },
+          "concepts": { "type": "array", "items": { "type": "string" } },
+          "methods": { "type": "array", "items": { "type": "object" } },
+          "common_mistakes": { "type": "array", "items": { "type": "object" } },
+          "question_types": { "type": "array", "items": { "type": "string" } },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "teacher_emphasis": { "enum": ["observed", "strongly_inferred", "inferred", "unknown"] },
+          "teacher_emphasis_refs": { "type": "array", "items": { "type": "string" } },
+          "past_exam_links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["exam_set_id", "question_number"],
+              "properties": {
+                "exam_set_id": { "type": "string" },
+                "question_number": { "type": "string" },
+                "year": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "fusion_confidence": { "type": "number" },
+          "source_confidence": { "type": "number" },
           "inferred": { "type": "boolean" }
         }
       }

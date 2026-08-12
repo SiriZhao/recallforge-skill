@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CoverageReport",
+  "description": "Answers 'do I have enough materials?' with concrete numbers.",
+  "type": "object",
+  "required": ["course_id", "material_coverage", "chapter_coverage", "past_exam_coverage", "answer_coverage", "verdict", "generated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "material_coverage": { "type": "object" },
+    "chapter_coverage": { "type": "object" },
+    "past_exam_coverage": { "type": "object" },
+    "answer_coverage": { "type": "object" },
+    "unresolved_documents": { "type": "array", "items": { "type": "string" } },
+    "low_confidence_topics": { "type": "array", "items": { "type": "string" } },
+    "verdict": { "type": "string" },
+    "generated_at": { "type": "string" }
+  }
+}

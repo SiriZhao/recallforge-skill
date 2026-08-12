@@ -299,6 +299,33 @@ def command_workspace(args) -> None:
             print(f"  warn: {warning}")
         return
 
+    if action == "build":
+        from .knowledge.build import build_course_intelligence
+
+        try:
+            result = build_course_intelligence(
+                root,
+                args.course,
+                days_to_exam=args.days_to_exam,
+            )
+        except FileNotFoundError as exc:
+            print(f"error: {exc}")
+            return
+        print(f"topics: {len(result.topics)}")
+        print(f"exam points: {len(result.exam_points)}")
+        print(f"past exam sets: {len(result.past_exam_sets)}")
+        print(f"past exam questions: {sum(len(s.questions) for s in result.past_exam_sets)}")
+        print(f"conflicts detected: {len(result.conflicts)}")
+        print(f"coverage verdict: {result.coverage.verdict}")
+        print("risk radar:")
+        for point in result.exam_points:
+            print(
+                f"  [{point.priority}] {point.topic_name} "
+                f"(likelihood={point.likelihood_estimate:.2f}, freq={point.past_exam_frequency}, "
+                f"teacher={point.teacher_emphasis})"
+            )
+        return
+
     raise SystemExit(f"unknown workspace action: {action}")
 
 
@@ -384,3 +411,9 @@ def add_workspace_parser(subparsers) -> None:
     ingest.add_argument("--offline", action="store_true", help="explicit offline mode")
     ingest.add_argument("--demo", action="store_true", help="demo mode: allow synthetic records")
     ingest.set_defaults(func=command_workspace)
+
+    build = ws_sub.add_parser("build", help="build course knowledge + exam intelligence from evidence")
+    build.add_argument("--dir", required=True)
+    build.add_argument("--course", required=True)
+    build.add_argument("--days-to-exam", type=int, default=None)
+    build.set_defaults(func=command_workspace)

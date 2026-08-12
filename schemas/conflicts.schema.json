@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Conflicts",
+  "description": "Detected source contradictions. Never silently overwritten; user confirmation required.",
+  "type": "object",
+  "required": ["course_id", "conflicts", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["conflict_id", "field", "alternatives", "resolved"],
+        "properties": {
+          "conflict_id": { "type": "string" },
+          "topic_id": { "type": ["string", "null"] },
+          "question_number": { "type": ["string", "null"] },
+          "field": { "type": "string" },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["text", "source_file", "source_type"],
+              "properties": {
+                "text": { "type": "string" },
+                "source_file": { "type": "string" },
+                "source_type": { "type": "string" },
+                "authority": { "type": "integer" },
+                "created_at": { "type": "string" },
+                "evidence_ref": { "type": "string" }
+              }
+            }
+          },
+          "resolved": { "type": "boolean" },
+          "chosen": { "type": ["object", "null"] },
+          "resolution_reason": { "type": "string" },
+          "detected_at": { "type": "string" }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

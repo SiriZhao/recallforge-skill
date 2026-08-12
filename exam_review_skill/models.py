@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
+from dataclasses import field as _field
 from datetime import date, datetime
 from typing import Any
 
@@ -28,7 +29,7 @@ class DocumentBlock:
     chapter: str | None = None
     heading: str | None = None
     confidence: float = 0.8
-    source_refs: list[dict] = field(default_factory=list)
+    source_refs: list[dict] = _field(default_factory=list)
     low_confidence: bool = False
 
 
@@ -36,9 +37,9 @@ class DocumentBlock:
 class Document:
     source_file: str
     doc_type: str = "unknown"
-    blocks: list[DocumentBlock] = field(default_factory=list)
-    warnings: list[str] = field(default_factory=list)
-    metadata: dict[str, Any] = field(default_factory=dict)
+    blocks: list[DocumentBlock] = _field(default_factory=list)
+    warnings: list[str] = _field(default_factory=list)
+    metadata: dict[str, Any] = _field(default_factory=dict)
 
 
 @dataclass
@@ -51,8 +52,8 @@ class Chunk:
     doc_type: str = "unknown"
     chapter: str | None = None
     heading: str | None = None
-    keywords: list[str] = field(default_factory=list)
-    possible_exam_points: list[str] = field(default_factory=list)
+    keywords: list[str] = _field(default_factory=list)
+    possible_exam_points: list[str] = _field(default_factory=list)
     confidence: float = 0.8
     source_refs: list[dict] = field(default_factory=list)
 
@@ -62,17 +63,17 @@ class Topic:
     topic_id: str
     topic_name: str
     chapter: str | None = None
-    source_chunks: list[str] = field(default_factory=list)
-    definitions: list[str] = field(default_factory=list)
-    formulas: list[str] = field(default_factory=list)
-    examples: list[str] = field(default_factory=list)
-    related_topics: list[str] = field(default_factory=list)
-    prerequisite_topics: list[str] = field(default_factory=list)
+    source_chunks: list[str] = _field(default_factory=list)
+    definitions: list[str] = _field(default_factory=list)
+    formulas: list[str] = _field(default_factory=list)
+    examples: list[str] = _field(default_factory=list)
+    related_topics: list[str] = _field(default_factory=list)
+    prerequisite_topics: list[str] = _field(default_factory=list)
     difficulty: int = 2
     importance: int = 3
     source_confidence: float = 0.75
     inferred: bool = False
-    source_refs: list[dict] = field(default_factory=list)
+    source_refs: list[dict] = _field(default_factory=list)
 
 
 @dataclass
@@ -80,16 +81,16 @@ class ExamPoint:
     exam_point_id: str
     topic_id: str
     topic_name: str
-    exam_forms: list[str] = field(default_factory=list)
-    past_exam_refs: list[dict] = field(default_factory=list)
+    exam_forms: list[str] = _field(default_factory=list)
+    past_exam_refs: list[dict] = _field(default_factory=list)
     frequency: int = 1
     difficulty: int = 2
     score_potential: int = 3
-    common_traps: list[str] = field(default_factory=list)
-    possible_variants: list[str] = field(default_factory=list)
+    common_traps: list[str] = _field(default_factory=list)
+    possible_variants: list[str] = _field(default_factory=list)
     priority: str = "B"
     confidence: float = 0.75
-    source_refs: list[dict] = field(default_factory=list)
+    source_refs: list[dict] = _field(default_factory=list)
 
 
 @dataclass
@@ -101,10 +102,10 @@ class RiskItem:
     score_potential: int = 3
     difficulty: int = 2
     current_mastery: str = "unknown"
-    traps: list[str] = field(default_factory=list)
+    traps: list[str] = _field(default_factory=list)
     priority: str = "B"
     review_action: str = "复习定义、模板题和来源题。"
-    source_refs: list[dict] = field(default_factory=list)
+    source_refs: list[dict] = _field(default_factory=list)
     rationale: str = ""
 
 
@@ -119,7 +120,7 @@ class Question:
     answer: str
     explanation: str
     common_trap: str
-    source_refs: list[dict] = field(default_factory=list)
+    source_refs: list[dict] = _field(default_factory=list)
     confidence: float = 0.75
 
 
@@ -135,7 +136,7 @@ class WrongQuestion:
     trap_type: str
     fix_strategy: str
     next_review_date: str
-    variant_questions: list[str] = field(default_factory=list)
+    variant_questions: list[str] = _field(default_factory=list)
 
 
 @dataclass
@@ -144,7 +145,7 @@ class ReviewPlan:
     target_score: int
     exam_date: str | None
     daily_hours: float
-    days: list[dict] = field(default_factory=list)
+    days: list[dict] = _field(default_factory=list)
     strategy: str = "80分稳妥策略"
 
 
@@ -154,23 +155,23 @@ class StudentState:
     target_score: int = 80
     exam_date: str | None = None
     daily_hours: float = 4
-    topic_mastery: dict[str, Any] = field(default_factory=dict)
-    weak_points: list[str] = field(default_factory=list)
-    strong_points: list[str] = field(default_factory=list)
-    wrong_questions: list[dict] = field(default_factory=list)
-    review_history: list[dict] = field(default_factory=list)
-    next_actions: list[str] = field(default_factory=list)
-    last_updated: str = field(default_factory=lambda: date.today().isoformat())
+    topic_mastery: dict[str, Any] = _field(default_factory=dict)
+    weak_points: list[str] = _field(default_factory=list)
+    strong_points: list[str] = _field(default_factory=list)
+    wrong_questions: list[dict] = _field(default_factory=list)
+    review_history: list[dict] = _field(default_factory=list)
+    next_actions: list[str] = _field(default_factory=list)
+    last_updated: str = _field(default_factory=lambda: date.today().isoformat())
 
 
 @dataclass
 class GenerationReport:
-    files_seen: list[str] = field(default_factory=list)
-    files_read: list[str] = field(default_factory=list)
-    warnings: list[str] = field(default_factory=list)
+    files_seen: list[str] = _field(default_factory=list)
+    files_read: list[str] = _field(default_factory=list)
+    warnings: list[str] = _field(default_factory=list)
     provider: str = "mock"
-    outputs: list[str] = field(default_factory=list)
-    quality_checks: list[dict] = field(default_factory=list)
+    outputs: list[str] = _field(default_factory=list)
+    quality_checks: list[dict] = _field(default_factory=list)
 
     def warn(self, message: str) -> None:
         if message not in self.warnings:
@@ -369,3 +370,165 @@ class CourseSignal:
     coverage: float | None
     priority: float = 0.0
     allocation_hours: float = 0.0
+
+
+# ---------------------------------------------------------------------------
+# V3 exam-brain models (Round 3: Topic-centric knowledge + exam intelligence)
+# Chunk/evidence is the proof; Topic is the core object.
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class TopicField:
+    """One evidence-backed field value on a topic (definition, formula, mistake...).
+
+    Text is always a verbatim substring of the source evidence (hallucination
+    guard), and every field carries the evidence ids that support it.
+    """
+
+    text: str
+    evidence_refs: list[str] = field(default_factory=list)
+    confidence: float = 0.5
+    signals: list[str] = field(default_factory=list)  # e.g. formula ambiguity signals
+    source_language: str | None = None
+
+
+@dataclass
+class KnowledgeTopic:
+    """The core knowledge object. Replaces chunk-bag topics from v0.
+
+    topic_id is a stable canonical key (derived from the terminology map or the
+    normalized canonical name). All names/aliases are preserved; cross-language
+    fusion confidence is explicit and never silently overwrites different concepts.
+    """
+
+    topic_id: str
+    canonical_name: str
+    localized_names: dict[str, str] = field(default_factory=dict)
+    aliases: list[str] = field(default_factory=list)
+    chapter: str | None = None
+    prerequisites: list[str] = field(default_factory=list)  # topic_ids (evidence-backed)
+    definitions: list[TopicField] = field(default_factory=list)
+    formulas: list[TopicField] = field(default_factory=list)
+    concepts: list[str] = field(default_factory=list)
+    methods: list[TopicField] = field(default_factory=list)
+    common_mistakes: list[TopicField] = field(default_factory=list)
+    question_types: list[str] = field(default_factory=list)
+    evidence: list[str] = field(default_factory=list)  # evidence ids (citations)
+    teacher_emphasis: str = "unknown"  # observed | strongly_inferred | inferred | unknown
+    teacher_emphasis_refs: list[str] = field(default_factory=list)
+    past_exam_links: list[dict] = field(default_factory=list)  # [{exam_set_id, question_number, year}]
+    fusion_confidence: float = 0.3
+    source_confidence: float = 0.3
+    inferred: bool = True
+    created_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class KnowledgeEdge:
+    """Real, evidence-backed graph edge. `prerequisite` is only created from
+    explicit text evidence - never from adjacency ordering (v0 fake-graph fix)."""
+
+    source: str
+    target: str
+    relation: str  # prerequisite | related_to | part_of | often_confused_with | used_in
+    evidence_refs: list[str] = field(default_factory=list)
+    confidence: float = 0.5
+
+
+@dataclass
+class PastExamQuestion:
+    exam_set_id: str
+    question_number: str
+    question_type: str = "unknown"
+    score: str | None = None
+    topics: list[str] = field(default_factory=list)  # topic_ids
+    subtopics: list[str] = field(default_factory=list)
+    difficulty: int = 2
+    methods: list[str] = field(default_factory=list)
+    common_traps: list[str] = field(default_factory=list)
+    solution: str | None = None
+    evidence_ref: str = ""
+    year: str | None = None
+    confidence: float = 0.5
+
+
+@dataclass
+class PastExamSet:
+    exam_set_id: str
+    source_file: str
+    year: str | None = None
+    questions: list[PastExamQuestion] = field(default_factory=list)
+    evidence_ref: str = ""
+
+
+@dataclass
+class ExamPointModel:
+    """One testable exam point, kept in exam_model.json - separate from the
+    course knowledge model. likelihood_estimate is an ordinal heuristic (a
+    transparent score), explicitly NOT a statistical probability."""
+
+    exam_point_id: str
+    topic_id: str
+    topic_name: str
+    importance: int = 3
+    likelihood_estimate: float = 0.5  # heuristic score 0..1, not a real probability
+    confidence: float = 0.3
+    expected_score_range: list[int] = field(default_factory=lambda: [0, 0])
+    question_types: list[str] = field(default_factory=list)
+    teacher_emphasis: str = "unknown"
+    past_exam_frequency: int = 0
+    learning_cost: float = 1.0  # hours
+    evidence: list[str] = field(default_factory=list)  # evidence ids
+    past_exam_questions: list[dict] = field(default_factory=list)
+    priority: str = "C"  # S/A/B/C (assigned by the explainable risk radar)
+    priority_rationale: list[str] = field(default_factory=list)
+    inferred: bool = True
+
+
+@dataclass
+class TeacherStyle:
+    """Teacher style analysis with explicit evidence tiers:
+    observed | strongly_inferred | inferred | unknown. No unsupported claims."""
+
+    course_id: str = ""
+    chapter_frequency: dict[str, int] = field(default_factory=dict)
+    question_type_frequency: dict[str, int] = field(default_factory=dict)
+    calc_vs_proof: dict[str, float] = field(default_factory=dict)  # {"calc": x, "proof": y}
+    conceptual_vs_procedural: dict[str, float] = field(default_factory=dict)
+    homework_reuse: bool | None = None
+    parameter_variation: bool | None = None
+    integrated_questions: int = 0
+    trap_style: list[str] = field(default_factory=list)
+    tier: str = "unknown"
+    claims: list[dict] = field(default_factory=list)  # [{claim, tier, evidence_refs}]
+    evidence_refs: list[str] = field(default_factory=list)
+    updated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class ExamConflict:
+    """A detected contradiction between sources. Never silently overwritten."""
+
+    conflict_id: str
+    topic_id: str | None = None
+    question_number: str | None = None
+    field: str = "definition"  # definition | formula | answer | method
+    alternatives: list[dict] = _field(default_factory=list)  # [{text, source_file, source_type, date, evidence_ref}]
+    resolved: bool = False
+    chosen: dict | None = None
+    resolution_reason: str = ""
+    detected_at: str = _field(default_factory=_now_iso)
+
+
+@dataclass
+class CoverageReport:
+    course_id: str = ""
+    material_coverage: dict = field(default_factory=dict)
+    chapter_coverage: dict = field(default_factory=dict)
+    past_exam_coverage: dict = field(default_factory=dict)
+    answer_coverage: dict = field(default_factory=dict)
+    unresolved_documents: list[str] = field(default_factory=list)
+    low_confidence_topics: list[str] = field(default_factory=list)
+    verdict: str = "insufficient"
+    generated_at: str = field(default_factory=_now_iso)

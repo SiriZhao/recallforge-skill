@@ -29,6 +29,9 @@ COURSE_FILES = (
     "student_state.json",
     "wrongbook.json",
     "evidence_store.json",
+    "risk_radar.json",
+    "conflicts.json",
+    "coverage_report.json",
     "study_plan.json",
     "sessions.jsonl",
     "terminology_map.json",
@@ -97,13 +100,38 @@ def create_course(
     )
     _write_json(root / "course_manifest.json", asdict(manifest))
     _write_json(root / "document_index.json", asdict(DocumentIndex(course_id=course_id)))
-    _write_json(root / "knowledge_graph.json", asdict(KnowledgeGraph(course_id=course_id)))
-    _write_json(root / "exam_model.json", asdict(ExamModel(course_id=course_id)))
+    _write_json(
+        root / "knowledge_graph.json",
+        {"course_id": course_id, "topics": [], "edges": [], "updated_at": _now_iso()},
+    )
+    _write_json(
+        root / "exam_model.json",
+        {
+            "course_id": course_id,
+            "exam_points": [],
+            "past_exam_sets": [],
+            "teacher_style": {},
+            "evidence_weights": {},
+            "updated_at": _now_iso(),
+        },
+    )
     _write_json(root / "student_state.json", asdict(CourseStudentState(course_id=course_id)))
     _write_json(root / "wrongbook.json", asdict(CourseWrongbook(course_id=course_id)))
     _write_json(
         root / "evidence_store.json",
         {"course_id": course_id, "documents": {}, "records": [], "updated_at": _now_iso()},
+    )
+    _write_json(
+        root / "risk_radar.json",
+        {"course_id": course_id, "items": [], "updated_at": _now_iso()},
+    )
+    _write_json(
+        root / "conflicts.json",
+        {"course_id": course_id, "conflicts": [], "updated_at": _now_iso()},
+    )
+    _write_json(
+        root / "coverage_report.json",
+        {"course_id": course_id, "verdict": "insufficient", "generated_at": _now_iso()},
     )
     _write_json(root / "study_plan.json", asdict(CourseStudyPlan(course_id=course_id)))
     _write_json(

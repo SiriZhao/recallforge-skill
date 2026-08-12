@@ -1,29 +1,52 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ExamModel",
-  "description": "Per-course exam intelligence, evidence-grounded.",
+  "description": "Per-course exam intelligence, kept separate from the course model. likelihood_estimate is a transparent ordinal heuristic, explicitly NOT a statistical probability.",
   "type": "object",
-  "required": ["course_id", "exam_points", "past_exam_refs", "coverage", "updated_at"],
+  "required": ["course_id", "exam_points", "past_exam_sets", "teacher_style", "evidence_weights", "updated_at"],
   "properties": {
     "course_id": { "type": "string" },
     "exam_points": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["exam_point_id", "concept_ids"],
+        "required": ["exam_point_id", "topic_id", "topic_name", "likelihood_estimate", "evidence"],
         "properties": {
           "exam_point_id": { "type": "string" },
-          "concept_ids": { "type": "array", "items": { "type": "string" } },
-          "exam_forms": { "type": "array", "items": { "type": "string" } },
-          "frequency": { "type": "integer", "minimum": 0 },
+          "topic_id": { "type": "string" },
+          "topic_name": { "type": "string" },
+          "importance": { "type": "integer" },
+          "likelihood_estimate": { "type": "number", "minimum": 0, "maximum": 1 },
+          "confidence": { "type": "number" },
+          "expected_score_range": { "type": "array", "items": { "type": "integer" } },
+          "question_types": { "type": "array", "items": { "type": "string" } },
+          "teacher_emphasis": { "type": "string" },
+          "past_exam_frequency": { "type": "integer", "minimum": 0 },
+          "learning_cost": { "type": "number" },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "past_exam_questions": { "type": "array", "items": { "type": "object" } },
           "priority": { "enum": ["S", "A", "B", "C"] },
-          "evidence_refs": { "type": "array", "items": { "type": "string" } },
+          "priority_rationale": { "type": "array", "items": { "type": "string" } },
           "inferred": { "type": "boolean" }
         }
       }
     },
-    "past_exam_refs": { "type": "array", "items": { "type": "object" } },
-    "coverage": { "type": "object", "additionalProperties": { "type": "number" } },
+    "past_exam_sets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["exam_set_id", "source_file", "questions"],
+        "properties": {
+          "exam_set_id": { "type": "string" },
+          "source_file": { "type": "string" },
+          "year": { "type": ["string", "null"] },
+          "questions": { "type": "array", "items": { "type": "object" } },
+          "evidence_ref": { "type": "string" }
+        }
+      }
+    },
+    "teacher_style": { "type": "object" },
+    "evidence_weights": { "type": "object", "additionalProperties": { "type": "number" } },
     "updated_at": { "type": "string" }
   }
 }

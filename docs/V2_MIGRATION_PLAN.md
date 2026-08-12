@@ -79,80 +79,53 @@ Acceptance (all PASS, tested): see `docs/MULTIMODAL_INGESTION_REPORT.md`.
 
 Commit: `feat: rebuild ingestion around native multimodal understanding`
 
-## Round 3 — Course Knowledge Model + Exam Intelligence + Student Model
+## Round 3 — DONE (Course Knowledge Model + Exam Intelligence + 真题建模)
+
+Scope delivered per the Round 3 master instruction:
+
+* Topic-centric architecture: `KnowledgeTopic` is the core object; chunks/pages are
+  only evidence. Full topic schema (localized names, aliases, chapter,
+  prerequisites, definitions, formulas, concepts, methods, common mistakes,
+  question types, evidence, teacher emphasis, past-exam links).
+* Cross-language topic fusion (CLT / 中心极限定理 / Central Limit Theorem) with
+  aliases + fusion confidence; no false merging; no generic-heading garbage.
+* Knowledge graph with real `prerequisite` edges (evidence-backed, never adjacency),
+  plus `related_to` / `part_of` / `often_confused_with` / `used_in`.
+* Separate `exam_model.json`; `likelihood_estimate` explicitly an ordinal heuristic,
+  not a statistical probability.
+* Explainable S/A/B/C risk radar with full per-item rationale.
+* Past-exam intelligence: per-file exam sets, per-question extraction, bidirectional
+  Question<->Topic mapping.
+* Evidence-weight differentiation with per-course override (not hard-coded).
+* Teacher style with Observed/Strongly Inferred/Inferred/Unknown tiers; no
+  unsupported claims.
+* Conflict handling (record, never silent overwrite; authority/recency/exam-relevance
+  ranking; user confirmation).
+* Exam coverage report (material/chapter/past-exam/answer coverage, unresolved
+  documents, low-confidence topics, fail-closed verdict).
+* CLI `workspace build`; schemas for knowledge graph / exam model / risk radar /
+  conflicts / coverage.
+
+Acceptance (all PASS, tested): see `docs/V2_ROUND3_REPORT.md`. 95 tests green.
+
+Note: v3 Topic/ExamPoint renamed to `KnowledgeTopic`/`ExamPointModel` to coexist
+with the v0 batch-pipeline classes until Round 6 removes the legacy path.
+
+## Round 4 — Student Model + Wrongbook + Practice/Tutor loop
 
 Scope (next):
 
-1. Build the per-course knowledge graph from evidence (concept nodes + edges,
-   evidence-linked, `inferred` flagging, semantic dedup reusing terminology maps).
-2. Exam Intelligence from structured exam evidence (frequency = real question count,
-   evidence-derived confidence).
-3. Student Model + wrongbook from real answer sessions only.
-4. CLI: `workspace ingest` already creates evidence; add knowledge/exam/student
-   build steps.
+1. Student Model: mastery updated only from real answer sessions; derived
+   weak/strong points; per-topic statistics (feeds the Round 3 risk radar).
+2. Wrongbook: only real wrong answers (no fabricated entries).
+3. Practice Engine + Tutor + Diagnosis -> Student Model -> Wrongbook -> replanning.
+4. CLI: session recording commands.
 
 Acceptance:
 
-* Every concept/exam point has >= 1 evidence ref or `inferred=true`.
-* No keyword garbage (no `Slide`/`答案` topics).
 * Student model mutates only from recorded sessions.
-
-## Round 2 — Multimodal Ingestion + Evidence Store + Course Knowledge Model
-
-Scope:
-
-1. Multimodal ingestion: render PDF pages / PPTX slides / images and send to the
-   multimodal provider; structured evidence output (text/table/formula/diagram/
-   handwriting). Local OCR kept only as low-confidence fallback.
-2. Evidence Store: persist evidence units with stable IDs, checksums, language tags,
-   and course scoping.
-3. Course Knowledge Model: concept graph with evidence-linked nodes/edges; semantic
-   deduplication; `inferred` flagging.
-4. Remove keyword-bag `index_course.py` from the active pipeline; migrate tests to
-   assert evidence-linked concepts (no `Slide`/`答案` garbage).
-
-Acceptance:
-
-* A bilingual fixture course produces evidence-grounded concepts with no keyword
-  garbage (test asserts topic quality on the golden fixture).
-* Every concept has ≥1 evidence ref or `inferred=true`.
-
-Commit: `feat: multimodal ingestion, evidence store, and knowledge model`
-
-## Round 3 — Exam Intelligence + Student Model + Wrongbook (real answers)
-
-Scope:
-
-1. Exam Intelligence: real past-exam question extraction; frequency = real question
-   count; evidence-derived confidence; no fabricated traps/variants.
-2. Student Model: mastery updated only from real answer outcomes; derived
-   weak/strong points; per-concept statistics.
-3. Wrongbook: only real wrong answers; remove the fabricated-entry path.
-4. CLI: `session practice` command that accepts answers and records diagnosis.
-
-Acceptance:
-
-* No exam point without evidence (or `inferred=true`).
-* Student model cannot be mutated except through a recorded session.
 * Wrongbook contains zero fabricated entries.
-
-Commit: `feat: exam intelligence, real student model, and truthful wrongbook`
-
-## Round 4 — Practice Engine + Tutor + Diagnosis loop
-
-Scope:
-
-1. Practice Engine: evidence-grounded question generation (real past-exam questions +
-   evidence-derived variants); answer recording; grading; wrong-reason classification.
-2. Diagnosis → Student Model → Wrongbook → **replanning** loop.
-3. Tutor: evidence-grounded, level-adaptive explanation for a target concept.
-
-Acceptance:
-
-* A practice session updates the student model and triggers a changed plan (test).
-* Questions/answers resolve to evidence (traceability test).
-
-Commit: `feat: practice, tutor, and the diagnosis-replanning loop`
+* A practice session updates the student model and triggers a changed plan.
 
 ## Round 5 — Exam Week Orchestrator + Adaptive Planner + Cram
 

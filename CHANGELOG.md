@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.4.0
+
+- Added the exam brain (`exam_review_skill/knowledge/`): topic-centric Course
+  Knowledge Model where `KnowledgeTopic` is the core object and evidence is the proof.
+- Full topic schema: localized names, aliases, chapter, prerequisites, definitions,
+  formulas, concepts, methods, common mistakes, question types, evidence citations,
+  teacher emphasis, past-exam links, fusion/source confidence.
+- Cross-language topic fusion (e.g. CLT / 中心极限定理 / Central Limit Theorem)
+  with aliases and fusion confidence; no false merging; no generic-heading garbage.
+- Evidence-grounded knowledge graph with real `prerequisite` edges (never adjacency)
+  plus `related_to` / `part_of` / `often_confused_with` / `used_in`.
+- Separate `exam_model.json` with exam points (importance, likelihood_estimate as an
+  explicit ordinal heuristic, confidence, expected score range, question types,
+  teacher emphasis, past-exam frequency, learning cost, evidence).
+- Explainable S/A/B/C risk radar with full per-item rationale.
+- Past-exam intelligence: per-file exam sets, per-question extraction, and
+  bidirectional Question<->Topic mapping.
+- Evidence-weight differentiation with per-course override (not hard-coded).
+- Teacher style with Observed/Strongly Inferred/Inferred/Unknown tiers and no
+  unsupported claims.
+- Conflict handling: contradictions are recorded, never silently overwritten, ranked
+  by authority/recency/exam-relevance, and require user confirmation.
+- Exam coverage report answering "do I have enough materials?" with concrete numbers
+  and a fail-closed verdict.
+- CLI `workspace build`; updated/new JSON schemas (knowledge graph, exam model, risk
+  radar, conflicts, coverage report).
+
 ## 0.3.0
 
 - Rebuilt ingestion around native multimodal understanding
