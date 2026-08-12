@@ -9,16 +9,22 @@ from .mastery import compute_mastery
 
 
 MISTAKE_TYPES = {
-    "concept_confusion": "概念混淆",
-    "formula_error": "公式记错",
-    "condition_omitted": "条件遗漏",
-    "unit_error": "单位错误",
-    "misread": "审题错误",
-    "step_omission": "步骤缺失",
-    "calculation_error": "计算错误",
-    "recall_weakness": "背诵不熟",
-    "transfer_failure": "不会迁移",
+    "concept_confusion": "mistake.concept_confusion",
+    "formula_error": "mistake.formula_error",
+    "condition_omitted": "mistake.condition_omitted",
+    "unit_error": "mistake.unit_error",
+    "misread": "mistake.misread",
+    "step_omission": "mistake.step_omission",
+    "calculation_error": "mistake.calculation_error",
+    "recall_weakness": "mistake.recall_weakness",
+    "transfer_failure": "mistake.transfer_failure",
 }
+
+
+def localize_mistake_type(mistake_type: str, locale: str = "zh-CN") -> str:
+    """Localize a mistake type key for display (e.g. wrongbook reason)."""
+    from ..i18n import t
+    return t(locale, MISTAKE_TYPES.get(mistake_type or "", "mistake.unknown"))
 
 
 class AnswerResult:
@@ -128,7 +134,7 @@ def record_wrongbook_entry(model: StudentModel, answer: AnswerResult, *, questio
         "user_answer": user_answer,
         "correct_answer": correct_answer,
         "topic_id": answer.topic_id,
-        "wrong_reason": MISTAKE_TYPES.get(answer.mistake_type or "", "需确认"),
+        "wrong_reason": localize_mistake_type(answer.mistake_type or "", "zh-CN"),
         "trap_type": answer.mistake_type or "unknown",
         "date": date.today().isoformat(),
     }

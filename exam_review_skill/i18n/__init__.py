@@ -12,13 +12,16 @@ at the UI/output boundary via locale catalogs.
 from .languages import LanguageProfile
 from .locales import SUPPORTED_LOCALES, get_catalog, register_locale, t
 from .terminology import TerminologyMap, normalize_topic
+from .output_modes import OutputMode, render_bilingual
 
 __all__ = [
     "LanguageProfile",
+    "OutputMode",
     "SUPPORTED_LOCALES",
     "TerminologyMap",
     "get_catalog",
     "normalize_topic",
+    "render_bilingual",
     "register_locale",
     "t",
 ]

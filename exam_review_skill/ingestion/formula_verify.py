@@ -6,14 +6,20 @@ from .types import FormulaRegion, Region
 
 
 AMBIGUITY_SIGNALS = {
-    "subscript": ["下标 (subscript) 歧义：无法确定指数/下标归属"],
-    "superscript": ["上标 (superscript) 歧义：无法确定指数/幂次归属"],
-    "minus": ["负号与连字符歧义"],
-    "greek": ["希腊符号需视觉确认"],
-    "matrix": ["矩阵结构需视觉确认"],
-    "fraction": ["分数/分式结构需视觉确认"],
-    "chemical-equation": ["化学方程式需视觉确认"],
+    "subscript": "formula.ambiguity.subscript",
+    "superscript": "formula.ambiguity.superscript",
+    "minus": "formula.ambiguity.minus",
+    "greek": "formula.ambiguity.greek",
+    "matrix": "formula.ambiguity.matrix",
+    "fraction": "formula.ambiguity.fraction",
+    "chemical-equation": "formula.ambiguity.chemical-equation",
 }
+
+
+def localize_ambiguity_signals(signals: list[str], locale: str = "zh-CN") -> list[str]:
+    """Translate raw ambiguity signal keys into user-facing localized text."""
+    from ..i18n import t
+    return [t(locale, AMBIGUITY_SIGNALS.get(sig, sig)) for sig in signals]
 
 
 def extract_formula_regions(text: str, page_or_slide: str, signals: list[str]) -> list[FormulaRegion]:

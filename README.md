@@ -1,84 +1,115 @@
 # exam-review-skill
 
-**A powerful AI exam review skill that turns course materials into a scoring path.**
+**Input course materials, output a scoring path. 输入课程资料，输出提分路径。**
 
-**一个将课程资料转化为提分路径的 AI 期末复习 Skill。**
+exam-review-skill is an Exam Review Agent: it understands your course materials, your exams, and **you**, then continuously decides what to study next across a multi-course exam week. It is a Codex Skill + a Python package.
 
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests](https://github.com/YOUR_USERNAME/exam-review-skill/actions/workflows/tests.yml/badge.svg)](https://github.com/YOUR_USERNAME/exam-review-skill/actions/workflows/tests.yml)
-[![GitHub stars](https://img.shields.io/github/stars/YOUR_USERNAME/exam-review-skill?style=social)](https://github.com/YOUR_USERNAME/exam-review-skill/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/YOUR_USERNAME/exam-review-skill)](https://github.com/YOUR_USERNAME/exam-review-skill/issues)
-[![Codex Skill](https://img.shields.io/badge/OpenAI%20Codex-Skill-412991)](SKILL.md)
+- 中文文档简介：这是一个考试复习智能体，能理解课程资料、理解考试、理解学生，并在多门考试并行的考试周中持续决定"下一步最值得学什么"。
 
-> Replace `YOUR_USERNAME/exam-review-skill` in badges after publishing the repository.
+## What it is
 
-exam-review-skill is not another document summarizer. It is an exam-oriented review system that converts lecture slides, textbooks, notes, scanned papers, exercises, and past exams into a course index, exam graph, risk radar, adaptive study plan, past-exam variants, wrong-question notebook, and cram pack.
+A source-grounded, evidence-first exam review system. It does not summarize your materials - it builds:
 
-exam-review-skill 不是普通资料总结器，而是面向期末考试的复习效率系统。它可以把课件、教材、笔记、扫描卷和往年题转化为课程知识索引、考试考点图谱、风险雷达、自适应复习计划、真题变式训练、错题本和临考急救包。
+- a **Course Knowledge Model** (evidence-linked topics, cross-language fusion)
+- an **Exam Intelligence Model** (real past-exam frequency, teacher style, risk radar)
+- a **persistent Student Model** (composite mastery, never raw accuracy)
+- a **multi-course Exam Week Orchestrator** (global daily plan, anti-starvation)
+- a **Tutor + Quiz + Diagnosis + Wrongbook + Cram** learning loop
 
-**Core slogan:** Input course materials, output a scoring path.  
-**核心口号：** 输入课程资料，输出提分路径。
+## Why not just upload everything to ChatGPT
 
-## Why This Exists
-
-Dropping a pile of course files into a generic LLM app often feels magical for five minutes, then messy when you need to actually pass the exam.
-
-| Generic LLM app | exam-review-skill |
+| Generic chat with a pile of files | exam-review-skill |
 |---|---|
-| Context limit eats long courses | Source-grounded workflow keeps files, chunks, and references |
-| Document structure is easy to lose | Preserves source file, page/slide, heading, and question number where available |
-| Citations are unstable | Tracks source refs and confidence |
-| Does not know what is likely to be tested | Builds an exam graph from past exams, notes, and teacher hints |
-| Does not know your target score | Adapts strategy for passing, 80, or 90+ goals |
-| No scoring priority | Generates an S/A/B/C risk radar |
-| No persistent mistake tracking | Maintains a wrong-question notebook |
-| No time compression | Produces 3-day, 1-day, 3-hour, 1-hour, 30-minute, and 10-minute cram plans |
+| Context limit eats long courses | Evidence Store + topic model keeps files/chunks/references |
+| No memory of what you know | Persistent per-course student model |
+| One course at a time | Multi-course exam-week orchestration |
+| Answers are generic | Every claim traces to a source evidence id |
+| No scoring priority | S/A/B/C risk radar with full rationale |
+| Wrong answers vanish | Wrongbook drives mastery, risk, planner, quiz, and cram |
+| Chinese OR English | True bilingual (catalogs, terminology maps, mixed-language fusion) |
 
-## Feature Highlights
-
-- **Course Index:** turn raw materials into structured topics.
-- **Exam Graph:** infer how each topic may be tested.
-- **Risk Radar:** rank what to study first with S/A/B/C priorities.
-- **Adaptive Study Plan:** plan by days left, target score, and available hours.
-- **Past-Exam Variants:** generate likely variations from previous exams.
-- **Cram Pack:** 3-day, 1-day, 3-hour, 1-hour, 30-minute, and 10-minute rescue plans.
-- **Wrongbook:** track mistakes and generate targeted retraining.
-- **Quality Guard:** flag unsupported, low-confidence, or source-missing outputs.
-- **Mock Provider:** works without API keys for testing, demos, and CI.
-
-## Output Structure
+## Architecture
 
 ```text
-ExamReview_Output/
-├─ 00_资料来源与解析报告.md
-├─ 01_课程知识索引.md
-├─ 02_考试考点图谱.md
-├─ 03_考试风险雷达.md
-├─ 04_章节重点精讲.md
-├─ 05_高频考点与命题预测.md
-├─ 06_往年题考点映射表.md
-├─ 07_真题变式训练.md
-├─ 08_自适应复习计划.md
-├─ 09_个人薄弱点诊断.md
-├─ 10_今日复习任务.md
-├─ 11_专项训练题.md
-├─ 12_错题本.md
-├─ 13_临考急救包.md
-├─ 14_老师命题风格报告.md
-├─ 15_考前30分钟速救版.md
-├─ generation_report.md
-├─ course_index.json
-├─ exam_graph.json
-├─ risk_radar.json
-├─ student_state.json
-└─ wrongbook.json
+Workspace (one exam week)
+├── workspace_state.json        # locale, daily hours, course list
+├── exam_calendar.json          # global exam calendar
+├── global_study_plan.json      # daily global plan
+├── overrides.json              # user control (skip/pin/reduce/target/hours)
+└── courses/<course_id>/
+    ├── course_manifest.json
+    ├── evidence_store.json     # evidence units (course-scoped)
+    ├── knowledge_graph.json    # topic-centric knowledge model
+    ├── exam_model.json         # exam intelligence (separate from course model)
+    ├── risk_radar.json         # explainable S/A/B/C
+    ├── student_state.json      # persistent student model
+    ├── wrongbook.json          # real wrong answers only
+    ├── study_plan.json / sessions.jsonl / terminology_map.json / conflicts.json
+    └── coverage_report.json
 ```
 
-## Quick Start
+Core loop:
+
+```text
+Materials → Multimodal Understanding → Course Knowledge Model → Exam Intelligence
+→ Student Model → Exam Week Orchestrator → Adaptive Plan → Tutor → Practice
+→ Diagnosis → Wrongbook → Replanning → Cram → Exam
+```
+
+## Multimodal workflow
+
+Native multimodal first; local OCR is a disabled-by-default fallback.
+
+```text
+File → Classifier → Native Parser (text layer/boxes/paragraphs)
+→ Visual Renderer → Multimodal Understanding → Structured Evidence
+```
+
+- Text PDFs, PPTX text boxes, DOCX paragraphs are read natively (preserving file / page / slide / heading / question number).
+- Scanned / image-only pages, formulas, tables, diagrams, handwriting, and exam papers route to a multimodal provider (openai / deepseek / synthetic for tests).
+- Cheap routing: vision is only called when a page actually needs it.
+- Formula ambiguity (subscript/superscript/fraction/chemical equation) forces a visual re-check; unconfirmed formulas stay low-confidence. **Never guessed.**
+- OCR fallback: `extraction_method=ocr_fallback`, low confidence, never supports high-confidence conclusions.
+
+## Multi-course exam week
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/exam-review-skill.git
+# create the workspace (one per exam week)
+python -m exam_review_skill workspace init --dir ./week --locale zh-CN --daily-hours 6
+
+# add courses (each is fully isolated)
+python -m exam_review_skill workspace add-course --dir ./week --course probability --name "概率论" --exam-date 2026-06-19 --target-score 85
+python -m exam_review_skill workspace add-course --dir ./week --course organic-chemistry --name "有机化学" --exam-date 2026-06-20 --target-score 80
+python -m exam_review_skill workspace add-course --dir ./week --course botany --name "植物学" --target-score 70
+
+# ingest materials into a course (native multimodal first)
+python -m exam_review_skill workspace ingest --dir ./week --course probability --input ./probability_materials --provider openai
+
+# build the exam brain (topics, exam model, risk radar, coverage)
+python -m exam_review_skill workspace build --dir ./week --course probability --days-to-exam 3
+
+# first-use report + dashboard (what the user sees after upload)
+python -m exam_review_skill workspace material-report --dir ./week --course probability
+python -m exam_review_skill workspace dashboard --dir ./week
+
+# the formal global daily plan (topic-level, not a time average)
+python -m exam_review_skill workspace plan-v4 --dir ./week --date 2026-06-18
+```
+
+The orchestrator never mechanically splits time evenly: it weighs urgency, score gain opportunity, risk, target gap, learning cost, forgetting, and course maintenance - while every active course keeps a minimum spaced-review allocation (anti-starvation). Exam-day completion releases a course's future time to others.
+
+## Chinese / English support
+
+- **zh-CN and en-US are fully equivalent**: the catalog-parity test asserts every key exists in both locales (no Chinese-only features).
+- **Three output modes** (Chinese / English / Bilingual). Bilingual means Chinese main text with English key terms - never every sentence twice.
+- **terminology_map.json** per course unifies technical terms across languages (`Bayes' theorem` = `贝叶斯公式` = `Bayes公式`), so we never machine-translate terms on the fly.
+- **Mixed-language materials** (Chinese PPT + English textbook) fuse into one topic with aliases and fusion confidence.
+- **question_language and explanation_language** are independently controlled (e.g. English questions with Chinese explanations).
+
+## Installation
+
+```bash
+git clone <your-repo-url> exam-review-skill
 cd exam-review-skill
 python -m venv .venv
 ```
@@ -95,206 +126,129 @@ macOS/Linux:
 source .venv/bin/activate
 ```
 
-Install and run the demo:
+Install the core (stdlib-only runtime; optional extras for document parsing):
 
 ```bash
-pip install -e .
-python -m exam_review_skill run \
-  --input examples/input \
-  --output examples/output \
-  --course "Experimental Chemistry" \
-  --target-score 80 \
-  --daily-hours 4
+pip install -e .[test]
 ```
 
-## CLI Usage
-
-Full run:
+Optional extras:
 
 ```bash
-python -m exam_review_skill run --input ./materials --output ./ExamReview_Output --course "课程名称" --exam-date "2026-06-25" --target-score 80 --daily-hours 4
+pip install -e ".[ingestion]"   # PDF/PPTX/DOCX/image parsing + rendering
+pip install -e ".[docx]"        # DOCX export
 ```
 
-Cram pack only:
-
-```bash
-python -m exam_review_skill cram --state ./ExamReview_Output/student_state.json --hours-left 3
-```
-
-Past-exam variants:
-
-```bash
-python -m exam_review_skill variants --input ./materials --output ./ExamReview_Output --count 20
-```
-
-Study plan only:
-
-```bash
-python -m exam_review_skill plan --state ./ExamReview_Output/student_state.json --days-left 3 --daily-hours 4 --target-score 80
-```
-
-S-priority quiz:
-
-```bash
-python -m exam_review_skill quiz --state ./ExamReview_Output/student_state.json --mode s-priority --count 20
-```
-
-Wrongbook variants:
-
-```bash
-python -m exam_review_skill quiz --state ./ExamReview_Output/student_state.json --mode wrongbook --count 10
-```
-
-## Supported Inputs
-
-- `.txt`
-- `.md`
-- `.pdf`
-- `.pptx`
-- `.docx`
-- `.png`
-- `.jpg`
-- `.jpeg`
-- scanned papers
-- past exams
-- lecture notes
-- teacher hints
-
-If OCR or document parsing dependencies are unavailable, the system falls back gracefully and records warnings in `generation_report.md`.
-
-## How It Works
-
-```text
-Materials
-→ Ingest
-→ OCR
-→ Classify
-→ Chunk
-→ Course Index
-→ Exam Graph
-→ Risk Radar
-→ Study Plan
-→ Quiz / Variants / Wrongbook
-→ Cram Pack
-→ Quality Report
-```
-
-## Example Output
-
-Risk Radar example:
-
-| Priority | Exam Point | Why it matters | Recommended action |
-|---|---|---|---|
-| S | Acid-base titration calculation | High past-exam frequency and high score potential | Practice template problems first |
-| A | Indicator selection | Common conceptual trap | Memorize decision logic |
-| B | Experimental procedure order | Medium frequency | Review before exam |
-
-## Codex Skill Usage
-
-This repository is also a Codex Skill. The root directory contains [`SKILL.md`](SKILL.md), which tells Codex when and how to use the workflow.
-
-Use it as a Codex Skill when a user wants to:
-
-- prepare for a university final exam;
-- analyze lecture slides, notes, textbooks, scanned papers, exercises, past exams, or teacher hints;
-- build a source-grounded course index;
-- identify high-risk exam points;
-- generate adaptive study plans, quizzes, variants, wrongbook entries, or cram packs.
-
-To install locally for Codex discovery, copy or link this folder to:
-
-```text
-~/.codex/skills/exam-review-skill
-```
-
-or on Windows:
-
-```text
-%USERPROFILE%\.codex\skills\exam-review-skill
-```
-
-## Configuration
-
-By default, exam-review-skill uses `MockLLMProvider`, so demos and tests run without API keys.
-
-Future provider integrations are reserved for:
-
-- OpenAI
-- DeepSeek
-- Claude
-
-Never commit API keys. Use a local `.env` file and keep it out of Git. This repository only provides `.env.example`.
-
-```env
-OPENAI_API_KEY=
-DEEPSEEK_API_KEY=
-ANTHROPIC_API_KEY=
-EXAM_REVIEW_PROVIDER=mock
-```
-
-## Development
+Run the tests:
 
 ```bash
 python -m compileall exam_review_skill
 python -m pytest
 ```
 
-The CI workflow runs tests on Python 3.10 and 3.11.
+## Configuration
 
-## Roadmap
+Create a workspace with your locale and daily time budget:
 
-### v0.1.0
+```bash
+python -m exam_review_skill workspace init --dir ./week --locale zh-CN --daily-hours 6
+```
 
-- Basic CLI
-- Mock provider
-- Course index
-- Exam graph
-- Risk radar
-- Cram pack
+### Multimodal provider
 
-### v0.2.0
+The pipeline fails closed when no provider is configured. Set one of:
 
-- Better OCR
-- Better PPT/PDF parsing
-- DOCX export improvements
-- Anki export improvements
+```env
+# OpenAI (Responses API, image input)
+OPENAI_API_KEY=...
+EXAM_REVIEW_OPENAI_VISION_MODEL=gpt-4o
 
-### v0.3.0
+# DeepSeek (chat completions with image input)
+DEEPSEEK_API_KEY=...
+EXAM_REVIEW_DEEPSEEK_VISION_MODEL=deepseek-chat
+```
 
-- Real LLM providers
-- Interactive mastery diagnosis
-- Spaced repetition
-- Better wrongbook
+Use `--provider synthetic --demo` only for tests/fixtures/CI - synthetic records are rejected from real state by the contamination guard.
 
-### v0.4.0
+### OCR fallback (off by default)
 
-- Web UI
-- Multi-course library
-- Collaborative course templates
+Local OCR is disabled by default. Enable it explicitly only when native multimodal is unavailable:
 
-## Contributing
+```bash
+set EXAM_REVIEW_OCR_FALLBACK=1   # Windows
+export EXAM_REVIEW_OCR_FALLBACK=1  # macOS/Linux
+```
 
-Contributions are welcome.
+OCR output is always `extraction_method=ocr_fallback` with low confidence and can never support high-confidence exam conclusions.
 
-1. Fork the repository.
-2. Create a feature branch.
-3. Run `python -m compileall exam_review_skill` and `python -m pytest`.
-4. Submit a pull request with a clear description and screenshots or sample outputs when helpful.
+### User control (bilingual natural language)
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+```bash
+# Chinese and English are equivalent
+python -m exam_review_skill workspace override --dir ./week --date 2026-06-18 --skip botany
+python -m exam_review_skill workspace nl --dir ./week --text "I only have three hours tomorrow"
+python -m exam_review_skill workspace nl --dir ./week --text "明天只有3小时"
+```
 
-## Disclaimer
+User overrides always beat the planner.
 
-exam-review-skill is a study assistant, not an exam oracle. It does not guarantee prediction accuracy or higher scores. Generated content should be checked against your course syllabus, teacher instructions, and official answers.
+## Examples
 
-Do not use this project to violate school exam rules. Do not upload sensitive personal information, private student records, paid textbooks, copyrighted materials, real exam leaks, or restricted course files to public repositories.
+| Scenario | What it exercises |
+|---|---|
+| [Chinese university final exam](examples/chinese-final-exam/README.md) | zh-CN course, evidence ingestion, tutor, quiz, cram |
+| [English-language course](examples/english-course/README.md) | en-US course, English questions with Chinese explanations |
+| [Mixed-language course](examples/mixed-language-course/README.md) | zh PPT + en textbook fused into one topic model |
+| [Four-course exam week](examples/four-course-exam-week/README.md) | multi-course orchestrator, anti-starvation, dashboard |
+| [24-hour cram](examples/24-hour-cram/README.md) | genuine 24h/3h/1h/30m rescue tiers |
+
+Each example includes a runnable fixture (or the exact commands to build one) and expected outputs.
+
+## On-demand reports
+
+```bash
+python -m exam_review_skill workspace report --dir ./week --type exam-risk-radar --course probability
+python -m exam_review_skill workspace report --dir ./week --type formula-sheet --course probability --out formulas.md --format md
+python -m exam_review_skill workspace report --dir ./week --type mock-exam --course probability --out mock.json --format json
+```
+
+Available reports: `course-overview`, `exam-risk-radar`, `past-exam-analysis`, `teacher-style`, `formula-sheet`, `wrongbook`, `7-day-plan`, `mock-exam`, `1-hour-cram`, `30-min-rescue`, `dashboard`, `welcome`.
+
+Formats: Markdown (default), DOCX, PDF, Anki CSV, JSON. **An export failure never affects the main learning flow** - the Markdown is always produced and the failure is reported cleanly.
+
+## Privacy
+
+- Everything runs locally. Materials and student data stay on your machine unless you configure a cloud multimodal provider (your files/images then travel to that provider for understanding).
+- No API keys are committed. Use a local `.env` / environment variables.
+- Synthetic (mock/test) content is **never** written to real course state.
+- Do not upload private student records, paid textbooks, copyrighted materials, real exam leaks, or restricted course files to public repositories.
+
+## Limitations
+
+- `likelihood_estimate` and readiness percentages are **ordinal heuristics**, not statistical probabilities. Never treated as predictions.
+- Readiness shows `Unknown / Insufficient evidence` until there is enough real answer data - the system never fabricates a readiness score.
+- Multimodal understanding needs a configured provider; without one, scanned / image-only pages are recorded as `unresolved` (never faked).
+- PPTX/DOCX visual rendering requires LibreOffice when installed; otherwise native text is used and visual pages are recorded as unresolved.
+- OCR fallback requires the tesseract binary and is disabled by default.
+- Teacher-style claims are tiered (Observed / Strongly Inferred / Inferred / Unknown); nothing is asserted without evidence.
+
+## Testing
+
+```bash
+python -m pytest
+```
+
+The suite covers (167+ tests):
+
+- Workspace / course isolation / contamination guard
+- Multimodal ingestion (text PDF, scanned PDF, PPTX, formula, table, exam paper, handwriting, mixed zh/en, provider failure, OCR fallback)
+- Knowledge model (cross-language fusion, citation preservation, prerequisite edges, conflict handling, hallucination guard)
+- Student model (composite mastery, no-data → unknown, forgetting, sessions)
+- Orchestrator (5 realistic scenarios, anti-starvation, replan events, bilingual NL)
+- Tutor / quiz / grading / diagnosis / wrongbook / cram + the full learning loop
+- i18n (catalog parity zh=en, output modes, terminology)
+- Reporting (welcome report, dashboard honesty, report rendering, exports)
 
 ## License
 
 MIT License. See [LICENSE](LICENSE).
-
-## Star
-
-If this project helps you study faster or build better AI learning tools, consider giving it a star.
-
-如果这个项目对你的复习或 AI 学习工具开发有帮助，欢迎点一个 Star。

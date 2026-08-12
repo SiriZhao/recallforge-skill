@@ -29,6 +29,7 @@ def diagnose_wrong_answer(
     topic: KnowledgeTopic,
     prerequisites: list[str],
     prerequisite_mastery: dict[str, str],
+    locale: str = "zh-CN",
 ) -> DiagnosisResult:
     """Classify a wrong answer into the taxonomy and pick a remediation path.
 
@@ -58,7 +59,7 @@ def diagnose_wrong_answer(
             diagnosis = "calculation_error"
             severity = 2
 
-    explanation = _explain(diagnosis)
+    explanation = _explain(diagnosis, locale=locale)
     return DiagnosisResult(
         topic_id=topic.topic_id,
         diagnosis=diagnosis,
@@ -69,20 +70,7 @@ def diagnose_wrong_answer(
     )
 
 
-def _explain(diagnosis: str) -> str:
-    return {
-        "concept_gap": "概念缺口：先回到定义与直觉。",
-        "formula_recall": "公式回忆失败：重背公式并核对适用条件。",
-        "condition_misread": "条件误读：圈出题目约束条件。",
-        "prerequisite_gap": "前置知识缺口：先补前置主题。",
-        "calculation_error": "计算错误：逐步验算并核对单位。",
-        "algebra_error": "代数错误：检查移项与合并。",
-        "sign_error": "符号错误：检查正负号。",
-        "unit_error": "单位错误：统一单位后再计算。",
-        "reasoning_jump": "推理跳跃：写出每步理由。",
-        "question_misread": "审题错误：复述题目要求。",
-        "method_selection": "方法选择错误：回顾各方法适用条件。",
-        "memory_failure": "记忆失效：间隔重复强化。",
-        "careless_error": "粗心错误：检查一遍书写。",
-        "unknown": "无法归类，请查看讲解。",
-    }.get(diagnosis, "见讲解")
+def _explain(diagnosis: str, locale: str = "zh-CN") -> str:
+    """Localized explanation for a diagnosis category."""
+    from ..i18n import t
+    return t(locale, f"diag.explain.{diagnosis}")

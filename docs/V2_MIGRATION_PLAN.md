@@ -164,27 +164,35 @@ Scope delivered per the Round 5 master instruction:
 
 Acceptance (all PASS, tested): 25 new Round 5 tests, 146 total green.
 
-## Round 6 — i18n completion, QA/Benchmark, packaging, release v2.0.0
+## Round 6 — DONE (国际化收口 + 用户体验 + 报告系统, v2.0.0)
 
-Scope (next):
+Scope delivered per the Round 6 master instruction:
 
-1. Full bilingual output (en/zh catalogs, locale-neutral filenames, per-evidence
-   language preservation); snapshot tests.
-2. QA/Benchmark harness: golden fixtures, state-integrity, traceability, i18n, and
-   orchestration suites; CI matrix (3.10/3.11/3.12).
-3. Packaging: clean `pyproject.toml` (v2.0.0), scripts, local release artifact
-   (wheel/sdist), `SKILL.md`/`README.md` rewrite for the v2 workflow.
-4. Regression: full old `run` command removed or replaced by v2 commands; no batch
-   fallback that writes mock state.
+* zh-CN / en-US fully equivalent (catalog-parity test; 130+ keys each, no
+  Chinese-only features).
+* Terminology-driven terms via `terminology_map.json`; no on-the-fly machine
+  translation.
+* Three output modes (Chinese / English / Bilingual) - Bilingual = Chinese main +
+  English key terms, never full duplication.
+* First-use material report (`workspace material-report`): inventory, structure,
+  exam situation, gaps, risk, next steps.
+* Exam Week text dashboard with honest readiness (Unknown / Insufficient evidence
+  until enough data) and "what should I do now?".
+* On-demand reports (12 types) + export (MD/DOCX/PDF/Anki/JSON) with failure
+  isolation (export failure never affects the learning flow).
+* README rewritten; 5 runnable example scenarios.
+* Acceptance audit: no TODO/placeholder/coming-soon; mock hits are only the
+  intentional contamination guard; hard-coded user-facing zh localized.
 
-Acceptance:
+Acceptance: 169 tests green (1 skipped: OCR-engine-present branch). Version 2.0.0.
 
-* Full test suite passes in CI and locally.
-* Local release artifact builds; `pip install` from the artifact works.
-* No mock data can reach any real state file (end-to-end test).
-* Version `2.0.0`.
+### Remaining follow-ups (not blockers)
 
-Commit: `feat: v2.0.0 release - bilingual, orchestrated, evidence-grounded`
+* Remove the legacy v0 batch modules (`index_course.py`, `llm_provider.py`, etc.)
+  in a dedicated cleanup round - they are not part of the v2 flow and this round
+  must not change core behavior.
+* SKILL.md refresh for the v2 workflow.
+* CI matrix expansion to Python 3.12.
 
 ## Risk Register
 

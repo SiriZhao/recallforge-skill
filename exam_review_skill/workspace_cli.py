@@ -520,6 +520,75 @@ def command_workspace(args) -> None:
         print(render_cram_plan(plan, locale))
         return
 
+    if action == "material-report":
+        from .reporting.welcome import build_first_use_report
+        from .knowledge.build import build_course_intelligence
+        from .student.store import load_student_model
+        from .state import course as course_mod
+
+        try:
+            result = build_course_intelligence(root, args.course, persist=False)
+        except FileNotFoundError as exc:
+            print(f"error: {exc}")
+            return
+        records = course_mod.load_course_json(
+            course_mod.course_dir(root, args.course), "evidence_store.json", {}
+        ) or {}
+        model = load_student_model(root, args.course)
+        locale = workspace_mod.load_workspace_state(root).user_locale
+        text = build_first_use_report(
+            root,
+            args.course,
+            topics=result.topics,
+            student=model,
+            coverage=result.coverage,
+            evidence_records=records.get("records", []),
+            unresolved_pages=result.coverage.unresolved_documents,
+            locale=locale,
+            output_mode=getattr(args, "output_mode", "bilingual"),
+        )
+        print(text)
+        return
+
+    if action == "dashboard":
+        from .reporting.dashboard import build_dashboard
+        from .planner.orchestrator import generate_daily_plan_v4
+
+        try:
+            plan = generate_daily_plan_v4(root, args.date)
+        except Exception:
+            plan = None
+        locale = workspace_mod.load_workspace_state(root).user_locale
+        print(build_dashboard(root, plan=plan, plan_date=args.date, locale=locale))
+        return
+
+    if action == "report":
+        from .reporting.reports import render_report
+        from .reporting.export import export_report
+
+        locale = workspace_mod.load_workspace_state(root).user_locale
+        try:
+            text = render_report(
+                root,
+                args.type,
+                course_id=args.course,
+                locale=locale,
+                output_mode=getattr(args, "output_mode", "bilingual"),
+            )
+        except (ValueError, FileNotFoundError) as exc:
+            print(f"error: {exc}")
+            return
+        print(text)
+        if args.out:
+            ok, message = export_report(
+                text,
+                output_path=args.out,
+                fmt=args.format,
+                locale=locale,
+            )
+            print(message)
+        return
+
     raise SystemExit(f"unknown workspace action: {action}")
 
 
@@ -678,3 +747,27 @@ def add_workspace_parser(subparsers) -> None:
     cram.add_argument("--course", required=True)
     cram.add_argument("--mode", choices=["7d", "3d", "24h", "3h", "1h", "30m"], required=True)
     cram.set_defaults(func=command_workspace)
+
+    mreport = ws_sub.add_parser("material-report", help="first-use material report after upload")
+    mreport.add_argument("--dir", required=True)
+    mreport.add_argument("--course", required=True)
+    mreport.add_argument("--output-mode", choices=["chinese", "english", "bilingual"], default="bilingual")
+    mreport.set_defaults(func=command_workspace)
+
+    dash = ws_sub.add_parser("dashboard", help="exam-week text dashboard")
+    dash.add_argument("--dir", required=True)
+    dash.add_argument("--date", default=None)
+    dash.set_defaults(func=command_workspace)
+
+    report = ws_sub.add_parser("report", help="on-demand report (markdown default, optional export)")
+    report.add_argument("--dir", required=True)
+    report.add_argument("--type", required=True, choices=[
+        "course-overview", "exam-risk-radar", "past-exam-analysis", "teacher-style",
+        "formula-sheet", "wrongbook", "7-day-plan", "mock-exam",
+        "1-hour-cram", "30-min-rescue", "dashboard", "welcome",
+    ])
+    report.add_argument("--course", default=None)
+    report.add_argument("--out", default=None, help="export path")
+    report.add_argument("--format", default="md", choices=["md", "docx", "pdf", "anki", "json"])
+    report.add_argument("--output-mode", choices=["chinese", "english", "bilingual"], default="bilingual")
+    report.set_defaults(func=command_workspace)

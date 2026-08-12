@@ -1,5 +1,37 @@
 # Changelog
 
+## 2.0.0
+
+- Final release of the v2 Exam Review Agent.
+- Internationalization completion:
+  - Catalog key parity between zh-CN and en-US enforced by a parity test (no
+    Chinese-only features, no English-only translation).
+  - Localized diagnosis explanations, formula-ambiguity signals, and mistake-type
+    labels (previously hard-coded Chinese).
+  - Three output modes: Chinese / English / Bilingual (Chinese main text + English
+    key terms, never full duplication), via `OutputMode` / `render_bilingual`.
+  - Terminology maps keep technical terms unified across languages (no on-the-fly
+    machine translation).
+- User experience:
+  - First-use material report (`workspace material-report`): material inventory,
+    course structure, exam situation, material gaps, current risk, next steps.
+  - Exam Week text dashboard (`workspace dashboard`): per-course exam proximity,
+    risk, honest readiness (Unknown / Insufficient evidence until enough data),
+    today's allocation, and "what should I do now?".
+  - On-demand reports (`workspace report`): course-overview, exam-risk-radar,
+    past-exam-analysis, teacher-style, formula-sheet, wrongbook, 7-day-plan,
+    mock-exam, 1-hour-cram, 30-min-rescue, dashboard, welcome.
+  - Export: Markdown (default), DOCX, PDF, Anki CSV, JSON - export failure never
+    affects the main learning flow (clean error, Markdown always available).
+- Rewrote README with What it is / Why not ChatGPT / Architecture / Multimodal /
+  Multi-course / Chinese-English / Installation / Configuration / Examples /
+  Privacy / Limitations / Testing.
+- Added 5 runnable example scenarios (Chinese final, English course, mixed-language
+  course, four-course exam week, 24-hour cram).
+- Acceptance audit: no TODO/placeholder/coming-soon in v2 code; mock references are
+  only the intentional contamination guard.
+- Full suite: 169 tests green (1 skipped: OCR-engine-present branch on this machine).
+
 ## 0.6.0
 
 - Added the complete learning loop (`exam_review_skill/tutor/`).
