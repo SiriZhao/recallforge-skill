@@ -9,13 +9,23 @@ class RoutingDecision:
         self.reasons = reasons
 
 
-def route_page(page: NativePage, *, exam_role: str | None = None) -> RoutingDecision:
+def route_page(
+    page: NativePage,
+    *,
+    exam_role: str | None = None,
+    document_type: str | None = None,
+) -> RoutingDecision:
     """Cheap, deterministic routing: only pay for vision when it is actually needed.
 
     Native text wins when the text layer is reliable and the page is not
     formula-heavy, table-heavy, image-bearing, handwritten, or an exam paper.
+    Plain text files (.txt/.md) with a reliable text layer ALWAYS stay native: there
+    is no visual layout to confirm, so exam structure is parsed from the text.
     """
     reasons: list[str] = []
+
+    if document_type in ("txt", "md") and page.has_text_layer:
+        return RoutingDecision("native_text", ["reliable plain-text layer"])
 
     if not page.has_text_layer:
         if page.has_images:

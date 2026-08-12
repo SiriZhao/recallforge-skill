@@ -136,7 +136,6 @@ Optional extras:
 
 ```bash
 pip install -e ".[ingestion]"   # PDF/PPTX/DOCX/image parsing + rendering
-pip install -e ".[docx]"        # DOCX export
 ```
 
 Run the tests:
@@ -248,6 +247,26 @@ The suite covers (167+ tests):
 - Tutor / quiz / grading / diagnosis / wrongbook / cram + the full learning loop
 - i18n (catalog parity zh=en, output modes, terminology)
 - Reporting (welcome report, dashboard honesty, report rendering, exports)
+
+## Naive baseline benchmark
+
+Round 7 adds an honest one-shot baseline benchmark: the SAME source materials are
+fed to (a) a naive one-shot workflow ("Here are all my materials. Help me review
+for my final exam.") and (b) the full Skill pipeline. Three benchmark sets are run:
+
+- **Chinese course** (概率论 with zh materials + past exam)
+- **English course** (Linear Algebra, en materials)
+- **Mixed-language multi-course** (zh + en materials, past exams, scanned page)
+
+The Skill must be meaningfully better on the required metrics: citation accuracy,
+past-exam mapping, personalization, adaptivity, and actionability (and, in the
+multi-course set, coordinated planning). Run it with:
+
+```bash
+python -m pytest tests/test_benchmark.py
+```
+
+Results are recorded in `docs/V2_FINAL_ACCEPTANCE_REPORT.md`.
 
 ## License
 

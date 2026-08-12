@@ -7,6 +7,10 @@ from .types import ExamPageStructure, ExamQuestion
 
 OPTION_RE = re.compile(r"^\s*([A-D])[.、．:：]\s*(.+)$")
 QUESTION_START_RE = re.compile(r"^\s*(?:第\s*)?(\d+)\s*[.、．]?\s*(?:题)?")
+# Chinese section-prefixed format: "一、计算题 1. ..." or "二、简答题 2. ..."
+SECTION_QUESTION_RE = re.compile(
+    r"^\s*[一二三四五六七八九十]+\s*[、.]\s*[^0-9]{0,12}\s*(\d+)\s*[.、．]\s*"
+)
 SCORE_RE = re.compile(r"[（(]\s*(\d+)\s*分\s*[)）]|\((\d+)\s*points?\)")
 
 
@@ -32,8 +36,23 @@ def parse_exam_page(text: str, page_or_slide: str) -> ExamPageStructure:
         line = raw_line.strip()
         if not line:
             continue
+        section = SECTION_QUESTION_RE.match(line)
+        if section:
+            flush()
+            current = ExamQuestion(question_number=section.group(1))
+            rest = line[section.end():].strip(" \u3000")
+            score = SCORE_RE.search(rest)
+            if score:
+                current.score = score.group(1) or score.group(2)
+                rest = SCORE_RE.sub("", rest).strip()
+            current.body = rest
+            continue
         start = QUESTION_START_RE.match(line)
-        if start and (len(line) < 80 or re.search(r"[?？]|[\u4e00-\u9fff]", line[:10])):
+        # a 4-digit number is a year (e.g. "2024 期末考试"), not a question number
+        year_like = start and len(start.group(1)) >= 4 and not re.search(
+            r"[\u4e00-\u9fff]", line[: max(1, start.end())]
+        )
+        if start and not year_like and (len(line) < 80 or re.search(r"[?？]|[\u4e00-\u9fff]", line[:10])):
             flush()
             current = ExamQuestion(question_number=start.group(1))
             rest = line[start.end():].strip(" \u3000")

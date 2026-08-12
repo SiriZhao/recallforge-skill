@@ -30,6 +30,7 @@ EXAM_FILE_MARKERS = ("exam", "test", "past", "试卷", "真题", "期末", "考�
 GENERIC_HEADING_MARKERS = (
     "chapter", "page", "slide", "file", "document", "试卷", "期末", "笔记",
     "notes", "目录", "contents", "introduction", "引言", "总结", "summary",
+    "作业", "教材", "课件", "真题", "讲义", "习题", "考卷",
 )
 
 
@@ -84,6 +85,9 @@ def _heading_is_topic_candidate(heading: str) -> bool:
         return False
     lower = text.lower()
     if any(marker in lower for marker in GENERIC_HEADING_MARKERS):
+        return False
+    # file-name-like headings (e.g. "课件_第五章", "past_exam_2024") are never topics
+    if "_" in text or "." in text or "(" in text or "（" in text:
         return False
     if re.match(r"^(第\s*[一二三四五六七八九十百0-9]+\s*[章节讲]|chapter\s+[0-9ivx]+|page\s+\d+)", lower):
         return False

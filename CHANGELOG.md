@@ -3,6 +3,23 @@
 ## 2.0.0
 
 - Final release of the v2 Exam Review Agent.
+- Naive baseline benchmark (Round 7): three benchmark sets (Chinese / English /
+  Mixed multi-course with past exams + scanned material) compare the Skill pipeline
+  against an honest one-shot naive workflow on the SAME files. The Skill is
+  meaningfully better on citation accuracy, cross-document fusion, past-exam
+  mapping, hallucination control, exam relevance, personalization, adaptivity,
+  actionability, and multi-course planning.
+- Full end-to-end acceptance test: 4 courses -> upload -> course models -> exam
+  models -> exam-week plan -> study -> quiz -> wrong answer -> diagnosis -> wrongbook
+  -> replan -> next-day plan -> cram, in both zh-CN and en-US.
+- Failure tests (10 scenarios) and security checks (7 assertions) covering graceful
+  degradation and the no-fabrication guarantees.
+- Cleanup: removed the obsolete v0 batch modules, their CLI commands, tests, and
+  schemas; removed dead v0 dataclasses and redundant extras; cleaned obsolete
+  generated artifacts (kept user data).
+- Release artifacts: `dist/exam-review-skill-v2.0.0.zip`, the wheel, and
+  `SHA256SUMS.txt`. The wheel installs cleanly into a fresh venv (verified).
+- Rewrote SKILL.md for the v2 workflow; README documents the benchmark.
 - Internationalization completion:
   - Catalog key parity between zh-CN and en-US enforced by a parity test (no
     Chinese-only features, no English-only translation).

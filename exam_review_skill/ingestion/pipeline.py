@@ -260,8 +260,37 @@ def ingest_file(
     all_evidence: list[Evidence] = []
 
     for page in native_pages:
-        decision = route_page(page, exam_role=_role_hint(path.name, page.raw_text))
+        decision = route_page(
+            page,
+            exam_role=_role_hint(path.name, page.raw_text),
+            document_type=doc_type,
+        )
         if decision.method == "native_text":
+            content: dict = {
+                "text": page.raw_text,
+                "formula_signals": page.formula_signals,
+                "table_signals": page.table_signals,
+            }
+            # exam papers keep their structure even in the native path: parse
+            # questions from the reliable text layer (never flattened into a blob)
+            if page.question_numbers or _role_hint(path.name, page.raw_text):
+                from .exam_parser import parse_exam_page
+                structure = parse_exam_page(page.raw_text, page.page_or_slide)
+                if structure.questions:
+                    content["exam_structure"] = [
+                        {
+                            "question_number": q.question_number,
+                            "body": q.body,
+                            "options": q.options,
+                            "figure_refs": q.figure_refs,
+                            "subquestions": q.subquestions,
+                            "score": q.score,
+                            "answer_area": q.answer_area,
+                            "handwritten_annotation": q.handwritten_annotation,
+                            "confidence": round(q.confidence, 2),
+                        }
+                        for q in structure.questions
+                    ]
             all_evidence.append(
                 _make_evidence(
                     course_id=course_id,
@@ -270,11 +299,7 @@ def ingest_file(
                     page=page,
                     extraction_method="native_text",
                     confidence=0.85,
-                    content={
-                        "text": page.raw_text,
-                        "formula_signals": page.formula_signals,
-                        "table_signals": page.table_signals,
-                    },
+                    content=content,
                     synthetic=False,
                     question_number=page.question_numbers[0] if page.question_numbers else None,
                 )
@@ -371,7 +396,7 @@ def ingest_file(
         try:
             page_evidence = _process_vision_page(
                 course_id=course_id,
-                source_file=str(path),
+                source_file=path.name,
                 document_type_name=doc_type,
                 page=page,
                 rendered=rendered,
