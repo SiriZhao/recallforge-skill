@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CramPlan",
+  "description": "A time-constrained cram plan. Modes are genuinely distinct (7d/3d/24h/3h/1h/30m).",
+  "type": "object",
+  "required": ["course_id", "mode", "items", "focus_topics", "priority", "rationale", "generated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "mode": { "enum": ["7d", "3d", "24h", "3h", "1h", "30m"] },
+    "hours_left": { "type": ["number", "null"] },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["course_id", "topic_id", "topic_name", "kind", "content"],
+        "properties": {
+          "course_id": { "type": "string" },
+          "topic_id": { "type": "string" },
+          "topic_name": { "type": "string" },
+          "kind": { "enum": ["formula", "condition", "definition", "answer_template", "mistake", "trap", "s_risk"] },
+          "content": { "type": "string" },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "focus_topics": { "type": "array", "items": { "type": "string" } },
+    "priority": { "enum": ["S", "A", "B", "C"] },
+    "rationale": { "type": "array", "items": { "type": "string" } },
+    "generated_at": { "type": "string" }
+  }
+}

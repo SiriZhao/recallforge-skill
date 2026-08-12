@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WrongbookV2",
+  "description": "Round 5 wrongbook: real wrong answers that drive mastery, risk, planner, future quizzes, and cram.",
+  "type": "object",
+  "required": ["course_id", "entries", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["question_id", "question_text", "user_answer", "correct_answer", "topic_id", "diagnosis", "next_review_date"],
+        "properties": {
+          "question_id": { "type": "string" },
+          "question_text": { "type": "string" },
+          "user_answer": { "type": "string" },
+          "correct_answer": { "type": "string" },
+          "topic_id": { "type": "string" },
+          "topic_name": { "type": "string" },
+          "level": { "type": "integer" },
+          "wrong_reason": { "type": "string" },
+          "diagnosis": { "type": "string" },
+          "severity": { "type": "integer" },
+          "prerequisite_fix": { "type": "array", "items": { "type": "string" } },
+          "next_review_date": { "type": "string" },
+          "retry_count": { "type": "integer" },
+          "resolved": { "type": ["boolean", "null"] },
+          "date": { "type": "string" },
+          "evidence_refs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

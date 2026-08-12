@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QuizQuestion",
+  "description": "A generated quiz question with provenance and adaptive level.",
+  "type": "object",
+  "required": ["question_id", "topic_id", "question_type", "level", "question_text", "correct_answer", "question_language", "explanation_language"],
+  "properties": {
+    "question_id": { "type": "string" },
+    "topic_id": { "type": "string" },
+    "topic_name": { "type": "string" },
+    "question_type": { "enum": ["multiple_choice", "fill_blank", "short_answer", "calculation", "derivation", "essay", "diagram"] },
+    "level": { "enum": [1, 2, 3, 4] },
+    "question_text": { "type": "string" },
+    "options": { "type": "array", "items": { "type": "string" } },
+    "correct_answer": { "type": "string" },
+    "explanation": { "type": "string" },
+    "common_trap": { "type": ["string", "null"] },
+    "derived_from": { "type": ["string", "null"] },
+    "source_question": { "type": ["string", "null"] },
+    "variation_type": { "type": ["string", "null"] },
+    "evidence_refs": { "type": "array", "items": { "type": "string" } },
+    "question_language": { "type": "string" },
+    "explanation_language": { "type": "string" }
+  }
+}

@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.6.0
+
+- Added the complete learning loop (`exam_review_skill/tutor/`).
+- Tutor: course-first structured explanation (Intuition/Definition/Core
+  Formula/Principle/Conditions/Method/Example/Common Mistake/Check Question),
+  subject-adaptive, model additions marked "Supplementary explanation".
+- Quiz Engine with 8 modes (diagnostic / s-priority / weak-topic / past-exam-style /
+  mixed / wrongbook / speed-run / cram) and adaptive difficulty L1-L4.
+- Question provenance (derived_from / source_question / topic / variation_type) on
+  every past-exam variant.
+- Grading with process analysis (multiple choice / fill-blank / short answer /
+  calculation / derivation / essay / diagram, bilingual zh/en answers).
+- Diagnosis taxonomy (13 categories) with prerequisite-gap detection and
+  prerequisite-fix topic ids.
+- Wrongbook entries that drive mastery, risk, planner, future quizzes, and cram;
+  fabricated content rejected.
+- Retry scheduling from mistake type / severity / repeat count / mastery / exam
+  proximity.
+- Cram engine with genuinely distinct modes (7d/3d/24h/3h/1h/30m), strict 30-minute
+  rescue, and multi-course cram coordination through the orchestrator.
+- Independent question_language / explanation_language control (English questions
+  with Chinese explanations supported).
+- CLI: `workspace tutor`, `workspace quiz`, `workspace cram`.
+- New schemas: quiz_question, cram_plan, wrongbook_v2.
+
 ## 0.5.0
 
 - Added persistent per-course Student Model (`exam_review_skill/student/`):

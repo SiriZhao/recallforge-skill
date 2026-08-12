@@ -98,6 +98,7 @@ def build_past_exam_sets(
                 PastExamQuestion(
                     exam_set_id=source,
                     question_number=q.get("question_number", ""),
+                    body=body,
                     question_type=q.get("question_type") or _infer_question_type(body),
                     score=str(score_value) if score_value else score,
                     topics=topics,

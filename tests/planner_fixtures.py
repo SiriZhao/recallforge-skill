@@ -70,8 +70,11 @@ def _evidence_record(course_id: str, i: int, zh: str, en: str) -> dict:
         "synthetic": False,
         "created_at": "2026-06-01T00:00:00+08:00",
         "content": {
-            "text": f"{zh}（{en}）是指一个重要的课程概念。老师强调这是重点。易错：注意适用条件。",
-            "formula_signals": [],
+            "text": (
+                f"{zh}（{en}）是指一个重要的课程概念。老师强调这是重点。易错：注意适用条件。"
+                f"核心公式：X = f(Y) + ε。适用条件：Y 已知且 ε 独立。"
+            ),
+            "formula_signals": ["math-tokens"],
         },
     }
 

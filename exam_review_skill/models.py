@@ -443,6 +443,7 @@ class KnowledgeEdge:
 class PastExamQuestion:
     exam_set_id: str
     question_number: str
+    body: str = ""
     question_type: str = "unknown"
     score: str | None = None
     topics: list[str] = field(default_factory=list)  # topic_ids
@@ -670,3 +671,121 @@ class ReplanEvent:
     course_id: str | None = None
     detail: dict = field(default_factory=dict)
     occurred_at: str = field(default_factory=_now_iso)
+
+
+# ---------------------------------------------------------------------------
+# V5 Tutor + Quiz + Diagnosis + Wrongbook + Cram (Round 5)
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class TutorSection:
+    """One section of a tutor explanation."""
+
+    title: str
+    content: str
+    kind: str = "text"  # text | formula | list | check
+    evidence_refs: list[str] = field(default_factory=list)
+    supplementary: bool = False  # True => clearly marked "Supplementary explanation"
+
+
+@dataclass
+class TutorResponse:
+    """A structured, course-first tutor explanation."""
+
+    topic_id: str
+    topic_name: str
+    sections: list[TutorSection] = field(default_factory=list)
+    check_question: str | None = None
+    check_question_topic_id: str | None = None
+    language: str = "zh-CN"
+    evidence_refs: list[str] = field(default_factory=list)
+    generated_at: str = field(default_factory=_now_iso)
+
+
+@dataclass
+class QuizQuestion:
+    """A generated quiz question with provenance and adaptive level."""
+
+    question_id: str
+    topic_id: str
+    topic_name: str
+    question_type: str  # multiple_choice | fill_blank | short_answer | calculation | derivation | essay | diagram
+    level: int  # 1 Recall | 2 Standard | 3 Variant | 4 Transfer
+    question_text: str
+    correct_answer: str = ""
+    explanation: str = ""
+    options: list[str] = field(default_factory=list)
+    common_trap: str | None = None
+    derived_from: str | None = None  # provenance: source question id / evidence id
+    source_question: str | None = None
+    variation_type: str | None = None
+    evidence_refs: list[str] = field(default_factory=list)
+    question_language: str = "zh-CN"
+    explanation_language: str = "zh-CN"
+
+
+@dataclass
+class GradingResult:
+    """Result of grading one answer, including process analysis."""
+
+    question_id: str
+    correct: bool
+    score: float  # 0..1
+    feedback: str
+    process_analysis: str = ""
+    mistake_type: str = "unknown"  # diagnosis taxonomy
+    concept_gap_topic: str | None = None
+    evidence_refs: list[str] = field(default_factory=list)
+
+
+@dataclass
+class DiagnosisResult:
+    """A diagnosis with a taxonomy category and remediation path."""
+
+    topic_id: str
+    diagnosis: str  # concept_gap | formula_recall | condition_misread | prerequisite_gap |
+    # calculation_error | algebra_error | sign_error | unit_error | reasoning_jump |
+    # question_misread | method_selection | memory_failure | careless_error | unknown
+    severity: int  # 1..3
+    evidence_refs: list[str] = field(default_factory=list)
+    prerequisite_fix: list[str] = field(default_factory=list)  # topic_ids to review
+    explanation: str = ""
+
+
+@dataclass
+class RetrySchedule:
+    """When to re-practice a wrong topic, based on mistake type, severity,
+    repeat count, mastery, and exam proximity."""
+
+    topic_id: str
+    next_review_days: int
+    next_review_date: str
+    reason: str
+    priority: str = "C"
+
+
+@dataclass
+class CramItem:
+    """One item in a cram plan."""
+
+    course_id: str
+    topic_id: str
+    topic_name: str
+    kind: str  # formula | condition | definition | answer_template | mistake | trap | s_risk
+    content: str
+    evidence_refs: list[str] = field(default_factory=list)
+
+
+@dataclass
+class CramPlan:
+    """A time-constrained cram plan. Different modes are genuinely different."""
+
+    course_id: str
+    mode: str  # 7d | 3d | 24h | 3h | 1h | 30m
+    hours_left: float | None = None
+    items: list[CramItem] = field(default_factory=list)
+    focus_topics: list[str] = field(default_factory=list)
+    priority: str = "S"
+    rationale: list[str] = field(default_factory=list)
+    generated_at: str = field(default_factory=_now_iso)

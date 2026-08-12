@@ -135,42 +135,38 @@ Scope delivered per the Round 4 master instruction:
 Acceptance (all PASS, tested): 5 scenarios (A-E) + composite-mastery / diagnostic /
 session / events / NL tests. 121 tests green.
 
-## Round 5 — Practice Engine + Tutor + Wrongbook UI loop
+## Round 5 — DONE (Tutor + Quiz + Diagnosis + Wrongbook + Cram)
 
-Scope (next):
+Scope delivered per the Round 5 master instruction:
 
-1. Practice Engine: evidence-grounded question generation + answer recording +
-   grading + wrong-reason classification (reusing the Round 4 student model).
-2. Tutor: evidence-grounded, level-adaptive explanation for a target topic.
-3. Wrongbook UI commands: list / redo / remove; spaced-repetition scheduling.
-4. Feedback loop: practice session -> student model -> wrongbook -> replan.
+* Tutor: course-first structured explanation (Intuition / Definition / Core
+  Formula-Principle / Conditions / Method / Example / Common Mistake / Check),
+  subject-adaptive (no formula section when the subject has none), model additions
+  clearly marked "Supplementary explanation".
+* Quiz Engine: diagnostic / s-priority / weak-topic / past-exam-style / mixed /
+  wrongbook / speed-run / cram modes, all evidence-grounded.
+* Adaptive difficulty L1 Recall / L2 Standard / L3 Variant / L4 Transfer; sustained
+  correct raises, repeated errors lower and trigger prerequisite review.
+* Question provenance: derived_from / source_question / topic / variation_type on
+  every past-exam variant.
+* Grading with process analysis (multiple choice / fill-blank / short answer /
+  calculation / derivation / essay / diagram, zh/en answers).
+* Diagnosis taxonomy (13 categories) with prerequisite-gap detection.
+* Wrongbook drives mastery, risk, planner, future quiz, and cram (real entries only).
+* Retry scheduling from mistake type / severity / repeat count / mastery / exam
+  proximity.
+* Cram modes 7d/3d/24h/3h/1h/30m genuinely distinct; 30-minute rescue keeps only
+  S-level core items; multi-course cram coordinated by the orchestrator.
+* Language: question_language and explanation_language independently controlled.
+* Full closed-loop test: plan -> learn -> quiz -> wrong -> diagnosis -> wrongbook ->
+  replan -> retry -> mastery update.
+* CLI: `workspace tutor / quiz / cram`.
 
-Acceptance:
-
-* A practice session updates the student model and triggers a changed plan.
-* Questions/answers resolve to evidence (traceability test).
-
-## Round 5 — Exam Week Orchestrator + Adaptive Planner + Cram
-
-Scope:
-
-1. Exam Week Orchestrator: exam calendar, global time allocation, and the global
-   "next most worthwhile thing to study" decision across courses.
-2. Adaptive Planner: per-course plan rebuilt from knowledge + exam + student models.
-3. Cram Engine: evidence-based, multi-course-aware time tiers.
-4. `course report` / `workspace report` commands.
-
-Acceptance:
-
-* Multi-course fixture: orchestrator allocates time and orders cram correctly
-  (orchestration tests).
-* No cross-course knowledge leakage (integrity test).
-
-Commit: `feat: exam week orchestrator and global adaptive planning`
+Acceptance (all PASS, tested): 25 new Round 5 tests, 146 total green.
 
 ## Round 6 — i18n completion, QA/Benchmark, packaging, release v2.0.0
 
-Scope:
+Scope (next):
 
 1. Full bilingual output (en/zh catalogs, locale-neutral filenames, per-evidence
    language preservation); snapshot tests.

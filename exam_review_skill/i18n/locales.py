@@ -85,6 +85,31 @@ ZH_CN_CATALOG: dict[str, str] = {
     "plan.reason.maintenance": "最低维护：{hours} 小时 spaced review",
     "plan.none": "课程 {course} 暂无主题，无法规划。",
     "plan.strategy": "策略：{strategy}，可用 {hours} 小时。",
+    # tutor
+    "tutor.intuition": "直觉 (Intuition)",
+    "tutor.definition": "定义 (Definition)",
+    "tutor.formula": "核心公式/原理 (Core Formula / Principle)",
+    "tutor.conditions": "适用条件 (Conditions)",
+    "tutor.method": "方法 (Method)",
+    "tutor.example": "例子 (Example)",
+    "tutor.mistake": "常见错误 (Common Mistake)",
+    "tutor.check_question": "检查题 (Check)：请用自己的话解释",
+    "tutor.no_definition": "课程资料中暂无明确定义，请补充资料。",
+    "tutor.no_example": "课程资料中暂无示例，请补充资料。",
+    "tutor.supplementary": "[Supplementary explanation] 以下内容不在课程资料中，属于模型补充：",
+    # quiz
+    "quiz.no_definition": "课程资料未提供定义，请补充。",
+    "quiz.mode.diagnostic": "诊断",
+    "quiz.mode.s-priority": "S级优先",
+    "quiz.mode.weak-topic": "薄弱主题",
+    "quiz.mode.past-exam-style": "真题风格",
+    "quiz.mode.mixed": "混合",
+    "quiz.mode.wrongbook": "错题",
+    "quiz.mode.speed-run": "速跑",
+    "quiz.mode.cram": "冲刺",
+    # cram
+    "cram.title": "冲刺计划 [{mode}] 约 {hours} 小时",
+    "cram.scope": "模式 {mode}：{items} 项，约 {hours} 小时",
 }
 
 
@@ -161,6 +186,31 @@ EN_US_CATALOG: dict[str, str] = {
     "plan.reason.maintenance": "minimum maintenance: {hours} hours spaced review",
     "plan.none": "Course {course} has no topics; cannot plan.",
     "plan.strategy": "Strategy: {strategy}, {hours} hours available.",
+    # tutor
+    "tutor.intuition": "Intuition",
+    "tutor.definition": "Definition",
+    "tutor.formula": "Core Formula / Principle",
+    "tutor.conditions": "Conditions",
+    "tutor.method": "Method",
+    "tutor.example": "Example",
+    "tutor.mistake": "Common Mistake",
+    "tutor.check_question": "Check: explain in your own words",
+    "tutor.no_definition": "No explicit definition in course materials; please add materials.",
+    "tutor.no_example": "No example in course materials; please add materials.",
+    "tutor.supplementary": "[Supplementary explanation] This is NOT in the course materials:",
+    # quiz
+    "quiz.no_definition": "No definition in course materials.",
+    "quiz.mode.diagnostic": "Diagnostic",
+    "quiz.mode.s-priority": "S-priority",
+    "quiz.mode.weak-topic": "Weak topic",
+    "quiz.mode.past-exam-style": "Past-exam style",
+    "quiz.mode.mixed": "Mixed",
+    "quiz.mode.wrongbook": "Wrongbook",
+    "quiz.mode.speed-run": "Speed run",
+    "quiz.mode.cram": "Cram",
+    # cram
+    "cram.title": "Cram plan [{mode}] ~{hours} hours",
+    "cram.scope": "Mode {mode}: {items} items, ~{hours} hours",
 }
 
 

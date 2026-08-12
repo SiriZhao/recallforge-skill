@@ -374,7 +374,6 @@ def command_workspace(args) -> None:
             )
             # persist to wrongbook.json (only real wrong answers)
             from .state.course import load_course_json
-            from .state import course as course_mod
 
             course_path = course_mod.course_dir(root, args.course)
             wrongbook = load_course_json(course_path, "wrongbook.json", {}) or {}
@@ -429,6 +428,96 @@ def command_workspace(args) -> None:
 
         command = parse_command(args.text)
         print(f"parsed: action={command.action} course={command.course_id} value={command.value}")
+        return
+
+    if action == "tutor":
+        from .knowledge.build import build_course_intelligence
+        from .student.store import load_student_model
+        from .tutor.tutor import build_tutor_response
+
+        try:
+            result = build_course_intelligence(root, args.course, persist=False)
+        except FileNotFoundError as exc:
+            print(f"error: {exc}")
+            return
+        topic = next((t for t in result.topics if t.topic_id == args.topic), None)
+        if topic is None:
+            print(f"error: topic {args.topic!r} not found")
+            return
+        model = load_student_model(root, args.course)
+        locale = workspace_mod.load_workspace_state(root).user_locale
+        response = build_tutor_response(topic, model, locale=locale)
+        print(f"## {response.topic_name}")
+        for section in response.sections:
+            print(f"\n### {section.title}" + (" [Supplementary]" if section.supplementary else ""))
+            print(section.content)
+        if response.check_question:
+            print(f"\n**{response.check_question}**")
+        return
+
+    if action == "quiz":
+        from .knowledge.build import build_course_intelligence
+        from .student.store import load_student_model
+        from .tutor.quiz import generate_quiz
+
+        try:
+            result = build_course_intelligence(root, args.course, persist=False)
+        except FileNotFoundError as exc:
+            print(f"error: {exc}")
+            return
+        model = load_student_model(root, args.course)
+        wrongbook = course_mod.load_course_json(
+            course_mod.course_dir(root, args.course), "wrongbook.json", {}
+        ) or {}
+        questions = generate_quiz(
+            topics=result.topics,
+            exam_points=result.exam_points,
+            past_exam_sets=result.past_exam_sets,
+            student=model,
+            wrongbook_entries=wrongbook.get("entries", []),
+            mode=args.mode,
+            count=args.count,
+            question_language=args.question_language,
+            explanation_language=args.explanation_language,
+        )
+        for q in questions:
+            print(f"[{q.question_id}] L{q.level} {q.question_type} | {q.topic_name}")
+            print(f"  {q.question_text}")
+            if q.options:
+                for option in q.options:
+                    print(f"    {option}")
+            if q.derived_from:
+                print(f"  (derived_from: {q.derived_from}, variation: {q.variation_type})")
+            print(f"  答: {q.correct_answer}")
+            print(f"  讲: {q.explanation}")
+        return
+
+    if action == "cram":
+        from .knowledge.build import build_course_intelligence
+        from .student.store import load_student_model
+        from .tutor.cram import build_cram_plan, render_cram_plan
+
+        try:
+            result = build_course_intelligence(root, args.course, persist=False)
+        except FileNotFoundError as exc:
+            print(f"error: {exc}")
+            return
+        model = load_student_model(root, args.course)
+        wrongbook = course_mod.load_course_json(
+            course_mod.course_dir(root, args.course), "wrongbook.json", {}
+        ) or {}
+        locale = workspace_mod.load_workspace_state(root).user_locale
+        plan = build_cram_plan(
+            workspace_root=root,
+            course_id=args.course,
+            topics=result.topics,
+            exam_points=result.exam_points,
+            student=model,
+            wrongbook_entries=wrongbook.get("entries", []),
+            mode=args.mode,
+            locale=locale,
+        )
+        print(render_cram_plan(plan, locale))
         return
 
     raise SystemExit(f"unknown workspace action: {action}")
@@ -568,3 +657,24 @@ def add_workspace_parser(subparsers) -> None:
     nl.add_argument("--dir", required=True)
     nl.add_argument("--text", required=True)
     nl.set_defaults(func=command_workspace)
+
+    tutor = ws_sub.add_parser("tutor", help="tutor a topic with a course-first structured explanation")
+    tutor.add_argument("--dir", required=True)
+    tutor.add_argument("--course", required=True)
+    tutor.add_argument("--topic", required=True)
+    tutor.set_defaults(func=command_workspace)
+
+    quiz = ws_sub.add_parser("quiz", help="generate a quiz in any mode")
+    quiz.add_argument("--dir", required=True)
+    quiz.add_argument("--course", required=True)
+    quiz.add_argument("--mode", choices=["diagnostic", "s-priority", "weak-topic", "past-exam-style", "mixed", "wrongbook", "speed-run", "cram"], default="mixed")
+    quiz.add_argument("--count", type=int, default=10)
+    quiz.add_argument("--question-language", default="zh-CN")
+    quiz.add_argument("--explanation-language", default=None)
+    quiz.set_defaults(func=command_workspace)
+
+    cram = ws_sub.add_parser("cram", help="build a time-constrained cram plan")
+    cram.add_argument("--dir", required=True)
+    cram.add_argument("--course", required=True)
+    cram.add_argument("--mode", choices=["7d", "3d", "24h", "3h", "1h", "30m"], required=True)
+    cram.set_defaults(func=command_workspace)

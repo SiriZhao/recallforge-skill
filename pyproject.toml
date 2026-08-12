@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "exam-review-skill"
-version = "0.5.0"
+version = "0.6.0"
 description = "Exam-oriented Codex Skill for building high-efficiency university final review systems."
 readme = "README.md"
 requires-python = ">=3.10"
