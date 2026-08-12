@@ -51,6 +51,7 @@ def test_workspace_and_course_files_validate_against_schemas(tmp_path: Path):
         _validate_file(cdir / "exam_model.json", "exam_model.schema.json")
         _validate_file(cdir / "student_state.json", "course_student_state.schema.json")
         _validate_file(cdir / "wrongbook.json", "course_wrongbook.schema.json")
+        _validate_file(cdir / "evidence_store.json", "evidence_store.schema.json")
         _validate_file(cdir / "study_plan.json", "course_study_plan.schema.json")
         _validate_file(cdir / "terminology_map.json", "terminology_map.schema.json")
 

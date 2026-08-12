@@ -50,32 +50,52 @@ See `docs/V2_ROUND1_REPORT.md`. 48 tests green.
 Provider abstraction + real providers were **deferred to Round 2** (multimodal
 ingestion is their first consumer).
 
-## Round 2 — Multimodal Ingestion + Evidence Store + Course Knowledge Model
+## Round 2 — DONE (Native Multimodal Document Intelligence)
 
-Scope (updated):
+Scope delivered per the Round 2 master instruction:
 
-1. Rework `providers/` abstraction: define the v2 `BaseProvider` interface; add real
-   OpenAI (Responses API) and DeepSeek providers with config validation
-   (`EXAM_REVIEW_PROVIDER` now honored; fail closed when unset/invalid).
-2. Move `MockLLMProvider` behind an explicit `sandbox` flag that never writes to real
-   workspace/course state; add a contamination guard test.
-3. Multimodal ingestion: render PDF pages / PPTX slides / images and send to the
-   multimodal provider; structured evidence output (text/table/formula/diagram/
-   handwriting). Local OCR kept only as low-confidence fallback.
-4. Evidence Store: persist evidence units with stable IDs, checksums, language tags,
-   and course scoping.
-5. Course Knowledge Model: concept graph with evidence-linked nodes/edges; semantic
-   deduplication (reusing the Round 1 terminology maps); `inferred` flagging.
-6. CLI: `workspace ingest` command that creates real evidence + knowledge state.
+* Unified pipeline: File -> Classifier -> Native Parser -> Visual Renderer ->
+  Multimodal Understanding -> Structured Evidence (`exam_review_skill/ingestion/`).
+* Document types: PDF, PPTX, DOCX, TXT, MD, PNG, JPG, JPEG.
+* Native first: PDF text layer, PPTX text boxes, DOCX paragraphs preserve file,
+  page, slide, heading, question_number.
+* Cheap routing: vision only when needed (scanned/image-only pages, formulas,
+  tables, diagrams, handwriting, exam papers).
+* `MultimodalProvider` abstraction with capabilities + runtime registry
+  (openai / deepseek / synthetic) - no single-vendor hard-coding; fail closed.
+* Local OCR disabled by default; `extraction_method=ocr_fallback`, low confidence,
+  unresolved on engine failure (never fabricated).
+* Formula verification: ambiguity signals force visual re-view; unconfirmed
+  ambiguity stays low-confidence.
+* Exam-paper structure kept field-by-field (question_number, options, score,
+  subquestions, answer_area, handwritten_annotation).
+* Evidence objects + per-course `evidence_store.json` with content-hash cache,
+  incremental ingestion, dedup.
+* Synthetic records rejected from real state; CLI `workspace ingest` with clean
+  fail-closed error.
+* 22 new ingestion tests (70 total, 1 skipped: tesseract binary absent).
+
+Acceptance (all PASS, tested): see `docs/MULTIMODAL_INGESTION_REPORT.md`.
+
+Commit: `feat: rebuild ingestion around native multimodal understanding`
+
+## Round 3 — Course Knowledge Model + Exam Intelligence + Student Model
+
+Scope (next):
+
+1. Build the per-course knowledge graph from evidence (concept nodes + edges,
+   evidence-linked, `inferred` flagging, semantic dedup reusing terminology maps).
+2. Exam Intelligence from structured exam evidence (frequency = real question count,
+   evidence-derived confidence).
+3. Student Model + wrongbook from real answer sessions only.
+4. CLI: `workspace ingest` already creates evidence; add knowledge/exam/student
+   build steps.
 
 Acceptance:
 
-* No mock output can persist into course/student state (automated test).
-* A bilingual fixture course produces evidence-grounded concepts with no keyword
-  garbage.
-* Every concept has ≥1 evidence ref or `inferred=true`.
-
-Commit: `feat: multimodal ingestion, evidence store, and knowledge model`
+* Every concept/exam point has >= 1 evidence ref or `inferred=true`.
+* No keyword garbage (no `Slide`/`答案` topics).
+* Student model mutates only from recorded sessions.
 
 ## Round 2 — Multimodal Ingestion + Evidence Store + Course Knowledge Model
 

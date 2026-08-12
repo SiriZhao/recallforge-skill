@@ -26,6 +26,8 @@ def find_mock_markers(obj: Any, path: str = "$", hits: list[str] | None = None) 
         for k, v in obj.items():
             if k == "provider" and isinstance(v, str) and v.strip().lower() in ("mock", "sandbox"):
                 hits.append(f"{path}.provider = {v!r}")
+            if k == "synthetic" and v is True:
+                hits.append(f"{path}.synthetic = true (mock/test record in real state)")
             find_mock_markers(v, f"{path}.{k}", hits)
     elif isinstance(obj, list):
         for i, v in enumerate(obj):
@@ -71,6 +73,7 @@ def assert_course_isolation(course_path, course_id: str | None = None) -> None:
         "exam_model.json",
         "student_state.json",
         "wrongbook.json",
+        "evidence_store.json",
         "terminology_map.json",
     ):
         data = _load_json(course_path / filename)

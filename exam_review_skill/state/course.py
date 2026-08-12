@@ -28,6 +28,7 @@ COURSE_FILES = (
     "exam_model.json",
     "student_state.json",
     "wrongbook.json",
+    "evidence_store.json",
     "study_plan.json",
     "sessions.jsonl",
     "terminology_map.json",
@@ -100,6 +101,10 @@ def create_course(
     _write_json(root / "exam_model.json", asdict(ExamModel(course_id=course_id)))
     _write_json(root / "student_state.json", asdict(CourseStudentState(course_id=course_id)))
     _write_json(root / "wrongbook.json", asdict(CourseWrongbook(course_id=course_id)))
+    _write_json(
+        root / "evidence_store.json",
+        {"course_id": course_id, "documents": {}, "records": [], "updated_at": _now_iso()},
+    )
     _write_json(root / "study_plan.json", asdict(CourseStudyPlan(course_id=course_id)))
     _write_json(
         root / "terminology_map.json",

@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.3.0
+
+- Rebuilt ingestion around native multimodal understanding
+  (`exam_review_skill/ingestion/`): File -> Classifier -> Native Parser ->
+  Visual Renderer -> Multimodal Understanding -> Structured Evidence.
+- Native-first parsing: PDF text layer, PPTX text boxes, DOCX paragraphs preserve
+  file/page/slide/heading/question_number; images and scanned pages route to vision.
+- Cheap routing: vision only for formula-heavy, table, diagram, handwriting,
+  image-only, and exam-paper pages.
+- `MultimodalProvider` abstraction with capability flags and a runtime registry
+  (openai / deepseek / synthetic); no single-vendor hard-coding; fail closed when
+  unconfigured.
+- Local OCR is disabled by default; allowed only as explicit fallback; output is
+  `extraction_method=ocr_fallback` with low confidence and never fabricates content.
+- Formula verification: subscript/superscript/fraction/chemical-equation ambiguity
+  forces visual re-view; unconfirmed formulas stay low-confidence.
+- Exam-paper structure preserved field-by-field (question_number, options, score,
+  subquestions, answer_area, handwritten_annotation).
+- Per-course `evidence_store.json` with content-hash cache, incremental ingestion,
+  and dedup; JSON schema added.
+- Synthetic (mock/test) records are rejected from real state; CLI `workspace ingest`
+  reports a clean fail-closed error.
+- CLI: `workspace ingest --input <path> --course <id> [--provider ...] [--ocr]
+  [--offline] [--demo]`.
+
 ## 0.2.0
 
 - Added multi-course workspace state layer (`workspace init`, `add-course`, `list`,

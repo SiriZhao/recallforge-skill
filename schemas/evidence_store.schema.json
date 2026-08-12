@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EvidenceStore",
+  "description": "Per-course evidence store. Every record traces a claim back to a source; synthetic (mock/test) records are rejected in real state.",
+  "type": "object",
+  "required": ["course_id", "documents", "records", "updated_at"],
+  "properties": {
+    "course_id": { "type": "string" },
+    "documents": { "type": "object", "additionalProperties": { "type": "string" } },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "evidence_id", "course_id", "source_file", "document_type", "page_or_slide",
+          "extraction_method", "confidence", "evidence_weight", "content", "synthetic",
+          "content_hash", "created_at"
+        ],
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "course_id": { "type": "string" },
+          "source_file": { "type": "string" },
+          "document_type": { "enum": ["pdf", "pptx", "docx", "txt", "md", "png", "jpg"] },
+          "page_or_slide": { "type": "string" },
+          "heading": { "type": ["string", "null"] },
+          "question_number": { "type": ["string", "null"] },
+          "region": { "type": "object" },
+          "source_language": { "type": ["string", "null"] },
+          "extraction_method": { "enum": ["native_text", "multimodal", "ocr_fallback"] },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "evidence_weight": { "type": "number", "minimum": 0 },
+          "content": { "type": "object" },
+          "synthetic": { "type": "boolean", "const": false },
+          "content_hash": { "type": "string" },
+          "created_at": { "type": "string" }
+        }
+      }
+    },
+    "updated_at": { "type": "string" }
+  }
+}

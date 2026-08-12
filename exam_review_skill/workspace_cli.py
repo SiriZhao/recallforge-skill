@@ -268,6 +268,37 @@ def command_workspace(args) -> None:
             print(json.dumps(to_dict(plan), ensure_ascii=False, indent=2))
         return
 
+    if action == "ingest":
+        from .ingestion.pipeline import ingest_directory, ingest_file
+        from .ingestion.types import IngestOptions
+        from .state.isolation import StateContaminationError
+
+        options = IngestOptions(
+            provider_name=args.provider or "",
+            allow_ocr_fallback=args.ocr,
+            offline_mode=args.offline,
+            store_mode="demo" if args.demo else "real",
+        )
+        input_path = Path(args.input)
+        try:
+            if input_path.is_dir():
+                result = ingest_directory(root, args.course, input_path, options=options)
+            else:
+                result = ingest_file(root, args.course, input_path, options=options)
+        except StateContaminationError as exc:
+            print(f"error: real state rejected synthetic/mock content: {exc}")
+            return
+        print(f"documents seen: {len(result.documents_seen)}")
+        print(f"documents parsed: {len(result.documents_parsed)}")
+        print(f"evidence added: {len(result.evidence_added)}")
+        print(f"evidence duplicates: {result.evidence_duplicates}")
+        print(f"unresolved pages: {len(result.unresolved_pages)}")
+        for page in result.unresolved_pages:
+            print(f"  unresolved: {page}")
+        for warning in result.warnings:
+            print(f"  warn: {warning}")
+        return
+
     raise SystemExit(f"unknown workspace action: {action}")
 
 
@@ -343,3 +374,13 @@ def add_workspace_parser(subparsers) -> None:
     plan.add_argument("--skip", action="append", default=None)
     plan.add_argument("--json", action="store_true")
     plan.set_defaults(func=command_workspace)
+
+    ingest = ws_sub.add_parser("ingest", help="ingest materials into a course (native multimodal first)")
+    ingest.add_argument("--dir", required=True)
+    ingest.add_argument("--course", required=True)
+    ingest.add_argument("--input", required=True, help="file or directory to ingest")
+    ingest.add_argument("--provider", default=None, help="multimodal provider name (openai|deepseek|synthetic)")
+    ingest.add_argument("--ocr", action="store_true", help="allow local OCR fallback (disabled by default)")
+    ingest.add_argument("--offline", action="store_true", help="explicit offline mode")
+    ingest.add_argument("--demo", action="store_true", help="demo mode: allow synthetic records")
+    ingest.set_defaults(func=command_workspace)
