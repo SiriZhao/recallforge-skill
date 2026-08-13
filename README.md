@@ -131,6 +131,7 @@ RecallForge operates no server or upload service. Material handling by the AI mo
 - [Examples](docs/examples.md) · [FAQ](docs/faq.md) · [Troubleshooting](docs/troubleshooting.md)
 - [Manual host verification](docs/manual-verification.md)
 - [Local OCR verification](docs/ocr.md)
+- [Tested environment](docs/tested-environment.md)
 - [Native ingestion benchmark](benchmarks/README.md)
 
 If RecallForge helps, starring the repository, reporting an issue, or contributing an improvement is appreciated. See [Contributing](CONTRIBUTING.md), [Security](SECURITY.md), and [MIT License](LICENSE).

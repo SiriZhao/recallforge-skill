@@ -117,6 +117,7 @@ RecallForge 自身不运营服务器或上传服务。资料如何被处理取�
 - [案例](docs/examples.md) · [常见问题](docs/faq.md) · [故障排查](docs/troubleshooting.md)
 - [人工宿主验收](docs/manual-verification.zh-CN.md)
 - [本地 OCR 验证](docs/ocr.zh-CN.md)
+- [已验证环境](docs/tested-environment.zh-CN.md)
 - [原生摄取基准](benchmarks/README.md)
 
 如果 RecallForge 对你有帮助，欢迎 Star、提交 Issue 或贡献改进。项目没有空的 Sponsor/Donate 区。参见[贡献指南](CONTRIBUTING.md)、[安全政策](SECURITY.md)和 [MIT License](LICENSE)。
