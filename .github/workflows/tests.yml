@@ -52,6 +52,7 @@ jobs:
         run: python scripts/validate_skill.py
 
       - name: Check public branding and placeholder markers
+        shell: bash
         run: |
           ! git grep -n -i -E 'exam-review-skill|exam_review_skill|examforge' -- ':!.github/workflows/tests.yml'
           ! git grep -n -E 'TODO|TBD|coming soon|example\.com' -- README.md README.zh-CN.md SKILL.md docs ':!.github/workflows/tests.yml'
