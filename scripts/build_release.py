@@ -70,6 +70,9 @@ def _excluded(rel: str) -> bool:
 
 def main() -> None:
     DIST.mkdir(exist_ok=True)
+    for stale in DIST.iterdir():
+        if stale.name not in {ZIP_OUT.name, TAR_OUT.name, "SHA256SUMS.txt"}:
+            stale.unlink()
     _build_zip()
     _build_tarball()
     _write_checksums()
