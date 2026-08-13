@@ -10,7 +10,7 @@ RecallForge 是装载到 Codex 和兼容 Agent Skills 宿主中的 AI 复习 Ski
 
 ## 三分钟安装
 
-到 [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest) 下载 `recallforge-skill-v2.1.3.zip` 并解压。解压后会看到 `recallforge` 文件夹；把它复制到：
+到 [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest) 下载 `recallforge-skill-v2.1.2.zip` 并解压。解压后会看到 `recallforge` 文件夹；把它复制到：
 
 - **Windows：** `%USERPROFILE%\.agents\skills\recallforge`
 - **macOS / Linux：** `~/.agents/skills/recallforge`
@@ -23,7 +23,7 @@ RecallForge 是装载到 Codex 和兼容 Agent Skills 宿主中的 AI 复习 Ski
 | Windows 且想最快安装 | ZIP 中的 `install.ps1` |
 | macOS/Linux | ZIP 中的 `install.sh` |
 | 开发者 | Git clone + 项目级安装 |
-| 使用 Plugin 流程 | `recallforge-plugin-v2.1.3.zip` |
+| 使用 Plugin 流程 | `recallforge-plugin-v2.1.2.zip` |
 
 Windows PowerShell：
 

@@ -6,7 +6,7 @@ RecallForge is a Codex Skill. It needs no runtime dependency: Codex reads `SKILL
 
 ### Windows
 
-Download and extract `recallforge-skill-v2.1.3.zip`. In File Explorer, type `%USERPROFILE%\.agents\skills` in the address bar (create the folders if asked), then copy the extracted `recallforge` folder there. The final file must be `%USERPROFILE%\.agents\skills\recallforge\SKILL.md`.
+Download and extract `recallforge-skill-v2.1.2.zip`. In File Explorer, type `%USERPROFILE%\.agents\skills` in the address bar (create the folders if asked), then copy the extracted `recallforge` folder there. The final file must be `%USERPROFILE%\.agents\skills\recallforge\SKILL.md`.
 
 Or open PowerShell in the extracted folder and run `powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1`.
 
