@@ -1,6 +1,6 @@
 {
   "name": "recallforge-plugin",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "RecallForge — AI exam review skill for active recall and adaptive practice.",
   "author": {"name": "RecallForge contributors", "url": "https://github.com/SiriZhao/recallforge-skill"},
   "homepage": "https://github.com/SiriZhao/recallforge-skill",

@@ -2,7 +2,7 @@
 from __future__ import annotations
 import hashlib, shutil, tarfile, zipfile
 from pathlib import Path
-ROOT=Path(__file__).resolve().parent.parent; VERSION="2.1.0"; DIST=ROOT/"dist"
+ROOT=Path(__file__).resolve().parent.parent; VERSION="2.1.2"; DIST=ROOT/"dist"
 SKILL=ROOT/"skill"/"recallforge"; PLUGIN=ROOT/"recallforge-plugin"
 def archive(source: Path, out: Path, prefix: str=""):
     with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:

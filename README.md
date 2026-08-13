@@ -24,15 +24,15 @@ Download the latest [Release](https://github.com/SiriZhao/recallforge-skill/rele
 
 | You are… | Choose | Install to |
 |---|---|---|
-| A student or regular Codex user | `recallforge-skill-v2.1.0.zip` | User-level Skill folder |
+| A student or regular Codex user | `recallforge-skill-v2.1.2.zip` | User-level Skill folder |
 | A Windows user who wants the easiest setup | The Skill ZIP + `install.ps1` | User-level Skill folder |
 | A macOS/Linux user | The Skill ZIP + `install.sh` | User-level Skill folder |
 | A developer | Git clone | Project-local `.agents/skills` |
-| A Plugin user | `recallforge-plugin-v2.1.0.zip` | Host Plugin flow |
+| A Plugin user | `recallforge-plugin-v2.1.2.zip` | Host Plugin flow |
 
 ### User installation (recommended)
 
-Extract `recallforge-skill-v2.1.0.zip`. It contains one folder: `recallforge`. Copy that folder to your user Skills directory:
+Extract `recallforge-skill-v2.1.2.zip`. It contains one folder: `recallforge`. Copy that folder to your user Skills directory:
 
 - **Windows:** `%USERPROFILE%\.agents\skills\recallforge`
 - **macOS/Linux:** `~/.agents/skills/recallforge`
