@@ -23,4 +23,6 @@ ocr_cache/
 temp/
 tmp/
 .test-tmp/
+.test-tmp-*/
+.install-check*/
 node_modules/
