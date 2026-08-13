@@ -49,7 +49,7 @@ More examples: [knowledge reconstruction](assets/screenshots/knowledge-reconstru
 
 ### 1. Download (recommended for most users)
 
-Open [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest), download `recallforge-skill-v2.0.0.zip`, and extract it somewhere you can find again. This is a Python command-line skill, so you need Python 3.10 or newer.
+Open [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest), download `recallforge-skill-v2.0.1.zip`, and extract it somewhere you can find again. This is a Python command-line skill, so you need Python 3.10 or newer.
 
 Open **PowerShell** on Windows or **Terminal** on macOS/Linux, move into the extracted folder, then run:
 
