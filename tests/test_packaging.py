@@ -3,7 +3,7 @@ import hashlib, json, zipfile
 from pathlib import Path
 import pytest
 
-DIST=Path(__file__).resolve().parent.parent/"dist"; VERSION="2.2.0-candidate"; MANIFEST_VERSION="2.2.0-dev.0"
+DIST=Path(__file__).resolve().parent.parent/"dist"; VERSION="2.2.0"; MANIFEST_VERSION="2.2.0"
 @pytest.fixture(scope="module")
 def packages():
     return DIST/f"recallforge-skill-v{VERSION}.zip", DIST/f"recallforge-plugin-v{VERSION}.zip"

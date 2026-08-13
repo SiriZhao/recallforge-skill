@@ -2,7 +2,7 @@
 from __future__ import annotations
 import hashlib, shutil, tarfile, zipfile
 from pathlib import Path
-ROOT=Path(__file__).resolve().parent.parent; VERSION="2.2.0-candidate"; DIST=ROOT/"dist"
+ROOT=Path(__file__).resolve().parent.parent; VERSION="2.2.0"; DIST=ROOT/"dist"
 SKILL=ROOT/"skill"/"recallforge"; PLUGIN=ROOT/"recallforge-plugin"
 def sync_plugin_skill():
     target = PLUGIN/"skills"/"recallforge"

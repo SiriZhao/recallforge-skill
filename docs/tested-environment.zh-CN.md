@@ -29,4 +29,16 @@ Windows 11、Python 3.14.3、Intel64 Family 6 Model 197、仅 CPU：
 
 ## 宿主验证
 
-尚未完成。维护者必须在独立的 Codex 会话中按[正式宿主验收协议](manual-verification.zh-CN.md)执行真实 E2E。机器可读证据模板位于 [verification/host-verification-template.json](../verification/host-verification-template.json)。
+已在独立 Codex 会话中由维护者在 Windows 11 上完成（EXTERNAL_MANUAL）：
+
+- Codex 0.147.0
+- RecallForge commit `1856c66`
+- Candidate ZIP，用户级 Skill 安装
+- `/skills` 发现：通过
+- `$recallforge self-test`：通过（`Status: READY`）
+- `$recallforge multimodal-test`：通过（`Status: MULTIMODAL_READY`）
+- 功能测试：通过
+- 真实资料 E2E：通过（16 份课件 + 30 页扫描历年试题 PDF；共 1047 个课件页/幻灯片 + 30 个试题页完成编目）
+- 薄弱点反馈闭环：通过（诊断式主动回忆 → 薄弱点定位 → 纠正教学 → 跟进练习，包括用户请求从诊断模式切换到从零教学）
+
+完整机器可读证据：[verification/host-verification-template.json](../verification/host-verification-template.json)。

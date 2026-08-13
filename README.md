@@ -10,7 +10,7 @@
 
 RecallForge is a host-executed Skill for Codex and compatible Agent Skills hosts. It begins with material inspection—not a long summary—then reconstructs course knowledge, tests recall, diagnoses demonstrated weaknesses, targets repair, and can finish with a source-grounded mock exam.
 
-> Main contains **unreleased v2.2 development**. The latest downloadable GitHub Release remains **v2.1.2** until external Codex host verification is complete. GitHub authentication is available.
+> RecallForge **v2.2.0** is the current release, verified on a real Codex host and on Windows/macOS/Linux CI.
 
 ```text
 $recallforge
@@ -26,13 +26,13 @@ Build the course structure first, then test what I actually know.
 
 | Material | Core path | Visual path | Verified status |
 |---|---|---|---|
-| PPTX | Titles, text boxes, tables, notes, slide order | Rendered slide for diagrams/layout when the host or LibreOffice path is available | Native fixture verified; visual path host-dependent |
+| PPTX | Titles, text boxes, tables, notes, slide order | Rendered slide for diagrams/layout when the host or LibreOffice path is available | Native fixture verified; visual path verified in Codex E2E |
 | Digital PDF | Page-level native text and layout blocks | Selective rendering for figures/formulas | Verified with self-authored fixtures |
-| Scanned PDF | Scan detection per page | Host vision first; optional local OCR fallback | Detection/rendering verified; host vision pending |
-| PNG/JPG/JPEG/WEBP | File detection | Host vision | Routing verified; host execution pending |
+| Scanned PDF | Scan detection per page | Host vision first; optional local OCR fallback | Detection/rendering verified; host vision verified in Codex E2E |
+| PNG/JPG/JPEG/WEBP | File detection | Host vision | Routing verified; host execution verified in Codex E2E |
 | DOCX | Paragraphs and structured tables | Optional rendered verification | Native fixture verified |
 | TXT/Markdown | Native text | Not normally needed | Verified |
-| Formulas/tables/diagrams | Dedicated IR blocks and source anchors | Precision pass when uncertain | Static/native paths verified; host vision pending |
+| Formulas/tables/diagrams | Dedicated IR blocks and source anchors | Precision pass when uncertain | Static/native paths verified; host vision verified in Codex E2E |
 | Past papers | Question/options/score/source structure when extractable | Multi-column/figure/handwriting verification | Fixture path verified |
 
 Status language: **Verified** means an automated fixture ran here. **Host-dependent** means the workflow is implemented but depends on the selected AI host’s visual capability. No claim means “works everywhere.”
@@ -75,7 +75,7 @@ See the [complete learning-flow examples](docs/examples.md).
 
 The core Skill needs no Python, API key, server, or separate RecallForge program. Optional local OCR acceleration may require additional local dependencies.
 
-1. Download `recallforge-skill-v2.1.2.zip` from the [latest formal Release](https://github.com/SiriZhao/recallforge-skill/releases/latest).
+1. Download `recallforge-skill-v2.2.0.zip` from the [latest formal Release](https://github.com/SiriZhao/recallforge-skill/releases/latest).
 2. Extract it and copy the `recallforge` folder to `%USERPROFILE%\.agents\skills` on Windows or `~/.agents/skills` on macOS/Linux.
 3. Start a new Codex turn.
 4. Run `$recallforge self-test` and confirm `Status: READY`.
@@ -116,8 +116,8 @@ Past-paper frequency and explicit teacher wording can inform priorities, but nev
 
 | Host/path | Status |
 |---|---|
-| Codex user/repo Skill directories | Structure and installer verified; `/skills` runtime check blocked in this environment |
-| Codex/ChatGPT Skill UI metadata | Included; UI not verified here |
+| Codex user/repo Skill directories | Verified on Codex 0.147.0 / Windows 11 (`/skills` discovery passed) |
+| Codex/ChatGPT Skill UI metadata | Included; Codex host E2E passed; other UI surfaces not individually tested |
 | Skills-only Plugin | Manifest/package validated locally |
 | Other Agent Skills hosts | Standard-compatible core folder; not individually host-tested |
 

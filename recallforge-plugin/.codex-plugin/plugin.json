@@ -1,6 +1,6 @@
 {
   "name": "recallforge-plugin",
-  "version": "2.2.0-dev.0",
+  "version": "2.2.0",
   "description": "RecallForge — multimodal exam review Skill for material inspection, active recall, and adaptive practice.",
   "author": {"name": "RecallForge contributors", "url": "https://github.com/SiriZhao/recallforge-skill"},
   "homepage": "https://github.com/SiriZhao/recallforge-skill",

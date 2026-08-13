@@ -1,20 +1,33 @@
 {
-  "$comment": "Release Host Verification Protocol evidence. Do not include names, emails, local user directories, private paths, credentials, or private study materials.",
-  "host": "",
-  "host_version": "",
-  "os": "",
-  "date": "",
-  "recallforge_commit": "",
-  "install_method": "ZIP | install script | plugin | git",
-  "skill_visible": false,
-  "text_self_test": "PASS | FAIL | NOT_RUN",
-  "text_self_test_evidence": "",
-  "multimodal_test": "PASS | FAIL | HOST_CAPABILITY_UNAVAILABLE | NOT_RUN",
-  "multimodal_test_evidence": "",
-  "functional_test": "PASS | FAIL | NOT_RUN",
-  "functional_test_evidence": "",
-  "material_e2e": "PASS | FAIL | NOT_RUN",
-  "material_e2e_evidence": "",
-  "recognition_warnings": [],
-  "verified_by": ""
+  "host": "Codex",
+  "host_version": "0.147.0",
+  "os": "Windows 11",
+  "date": "2026-08-13",
+  "recallforge_commit": "1856c66",
+  "install_method": "candidate zip / user-level install",
+
+  "skill_visible": true,
+
+  "text_self_test": "PASS",
+  "text_self_test_evidence": "RecallForge text self-test completed in an independent Codex host session and returned the expected READY status.",
+
+  "multimodal_test": "PASS",
+  "multimodal_test_evidence": "RecallForge multimodal self-test completed in the independent host and correctly processed the provided multimodal fixture.",
+
+  "functional_test": "PASS",
+  "functional_test_evidence": "RecallForge performed material inspection, knowledge reconstruction, diagnostic recall, weakness diagnosis, corrective teaching, and follow-up practice.",
+
+  "material_e2e": "PASS",
+  "material_e2e_evidence": "Real organic chemistry course-material test: 16 lecture decks plus one 30-page scanned past-paper PDF. RecallForge catalogued 1047 lecture pages/slides plus 30 exam pages, identified recognition limitations, built a course structure, and entered an adaptive active-recall workflow.",
+
+  "recognition_warnings": [
+    "Past-paper PDF contains scan-heavy chemistry structures and handwritten/small-text content; OCR alone was not treated as authoritative.",
+    "Several exam pages contain rotation, stitched-page, or handwriting issues requiring visual review.",
+    "Legacy PPT material could not be reliably rendered for full visual verification in the tested environment.",
+    "Chemical structures, mechanism arrows, and visually encoded formulas that were not visually verified were not promoted to certain conclusions.",
+    "One expected course chapter was absent from the supplied material and was not treated as covered."
+  ],
+
+  "verification_method": "EXTERNAL_MANUAL",
+  "verified_at": "2026-08-13"
 }

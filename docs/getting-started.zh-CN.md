@@ -4,7 +4,7 @@ RecallForge 在 AI 宿主内部运行。核心 Skill 不需要 Python、API Key 
 
 ## 1. 安装
 
-快速版：从[最新正式 Release](https://github.com/SiriZhao/recallforge-skill/releases/latest)下载 `recallforge-skill-v2.1.2.zip`，解压后将 `recallforge` 复制到 Windows 的 `%USERPROFILE%\.agents\skills`，或 macOS/Linux 的 `~/.agents/skills`。
+快速版：从[最新正式 Release](https://github.com/SiriZhao/recallforge-skill/releases/latest)下载 `recallforge-skill-v2.2.0.zip`，解压后将 `recallforge` 复制到 Windows 的 `%USERPROFILE%\.agents\skills`，或 macOS/Linux 的 `~/.agents/skills`。
 
 完整平台步骤见 [Codex 中文指南](codex.zh-CN.md)。
 

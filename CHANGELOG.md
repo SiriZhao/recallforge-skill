@@ -2,7 +2,7 @@
 
 All notable changes to RecallForge are documented here. This project follows the spirit of [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
-## [Unreleased]
+## [2.2.0] - 2026-08-13
 
 ### Added
 
@@ -12,19 +12,21 @@ All notable changes to RecallForge are documented here. This project follows the
 ### Changed
 
 - Made release archive creation and checksum generation reproducible.
-- Prepared v2.2.0 candidate packages without creating a release tag; external Codex host verification is still pending.
+- Frozen the public version to v2.2.0 and published the first multimodal Material Intelligence release.
 
 ### Verified
 
 - Full automated suite: 215 passed on Windows 11 / Python 3.14.3 (real Tesseract OCR test included).
 - Local OCR benchmark with 10 self-authored fixtures: Tesseract 5.5.0 and RapidOCR 1.2.3, CER/WER recorded.
 - Official Skill and Plugin validators pass; clean-room ZIP/Plugin install tests pass.
+- GitHub Actions passes on Ubuntu 24.04, Windows, and macOS.
+- Real Codex host E2E: skill discovery, text self-test, multimodal self-test, functional test, and a 1047-slide + 30-page scanned past-paper material review all passed (evidence: `verification/host-verification-template.json`).
 
 ### Known limitations
 
-- External Codex host E2E (`/skills` → self-test → multimodal-test → material review) is not complete; see `docs/manual-verification.md`.
 - Local OCR is optional and experimental; it is not the preferred Chinese document path and cannot verify formulas, diagrams, tables, or exam structure alone.
 - Host vision quality depends on the selected host/model and is not claimed as universally verified.
+- Scanned pages with rotation, stitching, handwriting, and legacy PPT visual rendering remain recognition boundaries that are reported rather than silently accepted.
 
 ## [2.1.3] - 2026-08-13 (tag only)
 
@@ -50,3 +52,4 @@ Tag-only packaging correction for reproducible archives. No GitHub Release asset
 
 [2.1.2]: https://github.com/SiriZhao/recallforge-skill/releases/tag/v2.1.2
 [2.1.3]: https://github.com/SiriZhao/recallforge-skill/releases/tag/v2.1.3
+[2.2.0]: https://github.com/SiriZhao/recallforge-skill/releases/tag/v2.2.0

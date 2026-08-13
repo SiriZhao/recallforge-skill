@@ -4,7 +4,7 @@ RecallForge runs inside your AI host. The core Skill does not require Python, an
 
 ## 1. Install
 
-Quick version: download `recallforge-skill-v2.1.2.zip` from the [latest formal Release](https://github.com/SiriZhao/recallforge-skill/releases/latest), extract it, and copy `recallforge` to `%USERPROFILE%\.agents\skills` on Windows or `~/.agents/skills` on macOS/Linux.
+Quick version: download `recallforge-skill-v2.2.0.zip` from the [latest formal Release](https://github.com/SiriZhao/recallforge-skill/releases/latest), extract it, and copy `recallforge` to `%USERPROFILE%\.agents\skills` on Windows or `~/.agents/skills` on macOS/Linux.
 
 Full platform steps: [RecallForge for Codex](codex.md).
 

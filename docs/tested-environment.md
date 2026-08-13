@@ -29,4 +29,16 @@ Full results: [benchmarks/results/ocr-windows-reference.json](../benchmarks/resu
 
 ## Host verification
 
-Not yet completed. Real Codex host E2E must be run in a separate Codex session by a maintainer using [Release Host Verification Protocol](manual-verification.md). The machine-readable evidence template is at [verification/host-verification-template.json](../verification/host-verification-template.json).
+Completed in an independent Codex session on Windows 11 by the maintainer (EXTERNAL_MANUAL):
+
+- Codex 0.147.0
+- RecallForge commit `1856c66`
+- Candidate ZIP, user-level Skill installation
+- `/skills` discovery: pass
+- `$recallforge self-test`: pass (`Status: READY`)
+- `$recallforge multimodal-test`: pass (`Status: MULTIMODAL_READY`)
+- Functional test: pass
+- Real material E2E: pass (16 lecture decks + 30-page scanned past-paper PDF; 1047 slide/page units + 30 exam pages catalogued)
+- Weakness feedback loop: pass (diagnostic recall → weakness detection → corrective teaching → follow-up practice, including a user-requested switch from diagnostic to from-scratch teaching)
+
+Full machine-readable evidence: [verification/host-verification-template.json](../verification/host-verification-template.json).

@@ -6,7 +6,7 @@ RecallForge 是 Codex Skill。它不需要 Python、API Key 或独立程序；Co
 
 ### Windows
 
-下载并解压 `recallforge-skill-v2.1.2.zip`。在文件资源管理器地址栏输入 `%USERPROFILE%\.agents\skills`，按需要创建文件夹，将解压得到的 `recallforge` 文件夹复制进去。最终必须是：`%USERPROFILE%\.agents\skills\recallforge\SKILL.md`。
+下载并解压 `recallforge-skill-v2.2.0.zip`。在文件资源管理器地址栏输入 `%USERPROFILE%\.agents\skills`，按需要创建文件夹，将解压得到的 `recallforge` 文件夹复制进去。最终必须是：`%USERPROFILE%\.agents\skills\recallforge\SKILL.md`。
 
 也可在解压目录打开 PowerShell，运行：`powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1`。
 

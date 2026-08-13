@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SKILL = ROOT / "skill" / "recallforge"
-VERSION = "2.2.0-dev.0"
+VERSION = "2.2.0"
 REQUIRED = ["SKILL.md", "agents/openai.yaml", "references/review-methodology.md", "references/active-recall.md", "references/exam-simulation.md", "references/material-intelligence.md", "assets/self-test/mini-course.md", "assets/self-test/multimodal/probability-slide.svg"]
 
 def check(condition: bool, message: str) -> None:

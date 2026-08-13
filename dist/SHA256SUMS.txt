@@ -1,3 +1,3 @@
-8f48f12aba439c67283c1176e89ee85c423ee5b03173700c922afbc255442b05  recallforge-skill-v2.2.0-candidate.zip
-125800ba3b3b0a23a7355db200a3f82139d95d3bbf7f264d0beb5d0d55d8942f  recallforge-plugin-v2.2.0-candidate.zip
-f51f75cf0c47597a646eb1933d157691967332a555f1c8f809ef431afb093157  recallforge-skill-v2.2.0-candidate.tar.gz
+8f48f12aba439c67283c1176e89ee85c423ee5b03173700c922afbc255442b05  recallforge-skill-v2.2.0.zip
+fadef878c8b9f33602881cda355db7e48cf6fcdd2321bbe12baeae645eba6e5e  recallforge-plugin-v2.2.0.zip
+77d136e63b981159ba708f6df3fc209b2168f828c462935a500e3b17f1432565  recallforge-skill-v2.2.0.tar.gz

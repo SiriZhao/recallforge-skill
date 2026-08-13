@@ -10,7 +10,7 @@
 
 RecallForge 是装载到 Codex 与兼容 Agent Skills 宿主中的复习 Skill。它不会一上来输出一篇长摘要，而是先检查资料和识别质量，再建立课程知识结构，通过主动回忆观察真实薄弱点，针对性修复，最后可生成有资料依据的模拟考试。
 
-> `main` 当前包含**尚未正式发布的 v2.2 开发内容**。外部 Codex 宿主验证完成前，用户可下载的最新正式版仍是 **v2.1.2**。GitHub 认证已可用。
+> RecallForge **v2.2.0** 是当前正式版本，已在真实 Codex 宿主以及 Windows/macOS/Linux CI 上完成验证。
 
 ```text
 $recallforge
@@ -26,13 +26,13 @@ $recallforge
 
 | 资料 | 核心路径 | 当前真实状态 |
 |---|---|---|
-| PPTX | 标题、文本框、表格、备注、顺序和来源锚点；需要时走整页视觉 | 原生 fixture 已验证；视觉依赖宿主或 LibreOffice |
+| PPTX | 标题、文本框、表格、备注、顺序和来源锚点；需要时走整页视觉 | 原生 fixture 已验证；视觉路径已在 Codex E2E 验证 |
 | 数字 PDF | 按页原生文字和布局块，图示/公式选择性渲染 | 自制 fixture 已验证 |
-| 扫描 PDF | 按页判断扫描属性，优先宿主视觉，可选本地 OCR | 检测和渲染已验证；宿主视觉待验证 |
-| PNG/JPG/JPEG/WEBP | 图片检测并交给宿主视觉 | 路由已验证；宿主执行待验证 |
+| 扫描 PDF | 按页判断扫描属性，优先宿主视觉，可选本地 OCR | 检测和渲染已验证；宿主视觉已在 Codex E2E 验证 |
+| PNG/JPG/JPEG/WEBP | 图片检测并交给宿主视觉 | 路由已验证；宿主执行已在 Codex E2E 验证 |
 | DOCX | 段落和结构化表格 | 原生 fixture 已验证 |
 | TXT/Markdown | 原生读取 | 已验证 |
-| 公式、表格、图示 | 独立结构、置信度和来源锚点；不确定时精细处理 | 静态/原生路径已验证；宿主视觉待验证 |
+| 公式、表格、图示 | 独立结构、置信度和来源锚点；不确定时精细处理 | 静态/原生路径已验证；宿主视觉已在 Codex E2E 验证 |
 | 往年试卷 | 在可提取时区分题目、选项、分值、批注与来源 | fixture 路径已验证 |
 
 “已验证”表示本仓库的自制 fixture 在当前测试环境中真实运行过；“依赖宿主”表示工作流已经实现，但最终视觉质量由所选 AI 宿主决定。
@@ -75,7 +75,7 @@ RecallForge 不会把所有页面无脑 OCR 成 TXT。它会尽量保留 PPT 空
 
 RecallForge 核心 Skill 不需要 Python、API Key、服务器或独立程序。只有可选的本地 OCR 加速可能需要额外依赖。
 
-1. 从[最新正式 Release](https://github.com/SiriZhao/recallforge-skill/releases/latest)下载 `recallforge-skill-v2.1.2.zip`。
+1. 从[最新正式 Release](https://github.com/SiriZhao/recallforge-skill/releases/latest)下载 `recallforge-skill-v2.2.0.zip`。
 2. 解压，将 `recallforge` 文件夹复制到 Windows 的 `%USERPROFILE%\.agents\skills`，或 macOS/Linux 的 `~/.agents/skills`。
 3. 新建一个 Codex 对话。
 4. 输入 `$recallforge self-test`，确认看到 `Status: READY`。
@@ -105,7 +105,7 @@ $recallforge
 
 RecallForge 是由 AI 宿主执行的“资料到自适应复习”工作流，不是 PDF 摘要器、OCR 产品、独立聊天软件、Web App 或上传服务。往年题频率和教师明确文字可以作为复习证据，但不能证明今年一定会考；课程资料始终是当前课程范围的主要依据。
 
-Codex 的用户级/项目级 Skill 目录与安装包已验证，但本环境无法启动 `codex.exe`，因此 `/skills` 与真实宿主多模态执行仍标记待验证。其他兼容 Agent Skills 宿主没有被逐一实测。
+Codex 的用户级 Skill 安装、`/skills` 发现、`$recallforge self-test`、`$recallforge multimodal-test` 和真实资料 E2E 已在 Codex 0.147.0 / Windows 11 上由维护者真实验证。其他兼容 Agent Skills 宿主没有被逐一实测。
 
 RecallForge 自身不运营服务器或上传服务。资料如何被处理取决于你选择的 AI 宿主和模型提供方的隐私与数据政策。请只使用自己拥有或已获授权的资料，并删除不必要的个人信息。
 
