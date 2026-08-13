@@ -1,6 +1,6 @@
 # 入门
 
-1. 从 [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest) 下载 `recallforge-skill-v2.1.2.zip`。
+1. 从 [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest) 下载 `recallforge-skill-v2.1.3.zip`。
 2. 解压后应只看到一个 `recallforge` 文件夹。
 3. Windows 复制到 `%USERPROFILE%\.agents\skills`；macOS/Linux 复制到 `~/.agents/skills`。
 4. 开启新的 Codex 对话并输入 `$recallforge self-test`。

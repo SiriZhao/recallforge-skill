@@ -2,12 +2,19 @@
 from __future__ import annotations
 import hashlib, shutil, tarfile, zipfile
 from pathlib import Path
-ROOT=Path(__file__).resolve().parent.parent; VERSION="2.1.2"; DIST=ROOT/"dist"
+ROOT=Path(__file__).resolve().parent.parent; VERSION="2.1.3"; DIST=ROOT/"dist"
 SKILL=ROOT/"skill"/"recallforge"; PLUGIN=ROOT/"recallforge-plugin"
 def archive(source: Path, out: Path, prefix: str=""):
     with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:
         for p in sorted(source.rglob("*")):
             if p.is_file(): z.write(p, f"{prefix}{p.relative_to(source).as_posix()}")
+def normalized_tarinfo(tarinfo: tarfile.TarInfo) -> tarfile.TarInfo:
+    """Make the distributable reproducible across local build times."""
+    tarinfo.mtime = 0
+    tarinfo.uid = tarinfo.gid = 0
+    tarinfo.uname = tarinfo.gname = ""
+    return tarinfo
+
 def main():
     DIST.mkdir(exist_ok=True)
     for p in DIST.iterdir(): p.unlink()
@@ -17,7 +24,11 @@ def main():
         for name in ("install.ps1", "install.sh"):
             z.write(ROOT/"scripts"/name, f"scripts/{name}")
     archive(PLUGIN,plugin_zip)
-    with tarfile.open(tar,"w:gz") as tf: tf.add(SKILL,arcname="recallforge")
+    # gzip's timestamp is also normalized so SHA256SUMS is stable on rebuild.
+    import gzip
+    with tar.open("wb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as gz:
+        with tarfile.open(fileobj=gz, mode="w") as tf:
+            tf.add(SKILL, arcname="recallforge", filter=normalized_tarinfo)
     lines=[]
     for p in (skill_zip,plugin_zip,tar): lines.append(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}")
     (DIST/"SHA256SUMS.txt").write_text("\n".join(lines)+"\n",encoding="utf-8")
