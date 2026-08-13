@@ -1,273 +1,133 @@
-# exam-review-skill
+<p align="center"><img src="assets/brand/recallforge-banner.svg" alt="RecallForge — AI Exam Review Skill" width="100%"></p>
 
-**Input course materials, output a scoring path. 输入课程资料，输出提分路径。**
+<p align="center"><a href="README.zh-CN.md">简体中文</a> · <strong>English</strong></p>
 
-exam-review-skill is an Exam Review Agent: it understands your course materials, your exams, and **you**, then continuously decides what to study next across a multi-course exam week. It is a Codex Skill + a Python package.
+<p align="center"><a href="https://github.com/SiriZhao/recallforge-skill/releases/latest">Download latest release</a> · <a href="#quick-start">Quick start</a> · <a href="docs/getting-started.md">Beginner guide</a> · <a href="CONTRIBUTING.md">Contribute</a></p>
 
-- 中文文档简介：这是一个考试复习智能体，能理解课程资料、理解考试、理解学生，并在多门考试并行的考试周中持续决定"下一步最值得学什么"。
+# RecallForge — AI Exam Review Skill
 
-## What it is
+**Forge course materials into exam-ready knowledge.**
 
-A source-grounded, evidence-first exam review system. It does not summarize your materials - it builds:
+RecallForge is an open-source, local-first Python skill for exam review. It turns course materials and past papers into evidence-linked knowledge models, active-recall practice, weakness diagnosis, targeted review plans, and time-boxed exam preparation. It is not a generic “summarize this PDF” prompt.
 
-- a **Course Knowledge Model** (evidence-linked topics, cross-language fusion)
-- an **Exam Intelligence Model** (real past-exam frequency, teacher style, risk radar)
-- a **persistent Student Model** (composite mastery, never raw accuracy)
-- a **multi-course Exam Week Orchestrator** (global daily plan, anti-starvation)
-- a **Tutor + Quiz + Diagnosis + Wrongbook + Cram** learning loop
+> Use only course materials you own or are authorized to use. RecallForge supports learning; it cannot guarantee an exam result.
 
-## Why not just upload everything to ChatGPT
+## Why RecallForge?
 
-| Generic chat with a pile of files | exam-review-skill |
-|---|---|
-| Context limit eats long courses | Evidence Store + topic model keeps files/chunks/references |
-| No memory of what you know | Persistent per-course student model |
-| One course at a time | Multi-course exam-week orchestration |
-| Answers are generic | Every claim traces to a source evidence id |
-| No scoring priority | S/A/B/C risk radar with full rationale |
-| Wrong answers vanish | Wrongbook drives mastery, risk, planner, quiz, and cram |
-| Chinese OR English | True bilingual (catalogs, terminology maps, mixed-language fusion) |
+Passive rereading and generic AI summaries often lose the exam context: what is actually assessed, what you cannot yet recall, and what to do next. RecallForge keeps those pieces connected:
 
-## Architecture
-
-```text
-Workspace (one exam week)
-├── workspace_state.json        # locale, daily hours, course list
-├── exam_calendar.json          # global exam calendar
-├── global_study_plan.json      # daily global plan
-├── overrides.json              # user control (skip/pin/reduce/target/hours)
-└── courses/<course_id>/
-    ├── course_manifest.json
-    ├── evidence_store.json     # evidence units (course-scoped)
-    ├── knowledge_graph.json    # topic-centric knowledge model
-    ├── exam_model.json         # exam intelligence (separate from course model)
-    ├── risk_radar.json         # explainable S/A/B/C
-    ├── student_state.json      # persistent student model
-    ├── wrongbook.json          # real wrong answers only
-    ├── study_plan.json / sessions.jsonl / terminology_map.json / conflicts.json
-    └── coverage_report.json
+```mermaid
+flowchart LR
+  A[Course materials] --> B[Evidence-grounded understanding]
+  B --> C[Knowledge reconstruction]
+  C --> D[Exam scope and priorities]
+  D --> E[Active recall and practice]
+  E --> F[Weakness diagnosis]
+  F --> G[Targeted review and replanning]
+  G --> H[Exam simulation / cram]
+  H -. new answers .-> E
 ```
 
-Core loop:
+## What it does
 
-```text
-Materials → Multimodal Understanding → Course Knowledge Model → Exam Intelligence
-→ Student Model → Exam Week Orchestrator → Adaptive Plan → Tutor → Practice
-→ Diagnosis → Wrongbook → Replanning → Cram → Exam
-```
+- **Material understanding** — reads TXT natively; optional PDF, DOCX, PPTX, image, and OCR support is available through the ingestion extra and configured provider.
+- **Knowledge reconstruction** — builds course-scoped topics with evidence references, terminology maps, conflicts, coverage, and prerequisite-aware relationships.
+- **Exam mapping** — analyzes past-exam structure, teacher emphasis, risk priorities, and source-supported exam points.
+- **Active recall and adaptive practice** — produces quizzes, records real answers, and keeps mastery unknown until evidence exists.
+- **Weakness detection** — diagnoses wrong answers and feeds a wrongbook, review planning, later practice, and cram plans.
+- **Exam-week planning** — coordinates multiple courses while preserving per-course knowledge isolation.
+- **Bilingual workflow** — Chinese, English, bilingual output, and mixed-language terminology support.
 
-## Multimodal workflow
+The illustrations below are **schematic examples derived from RecallForge’s documented CLI workflow**, not GUI screenshots.
 
-Native multimodal first; local OCR is a disabled-by-default fallback.
+<p align="center"><img src="assets/screenshots/overview.svg" alt="Schematic RecallForge workflow" width="88%"></p>
+<p align="center"><img src="assets/screenshots/active-recall.svg" alt="Schematic active recall loop" width="88%"></p>
 
-```text
-File → Classifier → Native Parser (text layer/boxes/paragraphs)
-→ Visual Renderer → Multimodal Understanding → Structured Evidence
-```
+More examples: [knowledge reconstruction](assets/screenshots/knowledge-reconstruction.svg), [weakness detection](assets/screenshots/weakness-detection.svg), and [exam simulation](assets/screenshots/exam-simulation.svg).
 
-- Text PDFs, PPTX text boxes, DOCX paragraphs are read natively (preserving file / page / slide / heading / question number).
-- Scanned / image-only pages, formulas, tables, diagrams, handwriting, and exam papers route to a multimodal provider (openai / deepseek / synthetic for tests).
-- Cheap routing: vision is only called when a page actually needs it.
-- Formula ambiguity (subscript/superscript/fraction/chemical equation) forces a visual re-check; unconfirmed formulas stay low-confidence. **Never guessed.**
-- OCR fallback: `extraction_method=ocr_fallback`, low confidence, never supports high-confidence conclusions.
+## Quick start
 
-## Multi-course exam week
+### 1. Download (recommended for most users)
+
+Open [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest), download `recallforge-skill-v2.0.0.zip`, and extract it somewhere you can find again. This is a Python command-line skill, so you need Python 3.10 or newer.
+
+Open **PowerShell** on Windows or **Terminal** on macOS/Linux, move into the extracted folder, then run:
 
 ```bash
-# create the workspace (one per exam week)
-python -m exam_review_skill workspace init --dir ./week --locale zh-CN --daily-hours 6
-
-# add courses (each is fully isolated)
-python -m exam_review_skill workspace add-course --dir ./week --course probability --name "概率论" --exam-date 2026-06-19 --target-score 85
-python -m exam_review_skill workspace add-course --dir ./week --course organic-chemistry --name "有机化学" --exam-date 2026-06-20 --target-score 80
-python -m exam_review_skill workspace add-course --dir ./week --course botany --name "植物学" --target-score 70
-
-# ingest materials into a course (native multimodal first)
-python -m exam_review_skill workspace ingest --dir ./week --course probability --input ./probability_materials --provider openai
-
-# build the exam brain (topics, exam model, risk radar, coverage)
-python -m exam_review_skill workspace build --dir ./week --course probability --days-to-exam 3
-
-# first-use report + dashboard (what the user sees after upload)
-python -m exam_review_skill workspace material-report --dir ./week --course probability
-python -m exam_review_skill workspace dashboard --dir ./week
-
-# the formal global daily plan (topic-level, not a time average)
-python -m exam_review_skill workspace plan-v4 --dir ./week --date 2026-06-18
+python -m pip install .
+recallforge --help
 ```
 
-The orchestrator never mechanically splits time evenly: it weighs urgency, score gain opportunity, risk, target gap, learning cost, forgetting, and course maintenance - while every active course keeps a minimum spaced-review allocation (anti-starvation). Exam-day completion releases a course's future time to others.
+If the second command shows commands beginning with `workspace`, installation worked. On Windows, use `py` if `python` is not recognized.
 
-## Chinese / English support
-
-- **zh-CN and en-US are fully equivalent**: the catalog-parity test asserts every key exists in both locales (no Chinese-only features).
-- **Three output modes** (Chinese / English / Bilingual). Bilingual means Chinese main text with English key terms - never every sentence twice.
-- **terminology_map.json** per course unifies technical terms across languages (`Bayes' theorem` = `贝叶斯公式` = `Bayes公式`), so we never machine-translate terms on the fly.
-- **Mixed-language materials** (Chinese PPT + English textbook) fuse into one topic with aliases and fusion confidence.
-- **question_language and explanation_language** are independently controlled (e.g. English questions with Chinese explanations).
-
-## Installation
+### 2. Create your first review workspace
 
 ```bash
-git clone <your-repo-url> exam-review-skill
-cd exam-review-skill
-python -m venv .venv
+recallforge workspace init --dir ./my-review --locale en-US --daily-hours 3
+recallforge workspace add-course --dir ./my-review --course probability --name "Probability" --exam-date 2026-12-18 --target-score 80
+recallforge workspace ingest --dir ./my-review --course probability --input ./examples/input
+recallforge workspace build --dir ./my-review --course probability --days-to-exam 7
+recallforge workspace material-report --dir ./my-review --course probability
 ```
 
-Windows:
+For Chinese output, replace `--locale en-US` with `--locale zh-CN` and use your Chinese course name. The last command should print a material inventory, gaps, risk, and next steps.
 
-```powershell
-.venv\Scripts\activate
-```
+### Other installation methods
 
-macOS/Linux:
+- **Installer script:** Windows: `powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1`; macOS/Linux: `bash ./scripts/install.sh`. Add `--target <folder>` to choose an install folder. These scripts copy the package; run `python -m pip install .` inside that folder afterwards.
+- **Git clone (developers):** `git clone https://github.com/SiriZhao/recallforge-skill.git && cd recallforge-skill && python -m pip install -e ".[test]"`.
+- **Manual fallback:** copy the extracted folder to any folder you control, open a terminal there, and run `python -m pip install .`.
+
+Need a click-by-click explanation? Read the full [Getting Started guide](docs/getting-started.md) or [中文入门指南](docs/getting-started.zh-CN.md).
+
+## Typical workflow
 
 ```bash
-source .venv/bin/activate
+# Plan today across your courses
+recallforge workspace plan-v4 --dir ./my-review --date 2026-12-11
+
+# Learn, then test active recall
+recallforge workspace tutor --dir ./my-review --course probability --topic central_limit_theorem
+recallforge workspace quiz --dir ./my-review --course probability --mode s-priority --count 5
+
+# Record a real result; an incorrect answer updates the wrongbook
+recallforge workspace answer --dir ./my-review --course probability --topic central_limit_theorem --correct
+
+# Prepare under time pressure
+recallforge workspace cram --dir ./my-review --course probability --mode 1h
 ```
 
-Install the core (stdlib-only runtime; optional extras for document parsing):
+See [usage](docs/usage.md) for quick review, systematic review, weakness repair, past-paper review, active recall, and simulated exam output. See [examples](examples/) for small self-authored scenarios in probability, organic chemistry, computer science, and biology.
+
+## Files, privacy, and limits
+
+- Core processing is local. If you configure an external multimodal provider for scanned or image-heavy materials, the relevant material may be sent to that provider.
+- Unconfigured visual parsing fails closed: unresolved material is reported instead of invented.
+- OCR is opt-in and low confidence. Formula ambiguity remains low confidence until resolved.
+- Readiness and likelihood values are ordinal heuristics, not grade predictions.
+- Do not upload personal data, API keys, restricted exams, or unauthorized course materials. Details: [Security policy](SECURITY.md).
+
+## For developers
 
 ```bash
-pip install -e .[test]
-```
-
-Optional extras:
-
-```bash
-pip install -e ".[ingestion]"   # PDF/PPTX/DOCX/image parsing + rendering
-```
-
-Run the tests:
-
-```bash
-python -m compileall exam_review_skill
+git clone https://github.com/SiriZhao/recallforge-skill.git
+cd recallforge-skill
+python -m pip install -e ".[test]"
+python -m compileall recallforge
 python -m pytest
+python scripts/build_release.py
 ```
 
-## Configuration
+Project map: `recallforge/` is the runtime, `schemas/` validates persisted state, `tests/` verifies behavior, and `examples/` contains safe sample scenarios. Read the [architecture](docs/architecture.md), [contributing guide](CONTRIBUTING.md), and [troubleshooting guide](docs/troubleshooting.md).
 
-Create a workspace with your locale and daily time budget:
+## Feedback and roadmap
 
-```bash
-python -m exam_review_skill workspace init --dir ./week --locale zh-CN --daily-hours 6
-```
+- [Report a bug](https://github.com/SiriZhao/recallforge-skill/issues/new?template=bug_report.yml)
+- [Request a feature](https://github.com/SiriZhao/recallforge-skill/issues/new?template=feature_request.yml)
+- [Improve documentation](https://github.com/SiriZhao/recallforge-skill/issues/new?template=docs.yml)
 
-### Multimodal provider
-
-The pipeline fails closed when no provider is configured. Set one of:
-
-```env
-# OpenAI (Responses API, image input)
-OPENAI_API_KEY=...
-EXAM_REVIEW_OPENAI_VISION_MODEL=gpt-4o
-
-# DeepSeek (chat completions with image input)
-DEEPSEEK_API_KEY=...
-EXAM_REVIEW_DEEPSEEK_VISION_MODEL=deepseek-chat
-```
-
-Use `--provider synthetic --demo` only for tests/fixtures/CI - synthetic records are rejected from real state by the contamination guard.
-
-### OCR fallback (off by default)
-
-Local OCR is disabled by default. Enable it explicitly only when native multimodal is unavailable:
-
-```bash
-set EXAM_REVIEW_OCR_FALLBACK=1   # Windows
-export EXAM_REVIEW_OCR_FALLBACK=1  # macOS/Linux
-```
-
-OCR output is always `extraction_method=ocr_fallback` with low confidence and can never support high-confidence exam conclusions.
-
-### User control (bilingual natural language)
-
-```bash
-# Chinese and English are equivalent
-python -m exam_review_skill workspace override --dir ./week --date 2026-06-18 --skip botany
-python -m exam_review_skill workspace nl --dir ./week --text "I only have three hours tomorrow"
-python -m exam_review_skill workspace nl --dir ./week --text "明天只有3小时"
-```
-
-User overrides always beat the planner.
-
-## Examples
-
-| Scenario | What it exercises |
-|---|---|
-| [Chinese university final exam](examples/chinese-final-exam/README.md) | zh-CN course, evidence ingestion, tutor, quiz, cram |
-| [English-language course](examples/english-course/README.md) | en-US course, English questions with Chinese explanations |
-| [Mixed-language course](examples/mixed-language-course/README.md) | zh PPT + en textbook fused into one topic model |
-| [Four-course exam week](examples/four-course-exam-week/README.md) | multi-course orchestrator, anti-starvation, dashboard |
-| [24-hour cram](examples/24-hour-cram/README.md) | genuine 24h/3h/1h/30m rescue tiers |
-
-Each example includes a runnable fixture (or the exact commands to build one) and expected outputs.
-
-## On-demand reports
-
-```bash
-python -m exam_review_skill workspace report --dir ./week --type exam-risk-radar --course probability
-python -m exam_review_skill workspace report --dir ./week --type formula-sheet --course probability --out formulas.md --format md
-python -m exam_review_skill workspace report --dir ./week --type mock-exam --course probability --out mock.json --format json
-```
-
-Available reports: `course-overview`, `exam-risk-radar`, `past-exam-analysis`, `teacher-style`, `formula-sheet`, `wrongbook`, `7-day-plan`, `mock-exam`, `1-hour-cram`, `30-min-rescue`, `dashboard`, `welcome`.
-
-Formats: Markdown (default), DOCX, PDF, Anki CSV, JSON. **An export failure never affects the main learning flow** - the Markdown is always produced and the failure is reported cleanly.
-
-## Privacy
-
-- Everything runs locally. Materials and student data stay on your machine unless you configure a cloud multimodal provider (your files/images then travel to that provider for understanding).
-- No API keys are committed. Use a local `.env` / environment variables.
-- Synthetic (mock/test) content is **never** written to real course state.
-- Do not upload private student records, paid textbooks, copyrighted materials, real exam leaks, or restricted course files to public repositories.
-
-## Limitations
-
-- `likelihood_estimate` and readiness percentages are **ordinal heuristics**, not statistical probabilities. Never treated as predictions.
-- Readiness shows `Unknown / Insufficient evidence` until there is enough real answer data - the system never fabricates a readiness score.
-- Multimodal understanding needs a configured provider; without one, scanned / image-only pages are recorded as `unresolved` (never faked).
-- PPTX/DOCX visual rendering requires LibreOffice when installed; otherwise native text is used and visual pages are recorded as unresolved.
-- OCR fallback requires the tesseract binary and is disabled by default.
-- Teacher-style claims are tiered (Observed / Strongly Inferred / Inferred / Unknown); nothing is asserted without evidence.
-
-## Testing
-
-```bash
-python -m pytest
-```
-
-The suite covers (167+ tests):
-
-- Workspace / course isolation / contamination guard
-- Multimodal ingestion (text PDF, scanned PDF, PPTX, formula, table, exam paper, handwriting, mixed zh/en, provider failure, OCR fallback)
-- Knowledge model (cross-language fusion, citation preservation, prerequisite edges, conflict handling, hallucination guard)
-- Student model (composite mastery, no-data → unknown, forgetting, sessions)
-- Orchestrator (5 realistic scenarios, anti-starvation, replan events, bilingual NL)
-- Tutor / quiz / grading / diagnosis / wrongbook / cram + the full learning loop
-- i18n (catalog parity zh=en, output modes, terminology)
-- Reporting (welcome report, dashboard honesty, report rendering, exports)
-
-## Naive baseline benchmark
-
-Round 7 adds an honest one-shot baseline benchmark: the SAME source materials are
-fed to (a) a naive one-shot workflow ("Here are all my materials. Help me review
-for my final exam.") and (b) the full Skill pipeline. Three benchmark sets are run:
-
-- **Chinese course** (概率论 with zh materials + past exam)
-- **English course** (Linear Algebra, en materials)
-- **Mixed-language multi-course** (zh + en materials, past exams, scanned page)
-
-The Skill must be meaningfully better on the required metrics: citation accuracy,
-past-exam mapping, personalization, adaptivity, and actionability (and, in the
-multi-course set, coordinated planning). Run it with:
-
-```bash
-python -m pytest tests/test_benchmark.py
-```
-
-Results are recorded in `docs/V2_FINAL_ACCEPTANCE_REPORT.md`.
+Near-term directions: broader course-format support, more adaptive review strategies, and additional runtime compatibility—only where they remain evidence-grounded and testable.
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
+[MIT](LICENSE)

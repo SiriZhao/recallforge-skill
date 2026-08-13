@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from exam_review_skill.models import KnowledgeTopic, QuizQuestion, StudentModel, TopicField
-from exam_review_skill.tutor.diagnosis import DIAGNOSIS_TAXONOMY, diagnose_wrong_answer
-from exam_review_skill.tutor.grading import grade_answer, record_grading_to_student
+from recallforge.models import KnowledgeTopic, QuizQuestion, StudentModel, TopicField
+from recallforge.tutor.diagnosis import DIAGNOSIS_TAXONOMY, diagnose_wrong_answer
+from recallforge.tutor.grading import grade_answer, record_grading_to_student
 
 
 def _question(topic_id: str = "t1") -> QuizQuestion:

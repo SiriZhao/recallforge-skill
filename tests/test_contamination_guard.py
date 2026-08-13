@@ -4,10 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.models import CourseWrongbook, GlobalStudyPlan, PlanBlock
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
-from exam_review_skill.state.isolation import (
+from recallforge.models import CourseWrongbook, GlobalStudyPlan, PlanBlock
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
+from recallforge.state.isolation import (
     StateContaminationError,
     find_mock_markers,
     reject_mock_content,

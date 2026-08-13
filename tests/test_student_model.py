@@ -4,15 +4,15 @@ from datetime import date
 
 import pytest
 
-from exam_review_skill.models import StudentModel, TopicMastery
-from exam_review_skill.state.isolation import StateContaminationError
-from exam_review_skill.student.mastery import (
+from recallforge.models import StudentModel, TopicMastery
+from recallforge.state.isolation import StateContaminationError
+from recallforge.student.mastery import (
     compute_forgetting_risk,
     compute_mastery,
     sync_mastery_levels,
 )
-from exam_review_skill.student.sessions import AnswerResult, record_answer, record_wrongbook_entry
-from exam_review_skill.student.store import load_student_model, save_student_model
+from recallforge.student.sessions import AnswerResult, record_answer, record_wrongbook_entry
+from recallforge.student.store import load_student_model, save_student_model
 
 
 def _model() -> StudentModel:
@@ -166,8 +166,8 @@ def test_wrongbook_rejects_fabricated_content(tmp_path):
 
 def test_student_model_round_trip(tmp_path):
     root = tmp_path / "ws"
-    from exam_review_skill.state import course as course_mod
-    from exam_review_skill.state import workspace as workspace_mod
+    from recallforge.state import course as course_mod
+    from recallforge.state import workspace as workspace_mod
 
     workspace_mod.create_workspace(root)
     workspace_mod.add_course_to_workspace(root, course_id="probability", course_name="概率论")

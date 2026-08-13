@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import tarfile
 import zipfile
 from pathlib import Path
 
@@ -13,20 +14,21 @@ VERSION = "2.0.0"
 
 @pytest.fixture(scope="module")
 def release_available() -> bool:
-    return (DIST / f"exam-review-skill-v{VERSION}.zip").exists()
+    return (DIST / f"recallforge-skill-v{VERSION}.zip").exists()
 
 
 def test_release_zip_exists(release_available):
     if not release_available:
         pytest.skip("release artifact not built in this checkout")
-    assert (DIST / f"exam-review-skill-v{VERSION}.zip").exists()
+    assert (DIST / f"recallforge-skill-v{VERSION}.zip").exists()
     assert (DIST / "SHA256SUMS.txt").exists()
+    assert (DIST / f"recallforge-skill-v{VERSION}.tar.gz").exists()
 
 
 def test_release_zip_clean(release_available):
     if not release_available:
         pytest.skip("release artifact not built in this checkout")
-    zip_path = DIST / f"exam-review-skill-v{VERSION}.zip"
+    zip_path = DIST / f"recallforge-skill-v{VERSION}.zip"
     with zipfile.ZipFile(zip_path) as z:
         names = z.namelist()
     forbidden = [
@@ -38,7 +40,18 @@ def test_release_zip_clean(release_available):
     assert forbidden == [], f"forbidden entries: {forbidden}"
     # key files present
     for required in ("SKILL.md", "README.md", "CHANGELOG.md", "LICENSE", "pyproject.toml"):
-        assert any(n.endswith(required) for n in names), required
+        assert required in names, required
+    assert not any(n.startswith(f"recallforge-skill-v{VERSION}/") for n in names)
+
+
+def test_release_tarball_clean(release_available):
+    if not release_available:
+        pytest.skip("release artifact not built in this checkout")
+    tar_path = DIST / f"recallforge-skill-v{VERSION}.tar.gz"
+    with tarfile.open(tar_path) as tf:
+        names = tf.getnames()
+    assert "SKILL.md" in names
+    assert not any(name.startswith(f"recallforge-skill-v{VERSION}/") for name in names)
 
 
 def test_release_checksum_matches(release_available):

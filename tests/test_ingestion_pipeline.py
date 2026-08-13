@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from exam_review_skill.ingestion.evidence import read_evidence
-from exam_review_skill.ingestion.pipeline import ingest_file
-from exam_review_skill.ingestion.router import route_page
-from exam_review_skill.ingestion.types import IngestOptions, NativePage
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.ingestion.evidence import read_evidence
+from recallforge.ingestion.pipeline import ingest_file
+from recallforge.ingestion.router import route_page
+from recallforge.ingestion.types import IngestOptions, NativePage
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
 
 from ingestion_fixtures import (
     make_docx,

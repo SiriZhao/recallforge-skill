@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a reproducible RecallForge problem
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Remove API keys, tokens, personal study materials, and private paths before posting."
+  - type: input
+    id: version
+    attributes: {label: RecallForge version, placeholder: "2.0.0"}
+    validations: {required: true}
+  - type: input
+    id: platform
+    attributes: {label: Platform, placeholder: "Windows 11 / macOS / Ubuntu"}
+    validations: {required: true}
+  - type: input
+    id: runtime
+    attributes: {label: AI client / runtime, placeholder: "CLI, Codex, Python 3.11"}
+    validations: {required: true}
+  - type: dropdown
+    id: install
+    attributes:
+      label: Installation method
+      options: [Release ZIP, installer script, Git clone, manual]
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: Expected behavior}
+    validations: {required: true}
+  - type: textarea
+    id: actual
+    attributes: {label: Actual behavior}
+    validations: {required: true}
+  - type: textarea
+    id: reproduce
+    attributes: {label: Reproduction steps}
+    validations: {required: true}
+  - type: textarea
+    id: logs
+    attributes: {label: Sanitized logs, description: "Never include keys, personal materials, or private paths."}
+  - type: textarea
+    id: context
+    attributes: {label: Additional context}

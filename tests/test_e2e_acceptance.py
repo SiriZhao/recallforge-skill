@@ -4,22 +4,22 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.i18n import TerminologyMap
-from exam_review_skill.ingestion.pipeline import ingest_file
-from exam_review_skill.ingestion.types import IngestOptions
-from exam_review_skill.knowledge.build import build_course_intelligence
-from exam_review_skill.models import ReplanEvent
-from exam_review_skill.planner.events import record_replan_event
-from exam_review_skill.planner.orchestrator import generate_daily_plan_v4, render_plan_v4
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
-from exam_review_skill.student.store import load_student_model, save_student_model
-from exam_review_skill.tutor.cram import build_cram_plan
-from exam_review_skill.tutor.diagnosis import diagnose_wrong_answer
-from exam_review_skill.tutor.grading import grade_answer, record_grading_to_student
-from exam_review_skill.tutor.quiz import generate_quiz
-from exam_review_skill.tutor.tutor import build_tutor_response
-from exam_review_skill.tutor.wrongbook import add_wrongbook_entry, load_wrongbook
+from recallforge.i18n import TerminologyMap
+from recallforge.ingestion.pipeline import ingest_file
+from recallforge.ingestion.types import IngestOptions
+from recallforge.knowledge.build import build_course_intelligence
+from recallforge.models import ReplanEvent
+from recallforge.planner.events import record_replan_event
+from recallforge.planner.orchestrator import generate_daily_plan_v4, render_plan_v4
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
+from recallforge.student.store import load_student_model, save_student_model
+from recallforge.tutor.cram import build_cram_plan
+from recallforge.tutor.diagnosis import diagnose_wrong_answer
+from recallforge.tutor.grading import grade_answer, record_grading_to_student
+from recallforge.tutor.quiz import generate_quiz
+from recallforge.tutor.tutor import build_tutor_response
+from recallforge.tutor.wrongbook import add_wrongbook_entry, load_wrongbook
 
 
 def _write_txt(path: Path, text: str) -> None:

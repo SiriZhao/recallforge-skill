@@ -4,15 +4,15 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.models import DayOverride
-from exam_review_skill.orchestrator.scheduler import (
+from recallforge.models import DayOverride
+from recallforge.orchestrator.scheduler import (
     MAX_SHARE,
     MIN_MAINTENANCE_HOURS,
     allocate_hours,
     generate_daily_plan,
     render_plan,
 )
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.state import workspace as workspace_mod
 
 
 def _build_workspace(root: Path) -> Path:
@@ -129,8 +129,8 @@ def test_render_plan_localized_zh(tmp_path: Path):
 
 def test_allocate_hours_cap(tmp_path: Path):
     root = _build_workspace(tmp_path / "ws")
-    from exam_review_skill.orchestrator.scheduler import build_course_signal
-    from exam_review_skill.models import CourseManifest
+    from recallforge.orchestrator.scheduler import build_course_signal
+    from recallforge.models import CourseManifest
 
     # single urgent course must not exceed the daily cap (unless cram)
     signal = build_course_signal(

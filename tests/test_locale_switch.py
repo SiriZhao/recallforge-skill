@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from exam_review_skill.i18n import LanguageProfile
-from exam_review_skill.i18n.locales import (
+from recallforge.i18n import LanguageProfile
+from recallforge.i18n.locales import (
     SUPPORTED_LOCALES,
     get_catalog,
     register_locale,

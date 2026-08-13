@@ -25,8 +25,8 @@ add_course_with_evidence(
 Run:
 
 ```bash
-python -m exam_review_skill workspace build --dir ./example --course probability
-python -m exam_review_skill workspace material-report --dir ./example --course probability
+python -m recallforge workspace build --dir ./example --course probability
+python -m recallforge workspace material-report --dir ./example --course probability
 ```
 
 Expected: `Bayes' theorem` / `贝叶斯公式` / `Bayes公式` resolve to one topic via the

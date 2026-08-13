@@ -5,15 +5,15 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.i18n import TerminologyMap
-from exam_review_skill.ingestion.pipeline import ingest_file
-from exam_review_skill.ingestion.types import IngestOptions
-from exam_review_skill.knowledge.build import build_course_intelligence
-from exam_review_skill.planner.orchestrator import generate_daily_plan_v4
-from exam_review_skill.reporting.dashboard import build_dashboard
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
-from exam_review_skill.student.store import load_student_model
+from recallforge.i18n import TerminologyMap
+from recallforge.ingestion.pipeline import ingest_file
+from recallforge.ingestion.types import IngestOptions
+from recallforge.knowledge.build import build_course_intelligence
+from recallforge.planner.orchestrator import generate_daily_plan_v4
+from recallforge.reporting.dashboard import build_dashboard
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
+from recallforge.student.store import load_student_model
 
 
 def _make_course(root: Path, course_id: str = "p", **manifest) -> Path:
@@ -137,7 +137,7 @@ def test_corrupted_state_graceful(tmp_path: Path):
 
 def test_unknown_locale_graceful(tmp_path: Path):
     """An unsupported locale fails closed to the fallback locale instead of crashing."""
-    from exam_review_skill.i18n.locales import t
+    from recallforge.i18n.locales import t
 
     root = _make_course(tmp_path / "ws")
     # unknown locale -> language-level fallback to zh-CN

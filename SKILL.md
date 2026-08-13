@@ -1,93 +1,70 @@
 ---
-name: exam-review-skill
-description: Exam Review Agent that turns course materials into an evidence-grounded, multi-course, adaptive exam-week plan. Use when the user wants to prepare for exams, understand which topics matter and why (with source citations), get a persistent per-course student model, plan a whole exam week across multiple courses, practice with adaptive quizzes, get wrong-answer diagnosis and a wrongbook, or generate time-constrained cram plans. 中英文考试复习智能体：输入课程资料，输出提分路径。
+name: recallforge
+version: 2.0.0
+description: RecallForge — AI Exam Review Skill. Use when a learner wants to turn authorized course materials, notes, syllabus items, or past papers into an exam-oriented review workflow: evidence-linked knowledge reconstruction, active recall, adaptive practice, weakness diagnosis, targeted review, multi-course planning, or time-boxed exam simulation. Supports Chinese, English, and mixed-language material.
 ---
 
-# exam-review-skill
+# RecallForge — AI Exam Review Skill
 
-An Exam Review Agent: understand the materials, understand the exam, understand the student, and continuously decide what to study next across a multi-course exam week.
+**Forge course materials into exam-ready knowledge.**
 
-核心口号：输入课程资料，输出提分路径。
+RecallForge is an evidence-grounded exam-review workflow, not a generic summarizer. It works from the learner’s authorized materials and should keep claims traceable to those materials.
 
-## When to use
+## Trigger when
 
-- 用户有一学期的课件、教材、笔记、作业、扫描卷、真题，想复习期末考试。
-- The user wants to know which topics are actually tested, with the original source cited.
-- The user has multiple final exams in the same week and needs ONE coordinated plan.
-- The user answers questions wrong and expects the system to remember, diagnose, and replan.
-- The user needs a 30-minute rescue / 1-hour / 3-day cram before an exam.
+- The learner shares or refers to lecture notes, slides, PDFs, DOCX files, syllabus, study guides, question banks, or past papers and wants exam preparation.
+- They ask what matters for an exam, which topics are weak, how to practice active recall, how to repair mistakes, or how to plan an exam week.
+- They need a diagnostic quiz, targeted review, a mock exam, a wrong-answer review, or a 7-day to 30-minute cram plan.
 
-## Workspace workflow (one exam week)
+Do not claim it has processed files that were not supplied or ingested. Do not use it to facilitate cheating, obtain restricted exam content, or process materials without authorization.
 
-1. **Init** the workspace for the exam week:
+## Input and output
 
-```bash
-python -m exam_review_skill workspace init --dir ./week --locale zh-CN --daily-hours 6
+Input may include material files, course name, exam date, target score, available time, preferred language, prior answers, and past papers. The CLI’s core runtime natively accepts text files; optional ingestion dependencies and a configured multimodal provider enable PDF, PPTX, DOCX, images, and limited OCR fallback.
+
+Output is proportionate to the evidence available. It may include a material inventory, knowledge map, exam scope map, priority/risk rationale, active-recall questions, answer diagnosis, wrongbook entries, a targeted plan, and an exam-style or cram output. When evidence is insufficient, say so explicitly; readiness remains unknown rather than guessed.
+
+## Workflow
+
+```text
+Course materials
+  → material understanding and evidence store
+  → knowledge reconstruction
+  → exam scope mapping and priority
+  → active recall and practice
+  → weakness detection
+  → targeted review and replanning
+  → exam simulation or cram
+  → feedback from real answers
 ```
 
-2. **Add courses** (each fully isolated):
+1. **Clarify the review context.** Ask only for missing essentials: course, exam date or horizon, available study time, material location, and output language.
+2. **Create an isolated course workspace.** Keep each course’s knowledge and student state separate.
+3. **Ingest and inspect material.** Preserve source references. Flag unresolved scans, ambiguous formulas, and missing material; never invent text or citations.
+4. **Reconstruct knowledge and exam scope.** Build evidence-linked topics, prerequisites, past-paper mapping, teacher-emphasis tiers, coverage, conflicts, and explainable priorities.
+5. **Choose the next learning action.** Prefer active recall and practice over passive recap. Use a diagnostic first when the learner’s mastery is unknown.
+6. **Diagnose real responses.** Record only real user answers. Wrong answers can update the student model and wrongbook, then change future practice and plans.
+7. **Close the loop.** Replan after new material, completed quizzes, wrong answers, changed time, changed target, or rescheduled exams.
+
+## Behavior boundaries
+
+- Treat course evidence as stronger than model knowledge. Mark helpful general explanations as supplementary.
+- Do not fabricate citations, past-exam frequency, teacher tendencies, readiness scores, or mastery.
+- Treat likelihood and readiness as ordinal planning heuristics, never statistical predictions.
+- Keep OCR output low confidence; if formulas, tables, handwriting, or scans cannot be verified, request a clearer source rather than guessing.
+- Respect privacy, copyright, and academic-integrity rules. Do not store API keys, personal student records, restricted exams, or private materials in examples or reports.
+- Use Chinese, English, or bilingual terminology as requested. Preserve technical terms and source language when translation would reduce precision.
+
+## CLI path
 
 ```bash
-python -m exam_review_skill workspace add-course --dir ./week --course probability --name "概率论" --exam-date 2026-06-19 --target-score 85
+recallforge workspace init --dir ./my-review --locale zh-CN --daily-hours 3
+recallforge workspace add-course --dir ./my-review --course probability --name "概率论" --exam-date 2026-12-18 --target-score 80
+recallforge workspace ingest --dir ./my-review --course probability --input ./materials
+recallforge workspace build --dir ./my-review --course probability --days-to-exam 7
+recallforge workspace diagnostic --dir ./my-review --course probability
+recallforge workspace quiz --dir ./my-review --course probability --mode weak-topic --count 5
+recallforge workspace cram --dir ./my-review --course probability --mode 1h
 ```
 
-3. **Ingest materials** (native multimodal first; provider fails closed):
-
-```bash
-python -m exam_review_skill workspace ingest --dir ./week --course probability --input ./materials --provider openai
-```
-
-4. **Build the exam brain** (topics, exam model, risk radar, coverage):
-
-```bash
-python -m exam_review_skill workspace build --dir ./week --course probability --days-to-exam 3
-```
-
-5. **First-use report** (what the user should see after upload - inventory, structure, exam situation, gaps, risks, next steps):
-
-```bash
-python -m exam_review_skill workspace material-report --dir ./week --course probability
-```
-
-6. **Exam-week dashboard** (honest readiness; Unknown / Insufficient evidence until enough data):
-
-```bash
-python -m exam_review_skill workspace dashboard --dir ./week
-```
-
-7. **Global daily plan** (topic-level, not a time average):
-
-```bash
-python -m exam_review_skill workspace plan-v4 --dir ./week --date 2026-06-18
-```
-
-## Learning loop
-
-- **Tutor** a topic (course-first, structured, supplementary-marked): `workspace tutor --course probability --topic central_limit_theorem`
-- **Quiz** in any mode (diagnostic / s-priority / weak-topic / past-exam-style / mixed / wrongbook / speed-run / cram): `workspace quiz --mode s-priority --count 10`
-- **Record an answer** (only real answers mutate mastery): `workspace answer --topic ... --correct`
-- **Diagnosis + wrongbook**: wrong answers are classified into a 13-category taxonomy, stored, and drive mastery/risk/planner/future-quiz/cram.
-- **Cram** (7d / 3d / 24h / 3h / 1h / 30m, genuinely distinct): `workspace cram --mode 30m`
-
-## Reports
-
-`workspace report --type course-overview|exam-risk-radar|past-exam-analysis|teacher-style|formula-sheet|wrongbook|7-day-plan|mock-exam|1-hour-cram|30-min-rescue|dashboard|welcome [--out file --format md|docx|pdf|anki|json]`
-
-Export failure never affects the main learning flow.
-
-## Language
-
-- zh-CN and en-US are fully equivalent (catalog-parity tested). All user-facing output localizes.
-- Three output modes: Chinese / English / Bilingual (Chinese main text + English key terms).
-- Mixed-language materials fuse into one topic via terminology maps.
-- English questions with Chinese explanations supported (independent question/explanation language).
-
-## Principles (do not violate)
-
-- 考试提分 > 泛泛总结；结构理解 > 长文本堆叠；课程证据 > 模型猜测。
-- Native multimodal first; local OCR is disabled by default and never supports high-confidence conclusions.
-- Evidence-grounded: every topic / exam point / answer carries source evidence ids. No fabricated citations.
-- Real state > mock data: synthetic/mock content is rejected from real state by the contamination guard.
-- Persistent student model; mastery is composite (not raw accuracy); no data -> unknown, never a pretend 0.5.
-- Multi-course global optimization; anti-starvation; user overrides always beat the planner.
-- likelihood_estimate and readiness are ordinal heuristics, NOT statistical probabilities.
+For installation and complete command documentation, see [README](README.md), [Getting Started](docs/getting-started.md), and [Usage](docs/usage.md).

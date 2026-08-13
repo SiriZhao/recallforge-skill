@@ -4,8 +4,8 @@ An English-language course (e.g. Linear Algebra) with an en-US UI, showing Engli
 questions with Chinese explanations (independent question/explanation language).
 
 ```bash
-python -m exam_review_skill workspace init --dir ./example --locale en-US --daily-hours 5
-python -m exam_review_skill workspace add-course --dir ./example --course linear-algebra \
+python -m recallforge workspace init --dir ./example --locale en-US --daily-hours 5
+python -m recallforge workspace add-course --dir ./example --course linear-algebra \
   --name "Linear Algebra" --exam-date 2026-06-20 --target-score 75
 ```
 
@@ -32,9 +32,9 @@ add_course_with_evidence(
 Run:
 
 ```bash
-python -m exam_review_skill workspace quiz --dir ./example --course linear-algebra \
+python -m recallforge workspace quiz --dir ./example --course linear-algebra \
   --mode mixed --question-language en-US --explanation-language zh-CN
-python -m exam_review_skill workspace dashboard --dir ./example
+python -m recallforge workspace dashboard --dir ./example
 ```
 
 Expected: the dashboard renders in English; quiz questions are English while the

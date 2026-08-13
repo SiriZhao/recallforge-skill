@@ -1,45 +1,32 @@
-# Contributing
+# Contributing to RecallForge
 
-Thanks for considering a contribution to exam-review-skill.
+Thanks for helping make exam review more useful and trustworthy.
 
-## Development Setup
+## Setup
 
-```bash
-git clone https://github.com/YOUR_USERNAME/exam-review-skill.git
-cd exam-review-skill
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
-
-On Windows, activate with:
-
-```powershell
-.venv\Scripts\activate
-```
-
-## Before Opening a PR
-
-Run:
+Fork the repository, clone your fork, and create a focused branch:
 
 ```bash
-python -m compileall exam_review_skill
+git clone https://github.com/YOUR_USERNAME/recallforge-skill.git
+cd recallforge-skill
+git switch -c feature/short-description
+python -m pip install -e ".[test]"
+python -m compileall recallforge
 python -m pytest
 ```
 
-## Pull Request Flow
+Use `fix/`, `docs/`, `feature/`, or `refactor/` prefixes where helpful. Keep commits concise and imperative, for example `docs: clarify manual installation`.
 
-1. Fork the repository.
-2. Create a branch, for example `feature/better-risk-radar`.
-3. Keep changes focused.
-4. Add or update tests when behavior changes.
-5. Do not commit API keys, `.env` files, private course materials, scanned real exams, student data, or large generated outputs.
-6. Open a PR with a short summary, validation steps, and any known limitations.
+## What to contribute
 
-## Good First Issues
+- Bug fixes with regression tests.
+- Safe, self-authored examples; never upload private, leaked, paid, or unauthorized course material.
+- Documentation improvements in English or Chinese.
+- Prompt/Skill improvements that preserve evidence boundaries and academic integrity.
+- New parsers, providers, reports, or planning behavior with tests and clear failure modes.
 
-- Improve example materials.
-- Add more parser tests.
-- Improve source references in generated reports.
-- Improve optional export formats.
-- Add provider adapters while keeping mock mode working.
+## Pull requests
+
+Before opening a PR, run the relevant tests and update documentation when user behavior changes. Explain what changed, why, and exactly how you tested it. Do not commit keys, `.env` files, personal data, course records, or generated workspaces.
+
+See [Architecture](docs/architecture.md) for module boundaries and [Security](SECURITY.md) for reporting sensitive concerns.

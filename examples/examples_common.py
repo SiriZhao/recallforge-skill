@@ -9,10 +9,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from exam_review_skill.i18n import TerminologyMap
-from exam_review_skill.knowledge.build import build_course_intelligence
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.i18n import TerminologyMap
+from recallforge.knowledge.build import build_course_intelligence
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
 
 
 def make_workspace(root: Path, *, locale: str = "zh-CN", daily_hours: float = 6.0) -> Path:

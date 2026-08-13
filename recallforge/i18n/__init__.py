@@ -1,4 +1,4 @@
-"""Internationalization foundation for exam-review-skill v2.
+"""Internationalization foundation for recallforge-skill v2.
 
 Three distinct language concepts are modeled separately:
   * UI locale      - the language used to talk to the user (Skill language)

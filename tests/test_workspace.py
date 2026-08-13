@@ -6,23 +6,23 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.models import DayOverride, ExamCalendar
-from exam_review_skill.orchestrator.calendar import (
+from recallforge.models import DayOverride, ExamCalendar
+from recallforge.orchestrator.calendar import (
     active_entries,
     days_to_exam,
     mark_completed,
     remove_entry,
     upsert_entry,
 )
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
-from exam_review_skill.state.course import COURSE_FILES
-from exam_review_skill.state.isolation import (
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
+from recallforge.state.course import COURSE_FILES
+from recallforge.state.isolation import (
     StateContaminationError,
     assert_course_isolation,
     reject_mock_content,
 )
-from exam_review_skill.state.workspace import WORKSPACE_FILES
+from recallforge.state.workspace import WORKSPACE_FILES
 
 
 def _build_workspace(root: Path) -> Path:

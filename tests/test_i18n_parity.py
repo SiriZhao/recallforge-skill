@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from exam_review_skill.i18n.locales import SUPPORTED_LOCALES, get_catalog, t
-from exam_review_skill.i18n.output_modes import OutputMode, render_bilingual
+from recallforge.i18n.locales import SUPPORTED_LOCALES, get_catalog, t
+from recallforge.i18n.output_modes import OutputMode, render_bilingual
 
 
 def test_catalog_key_parity_zh_en():
@@ -68,7 +68,7 @@ def test_render_single_language():
 
 
 def test_render_bilingual_with_terminology_map():
-    from exam_review_skill.i18n import TerminologyMap
+    from recallforge.i18n import TerminologyMap
 
     tm = TerminologyMap(course_id="p")
     tm.add("central_limit_theorem", zh="中心极限定理", en="Central Limit Theorem")

@@ -3,15 +3,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from exam_review_skill.reporting.dashboard import build_dashboard
-from exam_review_skill.reporting.export import export_report, SUPPORTED_FORMATS
-from exam_review_skill.reporting.reports import REPORT_TYPES, render_report
-from exam_review_skill.reporting.welcome import build_first_use_report
-from exam_review_skill.planner.orchestrator import generate_daily_plan_v4
-from exam_review_skill.knowledge.build import build_course_intelligence
-from exam_review_skill.student.store import load_student_model, save_student_model
-from exam_review_skill.student.sessions import AnswerResult, record_answer
-from exam_review_skill.state import course as course_mod
+from recallforge.reporting.dashboard import build_dashboard
+from recallforge.reporting.export import export_report, SUPPORTED_FORMATS
+from recallforge.reporting.reports import REPORT_TYPES, render_report
+from recallforge.reporting.welcome import build_first_use_report
+from recallforge.planner.orchestrator import generate_daily_plan_v4
+from recallforge.knowledge.build import build_course_intelligence
+from recallforge.student.store import load_student_model, save_student_model
+from recallforge.student.sessions import AnswerResult, record_answer
+from recallforge.state import course as course_mod
 
 from planner_fixtures import build_scenario_workspace
 
@@ -121,14 +121,16 @@ def test_export_docx(tmp_path: Path):
     assert out.exists() and out.stat().st_size > 0
 
 
-def test_export_failure_isolated(tmp_path: Path):
-    """PDF export fails cleanly (reportlab not installed) WITHOUT affecting the
-    main flow: markdown still available, message reports the failure."""
+def test_export_pdf_isolated(tmp_path: Path):
+    """Optional PDF export may succeed when reportlab is installed; either
+    outcome must not prevent the normal Markdown flow."""
     text = "# hello"
     out = tmp_path / "r.pdf"
     ok, msg = export_report(text, output_path=out, fmt="pdf")
-    assert ok is False
-    assert "失败" in msg or "failed" in msg.lower()
+    if ok:
+        assert out.exists() and out.stat().st_size > 0
+    else:
+        assert "失败" in msg or "failed" in msg.lower()
     # markdown export still works afterwards
     md = tmp_path / "r.md"
     ok2, _ = export_report(text, output_path=md, fmt="md")
@@ -136,7 +138,7 @@ def test_export_failure_isolated(tmp_path: Path):
 
 
 def test_export_anki(tmp_path: Path):
-    from exam_review_skill.models import QuizQuestion
+    from recallforge.models import QuizQuestion
 
     questions = [
         QuizQuestion(question_id="Q1", topic_id="t1", topic_name="CLT", question_type="calculation",

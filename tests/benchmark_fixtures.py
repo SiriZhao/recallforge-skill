@@ -10,12 +10,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from exam_review_skill.i18n import TerminologyMap
-from exam_review_skill.knowledge.build import build_course_intelligence
-from exam_review_skill.ingestion.pipeline import ingest_file
-from exam_review_skill.ingestion.types import IngestOptions
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.i18n import TerminologyMap
+from recallforge.knowledge.build import build_course_intelligence
+from recallforge.ingestion.pipeline import ingest_file
+from recallforge.ingestion.types import IngestOptions
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
 
 
 @dataclass

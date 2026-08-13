@@ -5,7 +5,7 @@ A realistic exam week: Probability (tomorrow), Organic Chemistry (2 days), Calcu
 starve the far course.
 
 ```bash
-python -m exam_review_skill workspace init --dir ./example --locale zh-CN --daily-hours 6
+python -m recallforge workspace init --dir ./example --locale zh-CN --daily-hours 6
 ```
 
 ```python
@@ -32,8 +32,8 @@ for course_id, name, exam_date, target, topics in courses:
 Run:
 
 ```bash
-python -m exam_review_skill workspace plan-v4 --dir ./example --date 2026-06-18
-python -m exam_review_skill workspace dashboard --dir ./example --date 2026-06-18
+python -m recallforge workspace plan-v4 --dir ./example --date 2026-06-18
+python -m recallforge workspace dashboard --dir ./example --date 2026-06-18
 ```
 
 Expected: probability and organic get more time than botany (not a 3h/3h split);

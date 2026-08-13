@@ -4,12 +4,12 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.models import ReplanEvent
-from exam_review_skill.planner.events import record_replan_event
-from exam_review_skill.planner.nl import parse_command
-from exam_review_skill.planner.orchestrator import generate_daily_plan_v4
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.models import ReplanEvent
+from recallforge.planner.events import record_replan_event
+from recallforge.planner.nl import parse_command
+from recallforge.planner.orchestrator import generate_daily_plan_v4
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
 
 from planner_fixtures import build_scenario_workspace
 

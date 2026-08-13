@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from exam_review_skill.models import (
+from recallforge.models import (
     ExamPointModel,
     KnowledgeTopic,
     PastExamQuestion,
@@ -11,8 +11,8 @@ from exam_review_skill.models import (
     StudentModel,
     TopicField,
 )
-from exam_review_skill.tutor.quiz import QUIZ_MODES, generate_quiz
-from exam_review_skill.tutor.tutor import build_tutor_response
+from recallforge.tutor.quiz import QUIZ_MODES, generate_quiz
+from recallforge.tutor.tutor import build_tutor_response
 
 
 def _topic(topic_id: str = "central_limit_theorem") -> KnowledgeTopic:
@@ -115,7 +115,7 @@ def test_quiz_s_priority_selects_s_topics():
 def test_quiz_weak_topic_selects_weak():
     student = StudentModel(course_id="p")
     # make botany weak via answers
-    from exam_review_skill.student.sessions import AnswerResult, record_answer
+    from recallforge.student.sessions import AnswerResult, record_answer
 
     record_answer(
         student,
@@ -189,7 +189,7 @@ def test_quiz_language_independent():
 
 def test_adaptive_difficulty_rises_with_sustained_correct():
     """Sustained correct answers raise the difficulty level; repeated errors keep it low."""
-    from exam_review_skill.student.sessions import AnswerResult, record_answer
+    from recallforge.student.sessions import AnswerResult, record_answer
 
     strong = StudentModel(course_id="p")
     for _ in range(8):

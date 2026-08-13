@@ -24,9 +24,9 @@ add_course_with_evidence(root, course_id="botany", name="植物学",
 Run:
 
 ```bash
-python -m exam_review_skill workspace report --dir ./example --type 1-hour-cram --course probability
-python -m exam_review_skill workspace report --dir ./example --type 30-min-rescue --course probability
-python -m exam_review_skill workspace plan-v4 --dir ./example --date 2026-06-18
+python -m recallforge workspace report --dir ./example --type 1-hour-cram --course probability
+python -m recallforge workspace report --dir ./example --type 30-min-rescue --course probability
+python -m recallforge workspace plan-v4 --dir ./example --date 2026-06-18
 ```
 
 Expected: 30-min rescue keeps ONLY S-level core formulas/conditions/traps; the

@@ -3,17 +3,17 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from exam_review_skill.i18n import TerminologyMap
-from exam_review_skill.knowledge.build import build_course_intelligence
-from exam_review_skill.knowledge.exam import (
+from recallforge.i18n import TerminologyMap
+from recallforge.knowledge.build import build_course_intelligence
+from recallforge.knowledge.exam import (
     build_exam_points,
     build_past_exam_sets,
     evidence_weight_for,
 )
-from exam_review_skill.knowledge.teacher import build_teacher_style
-from exam_review_skill.knowledge.topic import build_topics
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.knowledge.teacher import build_teacher_style
+from recallforge.knowledge.topic import build_topics
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
 
 
 def _term_map() -> TerminologyMap:

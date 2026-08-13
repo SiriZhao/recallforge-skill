@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from exam_review_skill.models import StudentModel
-from exam_review_skill.student.diagnostic import build_diagnostic_plan
-from exam_review_skill.student.sessions import AnswerResult, record_answer
+from recallforge.models import StudentModel
+from recallforge.student.diagnostic import build_diagnostic_plan
+from recallforge.student.sessions import AnswerResult, record_answer
 
 
 def _topics():
-    from exam_review_skill.models import KnowledgeTopic, TopicField
+    from recallforge.models import KnowledgeTopic, TopicField
 
     return [
         KnowledgeTopic(topic_id="t1", canonical_name="CLT", question_types=["calculation"], evidence=["e1"]),

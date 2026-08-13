@@ -4,11 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.planner.orchestrator import generate_daily_plan_v4, render_plan_v4
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
-from exam_review_skill.student.sessions import AnswerResult, record_answer
-from exam_review_skill.student.store import load_student_model, save_student_model
+from recallforge.planner.orchestrator import generate_daily_plan_v4, render_plan_v4
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
+from recallforge.student.sessions import AnswerResult, record_answer
+from recallforge.student.store import load_student_model, save_student_model
 
 from planner_fixtures import build_scenario_workspace
 
@@ -90,7 +90,7 @@ def test_scenario_e_mixed_chinese_english(tmp_path: Path):
         exam_date="2026-06-25", target_score=75,
     )
     course_path = course_mod.course_dir(root, "linear-algebra")
-    from exam_review_skill.i18n import TerminologyMap
+    from recallforge.i18n import TerminologyMap
 
     tm = TerminologyMap(course_id="linear-algebra")
     tm.add("matrix", zh="矩阵", en="matrix")
@@ -106,7 +106,7 @@ def test_scenario_e_mixed_chinese_english(tmp_path: Path):
         course_path / "evidence_store.json",
         {"course_id": "linear-algebra", "documents": {}, "records": records, "updated_at": ""},
     )
-    from exam_review_skill.knowledge.build import build_course_intelligence
+    from recallforge.knowledge.build import build_course_intelligence
 
     build_course_intelligence(root, "linear-algebra", days_to_exam=6)
     plan = generate_daily_plan_v4(root, "2026-06-18")

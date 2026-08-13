@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from exam_review_skill.i18n import TerminologyMap
+from recallforge.i18n import TerminologyMap
 
 
 def test_add_and_localize():

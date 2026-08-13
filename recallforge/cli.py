@@ -7,8 +7,8 @@ from .workspace_cli import add_workspace_parser
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="exam-review-skill",
-        description="Exam Review Agent: from course materials to a scoring path.",
+        prog="recallforge",
+        description="RecallForge — AI Exam Review Skill: forge course materials into exam-ready knowledge.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
     add_workspace_parser(sub)

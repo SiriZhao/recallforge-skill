@@ -1,21 +1,14 @@
 # Security Policy
 
-## Reporting Security Issues
+## Report responsibly
 
-Please do not open public issues for sensitive security reports. If this project is hosted under your GitHub account, configure a private security contact or GitHub Security Advisories, then report issues there.
+Do not put sensitive reports in a public issue. Use GitHub Security Advisories if enabled for the repository. If no private channel is configured, open a minimal issue asking for a private contact—without exploit details, secrets, logs, or personal data.
 
-If no private channel is configured yet, open a minimal public issue saying that you have a security concern without including exploit details, secrets, private files, or personal data.
+## Never publish
 
-## Sensitive Data Rules
+- API keys, tokens, passwords, cookies, or `.env` files.
+- Student names, IDs, grades, submissions, or private records.
+- Private course materials, restricted or leaked exams, and unauthorized copyrighted content.
+- Local paths that reveal personal identity, provider request logs, or screenshots containing sensitive data.
 
-Do not commit:
-
-- API keys or access tokens
-- `.env` files
-- student names, IDs, grades, or private records
-- private course materials
-- restricted exams or leaked questions
-- paid copyrighted materials
-- OCR caches or generated outputs containing private material
-
-Use `.env.example` for configuration examples. Keep real secrets only in local environment variables or secret managers.
+Before reporting a normal bug, remove credentials and private study material. Use [`.env.example`](.env.example) for configuration names only.

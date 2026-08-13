@@ -1,6 +1,6 @@
-"""Build the v2.0.0 release artifacts in dist/:
-  - exam-review-skill-v2.0.0.zip           (source distribution)
-  - exam_review_skill-2.0.0-py3-none-any.whl (wheel)
+"""Build RecallForge release artifacts in dist/:
+  - recallforge-skill-v2.0.0.zip           (source distribution)
+  - recallforge-skill-v2.0.0.tar.gz
   - SHA256SUMS.txt                          (combined checksums)
 
 Only release-needed content is included. Excluded: .git, caches, __pycache__,
@@ -13,13 +13,15 @@ Usage: python scripts/build_release.py
 from __future__ import annotations
 
 import hashlib
+import tarfile
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 VERSION = "2.0.0"
 DIST = ROOT / "dist"
-OUT = DIST / f"exam-review-skill-v{VERSION}.zip"
+ZIP_OUT = DIST / f"recallforge-skill-v{VERSION}.zip"
+TAR_OUT = DIST / f"recallforge-skill-v{VERSION}.tar.gz"
 
 EXCLUDE_DIRS = {
     ".git",
@@ -29,6 +31,7 @@ EXCLUDE_DIRS = {
     "venv",
     ".codex",
     ".agents",
+    ".test-tmp",
     "node_modules",
     "dist",
     "build",
@@ -49,7 +52,7 @@ def _excluded(rel: str) -> bool:
     if any(part in EXCLUDE_DIRS for part in parts):
         return True
     name = parts[-1]
-    # a directory named like "*.egg-info" (e.g. exam_review_skill.egg-info)
+    # a directory named like "*.egg-info" (e.g. recallforge.egg-info)
     if any(part.endswith(".egg-info") for part in parts):
         return True
     for pattern in EXCLUDE_FILES:
@@ -68,14 +71,14 @@ def _excluded(rel: str) -> bool:
 def main() -> None:
     DIST.mkdir(exist_ok=True)
     _build_zip()
-    _build_wheel()
+    _build_tarball()
     _write_checksums()
     print("Release artifacts written to", DIST)
 
 
 def _build_zip() -> None:
-    if OUT.exists():
-        OUT.unlink()
+    if ZIP_OUT.exists():
+        ZIP_OUT.unlink()
 
     files: list[Path] = []
     for path in ROOT.rglob("*"):
@@ -87,37 +90,25 @@ def _build_zip() -> None:
         files.append(path)
     files.sort(key=lambda p: p.relative_to(ROOT).as_posix())
 
-    with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(ZIP_OUT, "w", zipfile.ZIP_DEFLATED) as zf:
         for path in files:
             rel = path.relative_to(ROOT).as_posix()
-            zf.write(path, f"exam-review-skill-v{VERSION}/{rel}")
+            zf.write(path, rel)
 
-    print(f"Wrote {OUT}")
-    print(f"  {len(files)} files, {OUT.stat().st_size} bytes")
+    print(f"Wrote {ZIP_OUT}")
+    print(f"  {len(files)} files, {ZIP_OUT.stat().st_size} bytes")
 
 
-def _build_wheel() -> None:
-    """Build a wheel with an explicit writable cache dir (Windows ACL-safe)."""
-    import os
-    import subprocess
-    import sys
-    import tempfile
-
-    cache = Path(tempfile.gettempdir()) / "pipwheel_cache"
-    cache.mkdir(exist_ok=True)
-    env = dict(os.environ)
-    env["PIP_CACHE_DIR"] = str(cache)
-    subprocess.run(
-        [
-            sys.executable, "-m", "pip", "wheel", "--quiet",
-            "--no-build-isolation", "--no-deps", "--cache-dir", str(cache),
-            "-w", str(DIST), ".",
-        ],
-        check=True,
-        env=env,
-    )
-    wheel = next(DIST.glob(f"exam_review_skill-{VERSION}-*.whl"))
-    print(f"Wrote {wheel} ({wheel.stat().st_size} bytes)")
+def _build_tarball() -> None:
+    if TAR_OUT.exists():
+        TAR_OUT.unlink()
+    with tarfile.open(TAR_OUT, "w:gz") as tf:
+        for path in sorted(ROOT.rglob("*")):
+            if path.is_file():
+                rel = path.relative_to(ROOT).as_posix()
+                if not _excluded(rel):
+                    tf.add(path, arcname=rel)
+    print(f"Wrote {TAR_OUT}")
 
 
 def _write_checksums() -> None:

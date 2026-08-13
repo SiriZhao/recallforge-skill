@@ -93,5 +93,5 @@ def _export_anki(questions: list, output_path: Path) -> None:
     for q in questions:
         front = getattr(q, "question_text", q.get("question_text", "") if isinstance(q, dict) else "")
         back = getattr(q, "correct_answer", q.get("correct_answer", "") if isinstance(q, dict) else "")
-        rows.append(f'"{str(front).replace(chr(34), chr(34)*2)}","{str(back).replace(chr(34), chr(34)*2)}","exam-review-skill"')
+        rows.append(f'"{str(front).replace(chr(34), chr(34)*2)}","{str(back).replace(chr(34), chr(34)*2)}","recallforge-skill"')
     output_path.write_text("\n".join(rows), encoding="utf-8")

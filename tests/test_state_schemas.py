@@ -5,10 +5,10 @@ from pathlib import Path
 
 from jsonschema import ValidationError, validate
 
-from exam_review_skill.models import DayOverride
-from exam_review_skill.orchestrator.scheduler import generate_daily_plan
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.models import DayOverride
+from recallforge.orchestrator.scheduler import generate_daily_plan
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
 
 SCHEMA_DIR = Path(__file__).resolve().parent.parent / "schemas"
 

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from exam_review_skill.i18n import LanguageProfile
-from exam_review_skill.i18n.locales import get_catalog
-from exam_review_skill.orchestrator.scheduler import generate_daily_plan, render_plan
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.i18n import LanguageProfile
+from recallforge.i18n.locales import get_catalog
+from recallforge.orchestrator.scheduler import generate_daily_plan, render_plan
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
 
 
 def test_en_course_manifest_and_plan(tmp_path: Path):

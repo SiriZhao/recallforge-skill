@@ -4,12 +4,12 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.ingestion.evidence import read_evidence, write_evidence
-from exam_review_skill.ingestion.pipeline import ingest_file
-from exam_review_skill.ingestion.types import Evidence, IngestOptions
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
-from exam_review_skill.state.isolation import StateContaminationError, find_mock_markers
+from recallforge.ingestion.evidence import read_evidence, write_evidence
+from recallforge.ingestion.pipeline import ingest_file
+from recallforge.ingestion.types import Evidence, IngestOptions
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
+from recallforge.state.isolation import StateContaminationError, find_mock_markers
 
 from ingestion_fixtures import make_scanned_pdf
 

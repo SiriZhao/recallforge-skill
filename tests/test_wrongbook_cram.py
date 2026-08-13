@@ -3,20 +3,20 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 
-from exam_review_skill.models import (
+from recallforge.models import (
     ExamPointModel,
     KnowledgeTopic,
     QuizQuestion,
     StudentModel,
     TopicField,
 )
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
-from exam_review_skill.tutor.cram import CRAM_MODES, build_cram_plan, render_cram_plan
-from exam_review_skill.tutor.diagnosis import diagnose_wrong_answer
-from exam_review_skill.tutor.grading import grade_answer
-from exam_review_skill.tutor.retry import schedule_retry
-from exam_review_skill.tutor.wrongbook import add_wrongbook_entry, load_wrongbook
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
+from recallforge.tutor.cram import CRAM_MODES, build_cram_plan, render_cram_plan
+from recallforge.tutor.diagnosis import diagnose_wrong_answer
+from recallforge.tutor.grading import grade_answer
+from recallforge.tutor.retry import schedule_retry
+from recallforge.tutor.wrongbook import add_wrongbook_entry, load_wrongbook
 
 
 def _topic() -> KnowledgeTopic:
@@ -94,7 +94,7 @@ def test_wrongbook_rejects_fabricated(tmp_path: Path):
         question={"question_text": "x"}, user_answer="示例：未作答", grading_mistake="unknown",
         topic=topic, prerequisites=[], prerequisite_mastery={},
     )
-    from exam_review_skill.state.isolation import StateContaminationError
+    from recallforge.state.isolation import StateContaminationError
 
     try:
         add_wrongbook_entry(
@@ -185,7 +185,7 @@ def test_cram_multicourse_coordination(tmp_path: Path):
     """Multi-course cram: exam-close courses get emergency cram, far courses get
     maintenance - both present, not just the last-mentioned course."""
     from planner_fixtures import build_scenario_workspace
-    from exam_review_skill.planner.orchestrator import generate_daily_plan_v4
+    from recallforge.planner.orchestrator import generate_daily_plan_v4
 
     root = build_scenario_workspace(tmp_path / "ws")
     # probability exam tomorrow, organic day after -> both near

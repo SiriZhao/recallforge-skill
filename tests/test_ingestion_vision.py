@@ -4,17 +4,17 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.ingestion.evidence import read_evidence
-from exam_review_skill.ingestion.ocr_fallback import OCRDisabled, run_ocr
-from exam_review_skill.ingestion.pipeline import ingest_file
-from exam_review_skill.ingestion.provider import (
+from recallforge.ingestion.evidence import read_evidence
+from recallforge.ingestion.ocr_fallback import OCRDisabled, run_ocr
+from recallforge.ingestion.pipeline import ingest_file
+from recallforge.ingestion.provider import (
     ProviderUnavailable,
     available_providers,
     get_provider,
     register_provider,
 )
-from exam_review_skill.ingestion.types import IngestOptions
-from exam_review_skill.state import workspace as workspace_mod
+from recallforge.ingestion.types import IngestOptions
+from recallforge.state import workspace as workspace_mod
 
 from ingestion_fixtures import make_image, make_scanned_pdf
 
@@ -62,7 +62,7 @@ def test_multimodal_provider_failure_is_unresolved_not_faked(tmp_path: Path):
 def test_provider_unavailable_for_unset_env():
     provider = get_provider("openai")
     assert provider.is_available() is False
-    from exam_review_skill.ingestion.types import RenderedPage
+    from recallforge.ingestion.types import RenderedPage
 
     with pytest.raises(ProviderUnavailable):
         provider.understand_page(

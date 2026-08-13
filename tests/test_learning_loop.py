@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from exam_review_skill.models import ReplanEvent
-from exam_review_skill.planner.events import record_replan_event
-from exam_review_skill.planner.orchestrator import generate_daily_plan_v4
-from exam_review_skill.student.store import load_student_model, save_student_model
-from exam_review_skill.tutor.cram import build_cram_plan
-from exam_review_skill.tutor.diagnosis import diagnose_wrong_answer
-from exam_review_skill.tutor.grading import grade_answer, record_grading_to_student
-from exam_review_skill.tutor.quiz import generate_quiz
-from exam_review_skill.tutor.tutor import build_tutor_response
-from exam_review_skill.tutor.wrongbook import add_wrongbook_entry, load_wrongbook, update_retry_after_attempt
+from recallforge.models import ReplanEvent
+from recallforge.planner.events import record_replan_event
+from recallforge.planner.orchestrator import generate_daily_plan_v4
+from recallforge.student.store import load_student_model, save_student_model
+from recallforge.tutor.cram import build_cram_plan
+from recallforge.tutor.diagnosis import diagnose_wrong_answer
+from recallforge.tutor.grading import grade_answer, record_grading_to_student
+from recallforge.tutor.quiz import generate_quiz
+from recallforge.tutor.tutor import build_tutor_response
+from recallforge.tutor.wrongbook import add_wrongbook_entry, load_wrongbook, update_retry_after_attempt
 
 from planner_fixtures import build_scenario_workspace
 
@@ -30,7 +30,7 @@ def test_full_learning_loop(tmp_path: Path):
     assert any(b.course_id == "probability" for b in plan.blocks)
 
     # --- learn: tutor the S-level topic
-    from exam_review_skill.knowledge.build import build_course_intelligence
+    from recallforge.knowledge.build import build_course_intelligence
 
     result = build_course_intelligence(root, "probability", persist=False)
     clt = next(t for t in result.topics if t.topic_id == "central_limit_theorem")
@@ -95,7 +95,7 @@ def test_full_learning_loop(tmp_path: Path):
     assert prob_blocks_after, "replanned probability must still appear"
 
     # --- retry: schedule the retry and re-attempt correctly
-    from exam_review_skill.tutor.retry import schedule_retry
+    from recallforge.tutor.retry import schedule_retry
 
     retry = schedule_retry(
         topic_id=q.topic_id,

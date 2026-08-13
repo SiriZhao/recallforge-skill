@@ -22,4 +22,5 @@ ocr_cache/
 .ocr_cache/
 temp/
 tmp/
+.test-tmp/
 node_modules/

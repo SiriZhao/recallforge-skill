@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from exam_review_skill.benchmark.harness import run_multi_course_benchmark, run_single_course_benchmark
+from recallforge.benchmark.harness import run_multi_course_benchmark, run_single_course_benchmark
 
 from benchmark_fixtures import (
     build_chinese_fixture,

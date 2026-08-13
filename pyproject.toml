@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "exam-review-skill"
+name = "recallforge-skill"
 version = "2.0.0"
-description = "Exam-oriented Codex Skill for building high-efficiency university final review systems."
+description = "Open-source AI exam review skill for active recall, knowledge reconstruction, weakness detection, adaptive practice, and exam simulation."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
@@ -19,13 +19,14 @@ ingestion = [
   "Pillow>=10.0.0",
   "pytesseract>=0.3.10"
 ]
-test = ["pytest>=8.0.0", "jsonschema>=4.20.0", "exam-review-skill[ingestion]"]
+test = ["pytest>=8.0.0", "jsonschema>=4.20.0", "recallforge-skill[ingestion]"]
 
 [project.scripts]
-exam-review-skill = "exam_review_skill.cli:main"
+recallforge = "recallforge.cli:main"
+recallforge-skill = "recallforge.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["exam_review_skill*"]
+include = ["recallforge*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -25,8 +25,8 @@ def test_examples_common_imports():
         target_score=85,
         topics=[("central_limit_theorem", "中心极限定理", "Central Limit Theorem")],
     )
-    from exam_review_skill.state import course as course_mod
-    from exam_review_skill.state import workspace as workspace_mod
+    from recallforge.state import course as course_mod
+    from recallforge.state import workspace as workspace_mod
 
     assert "probability" in workspace_mod.list_courses(root)
     kg = course_mod.load_course_json(course_mod.course_dir(root, "probability"), "knowledge_graph.json", {})

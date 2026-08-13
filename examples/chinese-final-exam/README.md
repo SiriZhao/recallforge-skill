@@ -5,19 +5,19 @@
 ## Build the scenario
 
 ```bash
-python -m exam_review_skill workspace init --dir ./example --locale zh-CN --daily-hours 6
-python -m exam_review_skill workspace add-course --dir ./example --course probability \
+python -m recallforge workspace init --dir ./example --locale zh-CN --daily-hours 6
+python -m recallforge workspace add-course --dir ./example --course probability \
   --name "概率论" --exam-date 2026-06-19 --target-score 85
 ```
 
 Then ingest materials (or run the fixture builder below) and build the exam brain:
 
 ```bash
-python -m exam_review_skill workspace build --dir ./example --course probability --days-to-exam 3
-python -m exam_review_skill workspace material-report --dir ./example --course probability
-python -m exam_review_skill workspace tutor --dir ./example --course probability --topic central_limit_theorem
-python -m exam_review_skill workspace quiz --dir ./example --course probability --mode s-priority --count 5
-python -m exam_review_skill workspace cram --dir ./example --course probability --mode 30m
+python -m recallforge workspace build --dir ./example --course probability --days-to-exam 3
+python -m recallforge workspace material-report --dir ./example --course probability
+python -m recallforge workspace tutor --dir ./example --course probability --topic central_limit_theorem
+python -m recallforge workspace quiz --dir ./example --course probability --mode s-priority --count 5
+python -m recallforge workspace cram --dir ./example --course probability --mode 30m
 ```
 
 ## Fixture builder

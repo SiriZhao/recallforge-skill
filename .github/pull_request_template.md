@@ -1,20 +1,26 @@
-## Summary
+## What changed
 
-- 
+## Why
 
-## Validation
+## Type
 
-- [ ] `python -m compileall exam_review_skill`
-- [ ] `python -m pytest`
-- [ ] Example run checked, if relevant
+- [ ] Bug fix
+- [ ] Feature
+- [ ] Documentation
+- [ ] Refactor / maintenance
 
-## Safety
+## Tests
 
-- [ ] No API keys or tokens
-- [ ] No private student data
-- [ ] No private or copyrighted course materials
-- [ ] No large generated outputs
+Describe commands run and results.
 
-## Notes
+## Documentation
 
-Anything reviewers should know?
+- [ ] Not needed
+- [ ] Updated
+
+## Checklist
+
+- [ ] Scope is focused and behavior is evidence-grounded.
+- [ ] No secrets, private study data, or unauthorized materials are included.
+- [ ] Relevant tests pass.
+- [ ] User-facing documentation is accurate.

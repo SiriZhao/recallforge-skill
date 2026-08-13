@@ -3,15 +3,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from exam_review_skill.i18n import TerminologyMap
-from exam_review_skill.ingestion.pipeline import ingest_file
-from exam_review_skill.ingestion.types import IngestOptions
-from exam_review_skill.knowledge.build import build_course_intelligence
-from exam_review_skill.state import course as course_mod
-from exam_review_skill.state import workspace as workspace_mod
-from exam_review_skill.state.isolation import find_mock_markers
-from exam_review_skill.student.store import load_student_model
-from exam_review_skill.tutor.diagnosis import DIAGNOSIS_TAXONOMY
+from recallforge.i18n import TerminologyMap
+from recallforge.ingestion.pipeline import ingest_file
+from recallforge.ingestion.types import IngestOptions
+from recallforge.knowledge.build import build_course_intelligence
+from recallforge.state import course as course_mod
+from recallforge.state import workspace as workspace_mod
+from recallforge.state.isolation import find_mock_markers
+from recallforge.student.store import load_student_model
+from recallforge.tutor.diagnosis import DIAGNOSIS_TAXONOMY
 
 
 def _build_real_course(root: Path) -> Path:
