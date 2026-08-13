@@ -10,7 +10,7 @@
 
 RecallForge is a host-executed Skill for Codex and compatible Agent Skills hosts. It begins with material inspection—not a long summary—then reconstructs course knowledge, tests recall, diagnoses demonstrated weaknesses, targets repair, and can finish with a source-grounded mock exam.
 
-> Main contains **unreleased v2.2 development**. The latest downloadable GitHub Release remains **v2.1.2** until release authentication and host verification are complete.
+> Main contains **unreleased v2.2 development**. The latest downloadable GitHub Release remains **v2.1.2** until external Codex host verification is complete. GitHub authentication is available.
 
 ```text
 $recallforge
@@ -36,6 +36,8 @@ Build the course structure first, then test what I actually know.
 | Past papers | Question/options/score/source structure when extractable | Multi-column/figure/handwriting verification | Fixture path verified |
 
 Status language: **Verified** means an automated fixture ran here. **Host-dependent** means the workflow is implemented but depends on the selected AI host’s visual capability. No claim means “works everywhere.”
+
+Local OCR was benchmarked on a Windows 11 CPU reference machine: Tesseract 5.5.0 and RapidOCR 1.2.3 both completed 10/10 self-authored fixtures. Neither is treated as verified understanding; see [Local OCR verification](docs/ocr.md) for CER/WER, speed, and the recommended processing matrix.
 
 ## Material Intelligence
 
@@ -128,6 +130,7 @@ RecallForge operates no server or upload service. Material handling by the AI mo
 - [Why RecallForge](docs/why-recallforge.md) · [Architecture](docs/architecture.md)
 - [Examples](docs/examples.md) · [FAQ](docs/faq.md) · [Troubleshooting](docs/troubleshooting.md)
 - [Manual host verification](docs/manual-verification.md)
+- [Local OCR verification](docs/ocr.md)
 - [Native ingestion benchmark](benchmarks/README.md)
 
 If RecallForge helps, starring the repository, reporting an issue, or contributing an improvement is appreciated. See [Contributing](CONTRIBUTING.md), [Security](SECURITY.md), and [MIT License](LICENSE).

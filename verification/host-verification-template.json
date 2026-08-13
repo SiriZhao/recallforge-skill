@@ -1,0 +1,20 @@
+{
+  "$comment": "Release Host Verification Protocol evidence. Do not include names, emails, local user directories, private paths, credentials, or private study materials.",
+  "host": "",
+  "host_version": "",
+  "os": "",
+  "date": "",
+  "recallforge_commit": "",
+  "install_method": "ZIP | install script | plugin | git",
+  "skill_visible": false,
+  "text_self_test": "PASS | FAIL | NOT_RUN",
+  "text_self_test_evidence": "",
+  "multimodal_test": "PASS | FAIL | HOST_CAPABILITY_UNAVAILABLE | NOT_RUN",
+  "multimodal_test_evidence": "",
+  "functional_test": "PASS | FAIL | NOT_RUN",
+  "functional_test_evidence": "",
+  "material_e2e": "PASS | FAIL | NOT_RUN",
+  "material_e2e_evidence": "",
+  "recognition_warnings": [],
+  "verified_by": ""
+}

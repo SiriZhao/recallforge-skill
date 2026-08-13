@@ -339,7 +339,11 @@ def ingest_file(
                 try:
                     if is_image(path):
                         ocr_page = run_ocr(
-                            path, enabled=options.allow_ocr_fallback, offline_mode=options.offline_mode
+                            path,
+                            enabled=options.allow_ocr_fallback,
+                            offline_mode=options.offline_mode,
+                            engine=options.ocr_engine,
+                            language=options.ocr_language,
                         )
                         ocr_text = ocr_page.raw_text
                         ocr_warning = ocr_page.warning or ""
@@ -358,6 +362,8 @@ def ingest_file(
                                     matched.image_png,
                                     enabled=options.allow_ocr_fallback,
                                     offline_mode=options.offline_mode,
+                                    engine=options.ocr_engine,
+                                    language=options.ocr_language,
                                 )
                                 ocr_text = ocr_page.raw_text
                                 ocr_warning = ocr_page.warning or ""

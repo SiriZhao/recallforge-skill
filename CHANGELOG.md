@@ -12,7 +12,23 @@ All notable changes to RecallForge are documented here. This project follows the
 ### Changed
 
 - Made release archive creation and checksum generation reproducible.
-- Prepared v2.2.0 candidate packages without creating a release tag while GitHub authentication remains blocked.
+- Prepared v2.2.0 candidate packages without creating a release tag; external Codex host verification is still pending.
+
+### Verified
+
+- Full automated suite: 215 passed on Windows 11 / Python 3.14.3 (real Tesseract OCR test included).
+- Local OCR benchmark with 10 self-authored fixtures: Tesseract 5.5.0 and RapidOCR 1.2.3, CER/WER recorded.
+- Official Skill and Plugin validators pass; clean-room ZIP/Plugin install tests pass.
+
+### Known limitations
+
+- External Codex host E2E (`/skills` → self-test → multimodal-test → material review) is not complete; see `docs/manual-verification.md`.
+- Local OCR is optional and experimental; it is not the preferred Chinese document path and cannot verify formulas, diagrams, tables, or exam structure alone.
+- Host vision quality depends on the selected host/model and is not claimed as universally verified.
+
+## [2.1.3] - 2026-08-13 (tag only)
+
+Tag-only packaging correction for reproducible archives. No GitHub Release assets were published for this tag.
 
 ## [2.1.2] - 2026-08-13
 
@@ -33,3 +49,4 @@ All notable changes to RecallForge are documented here. This project follows the
 - Release package excludes secrets, local environments, caches, generated outputs, and user course data.
 
 [2.1.2]: https://github.com/SiriZhao/recallforge-skill/releases/tag/v2.1.2
+[2.1.3]: https://github.com/SiriZhao/recallforge-skill/releases/tag/v2.1.3

@@ -1,0 +1,234 @@
+{
+  "reference": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.3",
+    "processor": "Intel64 Family 6 Model 197 Stepping 2, GenuineIntel",
+    "gpu": "not used",
+    "scope": "local CPU OCR only; host vision and formula interpretation excluded"
+  },
+  "providers": {
+    "tesseract": {
+      "status": "available",
+      "version": "5.5.0.20241111",
+      "install_footprint_bytes": 90200529
+    },
+    "rapidocr": {
+      "status": "available",
+      "version": "1.2.3",
+      "install_footprint_bytes": 189997134
+    }
+  },
+  "fixtures": [
+    {
+      "fixture": "OCR-01-english-clean",
+      "kind": "text",
+      "ground_truth": "The standard solution is a solution of known concentration. Titration requires an indicator and a burette.",
+      "engines": {
+        "tesseract": {
+          "text": "Standard Solution\n\nThe standard solution is a solution of known concentration.\nTitration requires an indicator and a burette.",
+          "elapsed_seconds": 0.4164,
+          "cer": 0.1758,
+          "wer": 0.125
+        },
+        "rapidocr": {
+          "text": "Standard Solution\nThe standard solution is a solution of known concentration.\nTitration requires an indicator and a burette.",
+          "elapsed_seconds": 4.1694,
+          "cer": 0.1758,
+          "wer": 0.125
+        }
+      }
+    },
+    {
+      "fixture": "OCR-02-chinese-clean",
+      "kind": "text",
+      "ground_truth": "标准溶液是已知浓度的溶液。滴定分析需要使用指示剂和滴定管。",
+      "engines": {
+        "tesseract": {
+          "text": "标准溶液\n\n标准溶液是已知浓度的盗疹。冯定分析需要使用指示剂和痛定\n\n管。",
+          "elapsed_seconds": 0.582,
+          "cer": 0.2759,
+          "wer": 0.2962962962962963
+        },
+        "rapidocr": {
+          "text": "标准溶液\n标准溶液是已知浓度的溶液。\n滴定分析需要使用指示剂和滴定\n管。",
+          "elapsed_seconds": 2.8979,
+          "cer": 0.1379,
+          "wer": 0.14814814814814814
+        }
+      }
+    },
+    {
+      "fixture": "OCR-03-mixed",
+      "kind": "mixed",
+      "ground_truth": "贝叶斯定理用于条件概率计算。P(A|B) = P(B|A) * P(A) / P(B)。其中 A 和 B 是事件。",
+      "engines": {
+        "tesseract": {
+          "text": "Bayes theorem\n\n贝叶斯定理用于条件概率计算。P( Al|B) = P( BIA)\n* P(A) / P(B)。其中A 和 B 是事件。",
+          "elapsed_seconds": 0.7811,
+          "cer": 0.2979,
+          "wer": 0.16129032258064516
+        },
+        "rapidocr": {
+          "text": "Bayes theorem\n贝叶斯定理用于条件概率计算。P（AIB）\nP（BIA)\nP（B）。其中\nP(A)\n是事件。",
+          "elapsed_seconds": 5.688,
+          "cer": 0.6383,
+          "wer": 0.3548387096774194
+        }
+      }
+    },
+    {
+      "fixture": "OCR-04-low-resolution",
+      "kind": "low_quality",
+      "ground_truth": "Photosynthesis converts light energy into chemical energy. Chlorophyll absorbs red and blue light.",
+      "engines": {
+        "tesseract": {
+          "text": "Photosynthesis\n\nPhotosynthesis converts light energy into chemical energy. Chlorophyll\nabsorbs red and blue light.",
+          "elapsed_seconds": 0.2462,
+          "cer": 0.1628,
+          "wer": 0.07692307692307693
+        },
+        "rapidocr": {
+          "text": "Photosynthesis\nPhotosynthesis converts light energy into chemical energy. Chlorophyll\nabsorbs red and blue light.",
+          "elapsed_seconds": 5.2978,
+          "cer": 0.1628,
+          "wer": 0.07692307692307693
+        }
+      }
+    },
+    {
+      "fixture": "OCR-05-rotated",
+      "kind": "rotated",
+      "ground_truth": "Meiosis produces four haploid cells. Each cell contains one copy of every chromosome.",
+      "engines": {
+        "tesseract": {
+          "text": "Meiosis produces four haploid cells. Each cell contains one copy\n\nof every chromosome.",
+          "elapsed_seconds": 0.392,
+          "cer": 0.0,
+          "wer": 0.0
+        },
+        "rapidocr": {
+          "text": "Meiosis produces four haploid cells. Each cell contains one copy\nof every chromosome.",
+          "elapsed_seconds": 6.0536,
+          "cer": 0.0,
+          "wer": 0.0
+        }
+      }
+    },
+    {
+      "fixture": "OCR-06-two-column",
+      "kind": "two_column",
+      "ground_truth": "The nucleus stores genetic material. Transcription happens in the nucleus. Translation happens at the ribosome. Proteins fold into their final shape.",
+      "engines": {
+        "tesseract": {
+          "text": "The nucleus stores genetic Translation happens at the\nmaterial. Transcription happens in ribosome. Proteins fold into their\nthe nucleus. final shape.",
+          "elapsed_seconds": 0.4002,
+          "cer": 0.3333,
+          "wer": 0.42857142857142855
+        },
+        "rapidocr": {
+          "text": "The nucleus stores genetic\nTranslation happens at the\nmaterial. Transcription happens in\nribosome. Proteins fold into their\nthe nucleus.\nfinal shape.",
+          "elapsed_seconds": 5.9101,
+          "cer": 0.3333,
+          "wer": 0.42857142857142855
+        }
+      }
+    },
+    {
+      "fixture": "OCR-07-exam-paper",
+      "kind": "exam",
+      "ground_truth": "1. 标准溶液的定义是什么？\nA. 已知浓度的溶液\nB. 未知浓度的溶液\nC. 不需要标定\nD. 必须立即使用\n2. 系统误差和偶然误差有什么区别？",
+      "engines": {
+        "tesseract": {
+          "text": "期末试卷\n\n标付溶液的定义是什么 ?\n\n已知浓上度的溶液\n\n未知次度的溶液\n\n不需要标定\n\n必须立即使用\n\n系统误差和偶然误差有什么区别 ?\n\n已中四工一",
+          "elapsed_seconds": 0.5425,
+          "cer": 0.381,
+          "wer": 0.3090909090909091
+        },
+        "rapidocr": {
+          "text": "期未试卷\n1.\n标准溶液的定义是什么？\nA :\n已知浓度的溶液\nB.\n未知浓度的溶液\nC.\n不需要标定\nD.\n必须立即使用\n系统误差和偶然误差有什么区别？",
+          "elapsed_seconds": 5.6963,
+          "cer": 0.1111,
+          "wer": 0.09090909090909091
+        }
+      }
+    },
+    {
+      "fixture": "OCR-08-formula-context",
+      "kind": "formula_context",
+      "ground_truth": "条件概率公式：P(A|B) = P(A∩B) / P(B)。独立事件满足 P(A∩B) = P(A)P(B)。",
+      "engines": {
+        "tesseract": {
+          "text": "Conditional probability\n\n条件概率公式 P( A|B) = P( ANB) /\nP( B) 。独立事件满足 P( ANB) =\nP(A) P( B).",
+          "elapsed_seconds": 0.7438,
+          "cer": 0.5417,
+          "wer": 0.2222222222222222
+        },
+        "rapidocr": {
+          "text": "Conditional probability\n条件概率公式：P（A」B）\nP（AB)\nP（B）。\n独立事件满足\nP（ANB)\nP（A）P（B）",
+          "elapsed_seconds": 8.0656,
+          "cer": 0.8125,
+          "wer": 0.2222222222222222
+        }
+      }
+    },
+    {
+      "fixture": "OCR-09-table",
+      "kind": "table",
+      "ground_truth": "术语 定义\n标准溶液 已知浓度的溶液\n指示剂 判断滴定终点",
+      "engines": {
+        "tesseract": {
+          "text": "标准溶液                       已知浓上度的溶液\n\n指示剂                           判断消定终点",
+          "elapsed_seconds": 0.5585,
+          "cer": 0.25,
+          "wer": 0.25
+        },
+        "rapidocr": {
+          "text": "术语\n定义\n标准溶液\n已知浓度的溶液\n指示剂\n判断滴定终点",
+          "elapsed_seconds": 4.2812,
+          "cer": 0.0,
+          "wer": 0.0
+        }
+      }
+    },
+    {
+      "fixture": "OCR-10-annotation-overlap",
+      "kind": "annotation",
+      "ground_truth": "标准溶液是已知浓度的溶液。指示剂用于判断滴定终点。",
+      "engines": {
+        "tesseract": {
+          "text": "B?\n\n标准溶液是已知浓度的溶液。指示剂用于判断酒定终点",
+          "elapsed_seconds": 0.4911,
+          "cer": 0.16,
+          "wer": 0.08695652173913043
+        },
+        "rapidocr": {
+          "text": "B?\n标准溶液是已知浓度的溶液。\n指示剂用于判断滴定终点",
+          "elapsed_seconds": 3.529,
+          "cer": 0.12,
+          "wer": 0.043478260869565216
+        }
+      }
+    }
+  ],
+  "summary": {
+    "tesseract": {
+      "fixtures_with_cer": 10,
+      "mean_cer": 0.2578,
+      "median_cer": 0.263,
+      "mean_wer": 0.1956,
+      "total_elapsed_seconds": 5.1538,
+      "pages_per_second": 1.94,
+      "failures": 0
+    },
+    "rapidocr": {
+      "fixtures_with_cer": 10,
+      "mean_cer": 0.2492,
+      "median_cer": 0.1503,
+      "mean_wer": 0.149,
+      "total_elapsed_seconds": 51.5889,
+      "pages_per_second": 0.194,
+      "failures": 0,
+      "cold_start_seconds": 0.7811
+    }
+  }
+}

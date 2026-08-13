@@ -1,0 +1,58 @@
+{
+  "note": "Invariant-style golden cases. LLM output wording is intentionally not asserted; only structural, traceable, and uncertainty properties are.",
+  "cases": {
+    "pptx_native": {
+      "inputs": ["generated lecture.pptx (2 slides)"],
+      "expect": {
+        "units": 2,
+        "source_anchors": ["lecture.pptx, slide 1", "lecture.pptx, slide 2"],
+        "block_types_present": ["text"],
+        "zero_silent_drop": true
+      }
+    },
+    "digital_pdf": {
+      "inputs": ["generated digital.pdf (1 page)"],
+      "expect": {
+        "units": 1,
+        "extraction_method": "native_text",
+        "source_anchor_suffix": "p. 1",
+        "zero_silent_drop": true
+      }
+    },
+    "scanned_pdf_no_provider": {
+      "inputs": ["generated scan.pdf (1 image-only page)"],
+      "expect": {
+        "units": 1,
+        "status": "failed_with_reason",
+        "no_fabricated_content": true,
+        "zero_silent_drop": true
+      }
+    },
+    "formula_ambiguity": {
+      "inputs": ["generated formula.pdf with ambiguous expression"],
+      "expect": {
+        "formula_blocks": true,
+        "ambiguous_formula_confidence": "< 0.5",
+        "no_silent_rewrite": true
+      }
+    },
+    "past_paper": {
+      "inputs": ["generated exam.pdf"],
+      "expect": {
+        "question_count_min": 3,
+        "options_preserved": true,
+        "scores_preserved": true,
+        "chinese_body_preserved": true
+      }
+    },
+    "docx_table": {
+      "inputs": ["generated notes.docx with 3x2 table"],
+      "expect": {
+        "table_structure": true,
+        "headers": ["Functional group", "Reaction"],
+        "rows_preserved": true,
+        "not_flattened": true
+      }
+    }
+  }
+}

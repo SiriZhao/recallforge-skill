@@ -89,39 +89,47 @@ def test_ocr_disabled_by_default():
 
 
 def test_ocr_enabled_but_engine_unavailable_never_fabricates(tmp_path: Path):
-    # tesseract binary is not installed in this environment -> engine failure is
-    # surfaced as OCRDisabled, and the pipeline records the page as unresolved.
     root = _workspace_with_course(tmp_path / "ws")
     pdf = make_scanned_pdf(tmp_path / "scan.pdf")
     result = ingest_file(
-        root, "chem101", pdf, options=IngestOptions(allow_ocr_fallback=True, store_mode="demo")
+        root,
+        "chem101",
+        pdf,
+        options=IngestOptions(
+            allow_ocr_fallback=True,
+            store_mode="demo",
+            ocr_engine="engine-that-does-not-exist",
+        ),
     )
     assert result.evidence_added == []
     assert result.unresolved_pages
     assert any("ocr" in w.lower() or "OCR" in w for w in result.warnings)
 
 
-def test_ocr_fallback_flag_on_output(tmp_path: Path):
-    # When OCR succeeds (mock path is not used here), the evidence must carry
-    # extraction_method=ocr_fallback and low confidence. We test the flag contract
-    # at the run_ocr boundary: even a successful OCR result is capped low-confidence.
-    page = run_ocr_engine_if_available()
-    if page is None:
-        pytest.skip("tesseract engine not available")
-    assert page.warning and "low confidence" in page.warning
+def test_real_ocr_fallback_when_engine_available(tmp_path: Path):
+    """Run the actual local OCR path when a usable engine is installed."""
+    from PIL import Image, ImageDraw, ImageFont
+    from recallforge.ingestion.ocr_fallback import OCRDisabled, run_ocr
 
-
-def run_ocr_engine_if_available():
+    img = Image.new("RGB", (600, 200), "white")
+    draw = ImageDraw.Draw(img)
     try:
-        from PIL import Image
-        import pytesseract
-
-        img = Image.new("RGB", (100, 100), "white")
-        import io
-
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
-        # force failure detection; if the binary were present this would succeed
-        return None
+        font = ImageFont.truetype("arial.ttf", 40)
     except Exception:
-        return None
+        font = None
+    draw.text((30, 60), "Concentration C = n / V", fill="black", font=font)
+    buf_path = tmp_path / "ocr-sample.png"
+    img.save(buf_path)
+    try:
+        page = run_ocr(
+            buf_path,
+            enabled=True,
+            offline_mode=False,
+            engine="tesseract",
+            language="eng",
+        )
+    except OCRDisabled as exc:
+        pytest.skip(f"tesseract not usable here: {exc}")
+    assert page.raw_text.strip()
+    assert page.warning and "low confidence" in page.warning
+    assert "Concentration" in page.raw_text or "concentration" in page.raw_text

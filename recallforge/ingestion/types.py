@@ -183,6 +183,8 @@ class IngestOptions:
     store_mode: str = "real"  # "real" rejects synthetic records; "demo"/"test" allows
     cache_dir: str | None = None
     min_visual_confidence: float = 0.6
+    ocr_engine: str = "tesseract"
+    ocr_language: str | None = None
 
 
 @dataclass

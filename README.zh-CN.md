@@ -10,7 +10,7 @@
 
 RecallForge 是装载到 Codex 与兼容 Agent Skills 宿主中的复习 Skill。它不会一上来输出一篇长摘要，而是先检查资料和识别质量，再建立课程知识结构，通过主动回忆观察真实薄弱点，针对性修复，最后可生成有资料依据的模拟考试。
 
-> `main` 当前包含**尚未正式发布的 v2.2 开发内容**。GitHub Release 认证和宿主验证完成前，用户可下载的最新正式版仍是 **v2.1.2**。
+> `main` 当前包含**尚未正式发布的 v2.2 开发内容**。外部 Codex 宿主验证完成前，用户可下载的最新正式版仍是 **v2.1.2**。GitHub 认证已可用。
 
 ```text
 $recallforge
@@ -36,6 +36,8 @@ $recallforge
 | 往年试卷 | 在可提取时区分题目、选项、分值、批注与来源 | fixture 路径已验证 |
 
 “已验证”表示本仓库的自制 fixture 在当前测试环境中真实运行过；“依赖宿主”表示工作流已经实现，但最终视觉质量由所选 AI 宿主决定。
+
+本地 OCR 已在 Windows 11 CPU 参考机器上做过真实基准：Tesseract 5.5.0 和 RapidOCR 1.2.3 都完成 10/10 个自制 fixture。两者都不能被视为已验证理解；CER/WER、速度和推荐矩阵见[本地 OCR 验证](docs/ocr.zh-CN.md)。
 
 ## 资料智能理解层
 
@@ -114,6 +116,7 @@ RecallForge 自身不运营服务器或上传服务。资料如何被处理取�
 - [为什么使用 RecallForge](docs/why-recallforge.md) · [架构](docs/architecture.md)
 - [案例](docs/examples.md) · [常见问题](docs/faq.md) · [故障排查](docs/troubleshooting.md)
 - [人工宿主验收](docs/manual-verification.zh-CN.md)
+- [本地 OCR 验证](docs/ocr.zh-CN.md)
 - [原生摄取基准](benchmarks/README.md)
 
 如果 RecallForge 对你有帮助，欢迎 Star、提交 Issue 或贡献改进。项目没有空的 Sponsor/Donate 区。参见[贡献指南](CONTRIBUTING.md)、[安全政策](SECURITY.md)和 [MIT License](LICENSE)。
