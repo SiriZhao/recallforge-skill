@@ -49,7 +49,7 @@ flowchart LR
 
 ### 1. 下载（最适合普通用户）
 
-打开 [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest)，下载 `recallforge-skill-v2.0.1.zip` 并解压到自己找得到的位置。RecallForge 是 Python 命令行 Skill，需要 Python 3.10 或更高版本。
+打开 [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest)，下载 `recallforge-skill-v2.0.3.zip` 并解压到自己找得到的位置。RecallForge 是 Python 命令行 Skill，需要 Python 3.10 或更高版本。
 
 在 Windows 打开 **PowerShell**，在 macOS/Linux 打开 **终端**；进入解压后的目录，执行：
 

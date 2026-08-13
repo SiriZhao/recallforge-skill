@@ -11,7 +11,7 @@ Use materials you own or are allowed to process: notes, lecture handouts, a syll
 ## Install
 
 1. Open the project’s [Releases page](https://github.com/SiriZhao/recallforge-skill/releases/latest).
-2. Download `recallforge-skill-v2.0.1.zip` and extract it.
+2. Download `recallforge-skill-v2.0.3.zip` and extract it.
 3. Open a terminal in the extracted folder.
 4. Run `python -m pip install .`.
 5. Run `recallforge --help`.

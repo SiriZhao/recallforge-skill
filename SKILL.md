@@ -1,6 +1,6 @@
 ---
 name: recallforge
-version: 2.0.1
+version: 2.0.3
 description: RecallForge — AI Exam Review Skill. Use when a learner wants to turn authorized course materials, notes, syllabus items, or past papers into an exam-oriented review workflow: evidence-linked knowledge reconstruction, active recall, adaptive practice, weakness diagnosis, targeted review, multi-course planning, or time-boxed exam simulation. Supports Chinese, English, and mixed-language material.
 ---
 

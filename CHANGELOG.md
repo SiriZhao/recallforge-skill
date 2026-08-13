@@ -2,7 +2,7 @@
 
 All notable changes to RecallForge are documented here. This project follows the spirit of [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
-## [2.0.2] - 2026-08-13
+## [2.0.3] - 2026-08-13
 
 ### Added
 
@@ -20,4 +20,4 @@ All notable changes to RecallForge are documented here. This project follows the
 
 - Release package excludes secrets, local environments, caches, generated outputs, and user course data.
 
-[2.0.2]: https://github.com/SiriZhao/recallforge-skill/releases/tag/v2.0.2
+[2.0.3]: https://github.com/SiriZhao/recallforge-skill/releases/tag/v2.0.3
