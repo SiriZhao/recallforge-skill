@@ -2,102 +2,118 @@
 
 <p align="center"><strong>简体中文</strong> · <a href="README.md">English</a></p>
 
+<p align="center"><a href="https://github.com/SiriZhao/recallforge-skill/releases/latest">下载正式版</a> · <a href="#三分钟开始使用">快速开始</a> · <a href="docs/examples.md">案例</a> · <a href="docs/materials.zh-CN.md">资料指南</a> · <a href="docs/faq.md">常见问题</a></p>
+
 # RecallForge — AI Exam Review Skill
 
-**将课程资料锻造成真正可用于考试的知识体系。**
+**把 PPT、扫描教材、图片、讲义和往年试卷直接交给 AI，从资料理解开始完成考试复习。**
 
-RecallForge 是装载到 Codex 和兼容 Agent Skills 宿主中的 AI 复习 Skill。安装一次 `recallforge` 文件夹后，就在宿主 AI 中完成知识重构、主动回忆、薄弱点诊断、针对性练习和模拟考试。它不是网页应用、独立聊天软件、API 服务，也不需要运行单独程序。
+RecallForge 是装载到 Codex 与兼容 Agent Skills 宿主中的复习 Skill。它不会一上来输出一篇长摘要，而是先检查资料和识别质量，再建立课程知识结构，通过主动回忆观察真实薄弱点，针对性修复，最后可生成有资料依据的模拟考试。
 
-## 三分钟安装
+> `main` 当前包含**尚未正式发布的 v2.2 开发内容**。GitHub Release 认证和宿主验证完成前，用户可下载的最新正式版仍是 **v2.1.2**。
 
-到 [Releases](https://github.com/SiriZhao/recallforge-skill/releases/latest) 下载 `recallforge-skill-v2.1.2.zip` 并解压。解压后会看到 `recallforge` 文件夹；把它复制到：
+```text
+$recallforge
+我下周要期末考试。
+资料包括：8 份课件、一本扫描教材和 3 套往年题。
+请先建立课程结构，再测试我真正掌握了什么。
 
-- **Windows：** `%USERPROFILE%\.agents\skills\recallforge`
-- **macOS / Linux：** `~/.agents/skills/recallforge`
-
-不需要安装 Python、npm、API Key 或 RecallForge 独立程序。
-
-| 你的情况 | 选什么 |
-|---|---|
-| 只想开始使用 | Release ZIP |
-| Windows 且想最快安装 | ZIP 中的 `install.ps1` |
-| macOS/Linux | ZIP 中的 `install.sh` |
-| 开发者 | Git clone + 项目级安装 |
-| 使用 Plugin 流程 | `recallforge-plugin-v2.1.2.zip` |
-
-Windows PowerShell：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
+→ RecallForge 先检查实际可访问的文件，说明识别问题和来源范围，
+  建立资料地图，然后开始一轮简短的诊断式主动回忆。
 ```
 
-macOS/Linux 终端：
+## 能处理什么资料
 
-```bash
-bash ./scripts/install.sh
+| 资料 | 核心路径 | 当前真实状态 |
+|---|---|---|
+| PPTX | 标题、文本框、表格、备注、顺序和来源锚点；需要时走整页视觉 | 原生 fixture 已验证；视觉依赖宿主或 LibreOffice |
+| 数字 PDF | 按页原生文字和布局块，图示/公式选择性渲染 | 自制 fixture 已验证 |
+| 扫描 PDF | 按页判断扫描属性，优先宿主视觉，可选本地 OCR | 检测和渲染已验证；宿主视觉待验证 |
+| PNG/JPG/JPEG/WEBP | 图片检测并交给宿主视觉 | 路由已验证；宿主执行待验证 |
+| DOCX | 段落和结构化表格 | 原生 fixture 已验证 |
+| TXT/Markdown | 原生读取 | 已验证 |
+| 公式、表格、图示 | 独立结构、置信度和来源锚点；不确定时精细处理 | 静态/原生路径已验证；宿主视觉待验证 |
+| 往年试卷 | 在可提取时区分题目、选项、分值、批注与来源 | fixture 路径已验证 |
+
+“已验证”表示本仓库的自制 fixture 在当前测试环境中真实运行过；“依赖宿主”表示工作流已经实现，但最终视觉质量由所选 AI 宿主决定。
+
+## 资料智能理解层
+
+```mermaid
+flowchart LR
+  A[PPT / PDF / 扫描件 / 图片 / 往年题] --> B[快速资料目录]
+  B --> C{逐页/逐幻灯片路由}
+  C -->|可靠数字文字| D[原生提取]
+  C -->|扫描或视觉内容| E[宿主视觉]
+  C -->|可选离线后备| F[本地 OCR]
+  D --> G[统一 StudyDocument + 来源锚点]
+  E --> G
+  F --> G
+  G --> H[知识结构]
+  H --> I[诊断式主动回忆]
+  I --> J[薄弱点修复]
+  J --> K[模拟考试]
 ```
 
-## 30 秒确认安装成功
+RecallForge 不会把所有页面无脑 OCR 成 TXT。它会尽量保留 PPT 空间关系、表格行列、公式、图示、批注、题目结构、置信度和页码/幻灯片编号。每一页都必须有处理状态；看不清的公式和图示会明确标记不确定。
 
-1. 打开一个**新的 Codex 对话**，让 Codex 自动发现新 Skill。
-2. 输入：`$recallforge self-test`
-3. 看到：`Status: READY`
+## 产品案例
 
-这表示 RecallForge 已成功调用、读取内置概率论微型资料、建立知识结构、生成主动回忆题和考试型练习。没有成功请看[故障排查](docs/troubleshooting.md)。
+下列都是根据项目自制测试资料绘制的**文档示意图**，不是伪造的 Codex UI，也不包含私人课程资料。
 
-## 第一次真实复习
+| 课程 PPT | 扫描教材 | 往年试卷 |
+|---|---|---|
+| [PPTX → 空间块和来源](assets/showcase/lecture-slides.svg) | [扫描页 → 视觉/OCR 与不确定性](assets/showcase/scanned-page.svg) | [题目 → 选项、分值、批注](assets/showcase/past-paper.svg) |
+| 公式资料 | 有机化学 | 植物学图示 |
+| [公式 → 原始表示、解释和置信度](assets/showcase/formula.svg) | [结构式保持视觉对象](assets/showcase/organic-chemistry.svg) | [标签和结构关系保持视觉](assets/showcase/botany.svg) |
+
+完整过程见[案例文档](docs/examples.md)。
+
+## 三分钟开始使用
+
+RecallForge 核心 Skill 不需要 Python、API Key、服务器或独立程序。只有可选的本地 OCR 加速可能需要额外依赖。
+
+1. 从[最新正式 Release](https://github.com/SiriZhao/recallforge-skill/releases/latest)下载 `recallforge-skill-v2.1.2.zip`。
+2. 解压，将 `recallforge` 文件夹复制到 Windows 的 `%USERPROFILE%\.agents\skills`，或 macOS/Linux 的 `~/.agents/skills`。
+3. 新建一个 Codex 对话。
+4. 输入 `$recallforge self-test`，确认看到 `Status: READY`。
+5. 先上传一个章节或一小组资料，输入 `$recallforge inspect-materials`。
+6. 使用下面的第一次复习提示词。
 
 ```text
 $recallforge
 我要准备一次考试。
 课程：[课程名称]
-考试时间：[可选]
-复习资料：[上传文件或粘贴笔记]
-请先分析资料并建立面向考试的知识结构，然后通过主动回忆逐步带我复习，识别我的薄弱知识点。不要一次性把所有内容全部输出给我。
+资料：[上传 PPT、PDF、扫描件、图片，或粘贴笔记]
+请先检查资料质量并建立面向考试的课程结构，
+再通过主动回忆逐步复习，只针对我真实暴露的薄弱点。
+不要一次性输出所有内容。
 ```
 
-考前冲刺：
+项目级安装、Windows/macOS/Linux 完整步骤、更新和卸载请看 [Codex 中文指南](docs/codex.zh-CN.md)和[小白入门](docs/getting-started.zh-CN.md)。
 
-```text
-$recallforge
-我距离考试只有 90 分钟。请优先安排最有价值的知识点，用主动回忆测试我，并集中修复错误和薄弱点。
-```
+## 两个自检
 
-## 自动触发与显式调用
+- `$recallforge self-test`：30 秒文本自检，正常结果以 `Status: READY` 结束。
+- `$recallforge multimodal-test`：使用[项目自制多模态测试页](skill/recallforge/assets/self-test/multimodal/probability-slide.svg)，应识别公式、对比表格和箭头关系，并以 `Status: MULTIMODAL_READY` 结束。
 
-- **第一次最推荐：**显式输入 `$recallforge`，最容易确认安装和调用成功。
-- **自动触发：**当你提到期末/期中复习、课程或讲义、主动回忆、薄弱知识点、模拟考试、学习指南或考试练习时，Codex 可能自动选择 RecallForge。
-- 自动触发由宿主的匹配机制决定，不能保证每次都触发；没触发并不表示安装失败，请直接使用 `$recallforge`。
-- 代码审查、合同审查、只翻译笔记、普通摘要等任务不应触发 RecallForge。
+如果宿主无法查看测试图，应返回 `MULTIMODAL_HOST_CAPABILITY_UNAVAILABLE`，而不是假装成功。维护者可执行[两到三分钟人工验收](docs/manual-verification.zh-CN.md)。
 
-## 两分钟功能测试
+## 产品边界、兼容性与隐私
 
-复制以下内容；如未自动触发，请在首行加 `$recallforge`：
+RecallForge 是由 AI 宿主执行的“资料到自适应复习”工作流，不是 PDF 摘要器、OCR 产品、独立聊天软件、Web App 或上传服务。往年题频率和教师明确文字可以作为复习证据，但不能证明今年一定会考；课程资料始终是当前课程范围的主要依据。
 
-```text
-我要复习一个概率论小测验。这是我的笔记：条件概率表示在事件 B 已发生时事件 A 发生的概率：P(A|B)=P(A∩B)/P(B)。如果 A 与 B 独立：P(A∩B)=P(A)P(B)。贝叶斯公式：P(A|B)=P(B|A)P(A)/P(B)。请使用 RecallForge 帮我复习这些内容。
-```
+Codex 的用户级/项目级 Skill 目录与安装包已验证，但本环境无法启动 `codex.exe`，因此 `/skills` 与真实宿主多模态执行仍标记待验证。其他兼容 Agent Skills 宿主没有被逐一实测。
 
-正常结果应包含：知识结构、考试重点、主动回忆、至少一道练习题、下一步建议。如果只得到普通摘要，请显式使用 `$recallforge` 后重试。
+RecallForge 自身不运营服务器或上传服务。资料如何被处理取决于你选择的 AI 宿主和模型提供方的隐私与数据政策。请只使用自己拥有或已获授权的资料，并删除不必要的个人信息。
 
-## 仅在一个项目中安装
+## 文档
 
-开发者可把 `skill/recallforge` 复制到：
+- [小白入门](docs/getting-started.zh-CN.md) · [Codex 指南](docs/codex.zh-CN.md)
+- [资料指南](docs/materials.zh-CN.md) · [多模态指南](docs/multimodal.zh-CN.md)
+- [为什么使用 RecallForge](docs/why-recallforge.md) · [架构](docs/architecture.md)
+- [案例](docs/examples.md) · [常见问题](docs/faq.md) · [故障排查](docs/troubleshooting.md)
+- [人工宿主验收](docs/manual-verification.zh-CN.md)
+- [原生摄取基准](benchmarks/README.md)
 
-```text
-你的项目/.agents/skills/recallforge/SKILL.md
-```
-
-这样 RecallForge 只在该项目中可用。完整 Windows/macOS/Linux 指南、更新、卸载与 Codex 说明见[中文 Codex 教程](docs/codex.zh-CN.md)。
-
-## 兼容性
-
-| Host | 状态 | 已验证 |
-|---|---|---|
-| Codex 本地 Skill | 支持 | 是：安装包、安装脚本和发现目录已验证 |
-| Codex Skill Installer | 支持 | 是：已按官方 GitHub 安装契约设计 |
-| Codex Plugin | 支持 | 本地 manifest 和包结构已验证 |
-| 其他 Agent Skills 宿主 | 标准兼容 | 未逐一验证 |
-| ChatGPT Desktop UI | 含 OpenAI metadata | 未在 UI 中实测 |
-
-RecallForge 的价值不在于“总结 PDF”，而在于：资料 → 知识结构 → 考试优先级 → 主动回忆 → 薄弱点 → 针对性复习 → 模拟考试的学习闭环。
+如果 RecallForge 对你有帮助，欢迎 Star、提交 Issue 或贡献改进。项目没有空的 Sponsor/Donate 区。参见[贡献指南](CONTRIBUTING.md)、[安全政策](SECURITY.md)和 [MIT License](LICENSE)。

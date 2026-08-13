@@ -94,12 +94,18 @@ def test_docx_with_table_routes_to_vision_and_degrades_honestly(tmp_path: Path):
     assert route_page(page).method == "vision"
     result = ingest_file(root, "chem101", docx, options=_demo_options())
     # LibreOffice is not installed here -> the visual render is unavailable.
-    # The page must be recorded unresolved (never fabricated).
-    assert result.evidence_added == []
+    # Reliable native text/table structure is retained while the unavailable
+    # visual verification path is recorded separately (never fabricated).
+    assert result.evidence_added
+    assert result.evidence_added[0].extraction_method == "native_text"
+    assert result.evidence_added[0].content["unresolved_visual"] is True
+    assert result.evidence_added[0].content["blocks"]
     assert result.unresolved_pages
     assert any("LibreOffice" in w for w in result.warnings)
-    # native text still routes to vision and the store stays empty (no fake content)
-    assert read_evidence(root, "chem101") == []
+    # The store contains only source-derived native evidence, not synthetic vision output.
+    records = read_evidence(root, "chem101")
+    assert len(records) == 1
+    assert records[0]["synthetic"] is False
 
 
 def test_formula_ambiguity_stays_low_confidence(tmp_path: Path):

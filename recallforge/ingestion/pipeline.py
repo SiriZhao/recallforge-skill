@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 
 from .classifier import document_type, is_image
+from .cache import cache_key, load_render, save_render
 from .evidence import (
     current_file_hash,
     load_processed_files,
@@ -15,13 +16,14 @@ from .formula_verify import extract_formula_regions, verify_formula_visually
 from .native_parser import parse_native
 from .ocr_fallback import OCRDisabled, run_ocr
 from .provider import ProviderUnavailable, get_provider
-from .renderer import render_input_image, render_pdf_pages
+from .renderer import render_input_image, render_pdf_page, render_pdf_pages
 from .router import route_page
 from .types import (
     Evidence,
     IngestOptions,
     IngestResult,
     NativePage,
+    PageProcessingStatus,
     ProviderUnderstanding,
     RenderedPage,
 )
@@ -34,6 +36,7 @@ DOCUMENT_WEIGHT = {
     "md": 0.9,
     "png": 1.1,
     "jpg": 1.1,
+    "webp": 1.1,
 }
 
 EXAM_FILENAME_MARKERS = ("exam", "test", "试卷", "真题", "期末", "考题", "past", "pastpaper")
@@ -97,6 +100,19 @@ def _make_evidence(
     return evidence
 
 
+def _native_content(page: NativePage) -> dict:
+    """Preserve reliable native evidence even when visual blocks need another pass."""
+    return {
+        "text": page.raw_text,
+        "blocks": page.blocks,
+        "notes": page.notes,
+        "formula_signals": page.formula_signals,
+        "table_signals": page.table_signals,
+        "visual_emphasis": page.visual_emphasis,
+        "native_confidence": page.native_confidence,
+    }
+
+
 def _evidence_from_provider(
     *,
     course_id: str,
@@ -134,6 +150,9 @@ def _evidence_from_provider(
                 "score": q.score,
                 "answer_area": q.answer_area,
                 "handwritten_annotation": q.handwritten_annotation,
+                "printed_answer": q.printed_answer,
+                "user_annotation": q.user_annotation,
+                "annotation_type": q.annotation_type,
                 "confidence": round(q.confidence, 2),
             }
             for q in understanding.exam.questions
@@ -266,11 +285,7 @@ def ingest_file(
             document_type=doc_type,
         )
         if decision.method == "native_text":
-            content: dict = {
-                "text": page.raw_text,
-                "formula_signals": page.formula_signals,
-                "table_signals": page.table_signals,
-            }
+            content: dict = _native_content(page)
             # exam papers keep their structure even in the native path: parse
             # questions from the reliable text layer (never flattened into a blob)
             if page.question_numbers or _role_hint(path.name, page.raw_text):
@@ -287,6 +302,9 @@ def ingest_file(
                             "score": q.score,
                             "answer_area": q.answer_area,
                             "handwritten_annotation": q.handwritten_annotation,
+                            "printed_answer": q.printed_answer,
+                            "user_annotation": q.user_annotation,
+                            "annotation_type": q.annotation_type,
                             "confidence": round(q.confidence, 2),
                         }
                         for q in structure.questions
@@ -308,6 +326,7 @@ def ingest_file(
 
         if decision.method == "unresolved":
             result.unresolved_pages.append(f"{path.name}:{page.page_or_slide}")
+            result.page_statuses.append(PageProcessingStatus(page.source_anchor or f"{path.name}:{page.page_or_slide}", "failed_with_reason", "unresolved", "fast", "; ".join(decision.reasons)))
             result.warn(f"{path.name} page {page.page_or_slide}: unresolved (no text, no images)")
             continue
 
@@ -358,15 +377,43 @@ def ingest_file(
                 )
                 all_evidence.append(ocr_evidence)
                 continue
-            result.unresolved_pages.append(f"{path.name}:{page.page_or_slide}")
+            if page.has_text_layer and page.raw_text.strip():
+                all_evidence.append(_make_evidence(
+                    course_id=course_id,
+                    source_file=path.name,
+                    document_type_name=doc_type,
+                    page=page,
+                    extraction_method="native_text",
+                    confidence=max(0.35, page.native_confidence or 0.75),
+                    content={**_native_content(page), "unresolved_visual": True, "routing_reasons": decision.reasons},
+                    synthetic=False,
+                ))
+            result.unresolved_pages.append(f"{path.name}:{page.page_or_slide}:visual")
             result.warn(
                 f"{path.name} page {page.page_or_slide}: vision required but no provider "
-                f"configured and OCR disabled; page marked unresolved (no fake content)"
+                f"configured and OCR disabled; visual blocks marked unresolved (native text retained when reliable)"
             )
             continue
 
         # render the page
-        if rendered_pages is None:
+        rendered = None
+        profile = "precision" if page.formula_signals or page.question_numbers else "standard"
+        dpi = 220 if profile == "precision" else 150
+        render_key = cache_key(file_hash=file_hash, page_or_slide=page.page_or_slide, profile=profile, dpi=dpi)
+        rendered = load_render(options.cache_dir, key=render_key)
+        if rendered is None and doc_type == "pdf":
+            try:
+                rendered = render_pdf_page(path, int(page.page_or_slide), dpi=dpi)
+                save_render(options.cache_dir, key=render_key, page=rendered)
+            except Exception as exc:
+                result.warn(f"{path.name} page {page.page_or_slide}: PDF rendering failed ({exc})")
+        elif rendered is None and is_image(path):
+            try:
+                rendered = render_input_image(path)
+                save_render(options.cache_dir, key=render_key, page=rendered)
+            except Exception as exc:
+                result.warn(f"{path.name}: image load failed ({exc})")
+        elif rendered is None:
             if doc_type == "pdf":
                 try:
                     rendered_pages = render_pdf_pages(path)
@@ -378,17 +425,28 @@ def ingest_file(
                 except Exception as exc:
                     result.warn(f"{path.name}: image load failed ({exc})")
             else:
-                # PPTX/DOCX visual rendering needs LibreOffice; degrade to native text
-                rendered_pages = []
-                result.warn(
-                    f"{path.name}: visual rendering for {doc_type} requires LibreOffice "
-                    f"(not available); native text only"
-                )
-        rendered = next(
-            (r for r in (rendered_pages or []) if r.page_or_slide == page.page_or_slide), None
-        )
+                from .renderer import render_office_pages
+                rendered_pages = render_office_pages(path) or []
+                if not rendered_pages:
+                    result.warn(
+                        f"{path.name}: visual rendering for {doc_type} requires LibreOffice "
+                        f"(not available); native text retained and visual blocks unresolved"
+                    )
         if rendered is None:
-            result.unresolved_pages.append(f"{path.name}:{page.page_or_slide}")
+            rendered = next((r for r in (rendered_pages or []) if r.page_or_slide == page.page_or_slide), None)
+        if rendered is None:
+            if page.has_text_layer and page.raw_text.strip():
+                all_evidence.append(_make_evidence(
+                    course_id=course_id,
+                    source_file=path.name,
+                    document_type_name=doc_type,
+                    page=page,
+                    extraction_method="native_text",
+                    confidence=max(0.35, page.native_confidence or 0.75),
+                    content={**_native_content(page), "unresolved_visual": True, "routing_reasons": decision.reasons},
+                    synthetic=False,
+                ))
+            result.unresolved_pages.append(f"{path.name}:{page.page_or_slide}:visual")
             result.warn(
                 f"{path.name} page {page.page_or_slide}: cannot render page for vision; unresolved"
             )
@@ -405,12 +463,44 @@ def ingest_file(
                 result=result,
             )
             all_evidence.extend(page_evidence)
+            result.page_statuses.append(PageProcessingStatus(
+                page.source_anchor or f"{path.name}:{page.page_or_slide}",
+                "processed", "multimodal", "precision" if page.formula_signals else "standard"))
         except ProviderUnavailable as exc:
             result.unresolved_pages.append(f"{path.name}:{page.page_or_slide}")
             result.warn(f"{path.name} page {page.page_or_slide}: provider failure ({exc}); unresolved")
         except Exception as exc:
             result.unresolved_pages.append(f"{path.name}:{page.page_or_slide}")
             result.warn(f"{path.name} page {page.page_or_slide}: understanding failed ({exc}); unresolved")
+
+    from .types import MaterialPage, StudyDocument
+    status_by_page = {s.source_anchor: s for s in result.page_statuses}
+    material_pages: list[MaterialPage] = []
+    for page in native_pages:
+        anchor = page.source_anchor or f"{path.name}:{page.page_or_slide}"
+        page_records = [e for e in all_evidence if e.page_or_slide == page.page_or_slide]
+        unresolved = any(u.startswith(f"{path.name}:{page.page_or_slide}") for u in result.unresolved_pages)
+        status = "processed_with_warning" if page_records and unresolved else ("processed" if page_records else "failed_with_reason")
+        route = page_records[-1].extraction_method if page_records else "unresolved"
+        if anchor not in status_by_page:
+            result.page_statuses.append(PageProcessingStatus(anchor, status, route, "precision" if unresolved else "standard", "visual block unresolved" if unresolved else ""))
+        material_pages.append(MaterialPage(
+            index=page.page_or_slide,
+            source_anchor=anchor,
+            title=page.heading,
+            blocks=[item for e in page_records for item in e.content.get("blocks", e.content.get("text_blocks", []))],
+            notes=page.notes,
+            confidence=max([e.confidence for e in page_records], default=0.0),
+            route=route,
+            processing_level="precision" if unresolved else ("standard" if route != "native_text" else "fast"),
+            status=status,
+            warnings=[w for w in result.warnings if f"page {page.page_or_slide}" in w],
+            page_hash=page.page_hash,
+        ))
+    result.study_documents.append(StudyDocument(
+        document_id=f"DOC-{file_hash[:12].upper()}", filename=path.name, document_type=doc_type,
+        file_hash=file_hash, language=next((p.language_hint for p in native_pages if p.language_hint), None),
+        pages=material_pages, warnings=list(result.warnings)))
 
     if all_evidence:
         added, duplicates = write_evidence(
@@ -448,6 +538,8 @@ def ingest_directory(
         result.evidence_added.extend(file_result.evidence_added)
         result.evidence_duplicates += file_result.evidence_duplicates
         result.unresolved_pages.extend(file_result.unresolved_pages)
+        result.page_statuses.extend(file_result.page_statuses)
+        result.study_documents.extend(file_result.study_documents)
         for warning in file_result.warnings:
             result.warn(warning)
     return result

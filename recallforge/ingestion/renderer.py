@@ -32,6 +32,18 @@ def render_pdf_pages(path: Path, dpi: int = 150) -> list[RenderedPage]:
     return pages
 
 
+def render_pdf_page(path: Path, page_number: int, dpi: int = 150) -> RenderedPage:
+    """Render exactly one 1-based page so page-level routing stays page-level."""
+    import pymupdf
+    doc = pymupdf.open(str(path))
+    try:
+        page = doc[page_number - 1]
+        pix = page.get_pixmap(dpi=dpi)
+        return RenderedPage(str(page_number), pix.tobytes("png"), pix.width, pix.height, dpi, "pymupdf")
+    finally:
+        doc.close()
+
+
 def find_soffice() -> str | None:
     """Locate LibreOffice for PPTX/DOCX visual rendering (optional)."""
     exe = shutil.which("soffice")

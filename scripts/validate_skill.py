@@ -5,8 +5,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SKILL = ROOT / "skill" / "recallforge"
-VERSION = "2.1.3"
-REQUIRED = ["SKILL.md", "agents/openai.yaml", "references/review-methodology.md", "references/active-recall.md", "references/exam-simulation.md", "assets/self-test/mini-course.md"]
+VERSION = "2.2.0-dev.0"
+REQUIRED = ["SKILL.md", "agents/openai.yaml", "references/review-methodology.md", "references/active-recall.md", "references/exam-simulation.md", "references/material-intelligence.md", "assets/self-test/mini-course.md", "assets/self-test/multimodal/probability-slide.svg"]
 
 def check(condition: bool, message: str) -> None:
     if not condition:
@@ -18,11 +18,18 @@ def main() -> None:
     check(text.startswith("---\n"), "SKILL.md frontmatter missing")
     check(re.search(r"^name: recallforge$", text, re.M) is not None, "skill name must be recallforge")
     check("description:" in text and "self-test" in text, "description or self-test missing")
+    check("multimodal-test" in text and "inspect-materials" in text, "material modes missing")
     check(not re.search(r"[A-Za-z]:\\|/Users/|/home/", text), "absolute path in skill")
     plugin = ROOT / "recallforge-plugin"
     manifest = json.loads((plugin / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
     check(manifest["version"] == VERSION, "plugin version mismatch")
     check((plugin / "skills/recallforge/SKILL.md").is_file(), "plugin skill missing")
+    check((plugin / "skills/recallforge/references/material-intelligence.md").is_file(), "plugin material reference missing")
+    candidate_versions = {
+        re.search(r'^version = "([^"]+)"', (ROOT / "pyproject.toml").read_text(encoding="utf-8"), re.M).group(1),
+        manifest["version"],
+    }
+    check(all(value.startswith("2.2.0") for value in candidate_versions), "candidate version mismatch")
     for package in (ROOT / "dist").glob("recallforge-*-v*.zip"):
         with zipfile.ZipFile(package) as zf:
             names = set(zf.namelist())

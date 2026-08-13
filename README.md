@@ -2,156 +2,132 @@
 
 <p align="center"><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
 
-<p align="center"><a href="https://github.com/SiriZhao/recallforge-skill/releases/latest">Download</a> · <a href="#30-second-installation-test">30-second test</a> · <a href="docs/codex.md">Codex guide</a></p>
+<p align="center"><a href="https://github.com/SiriZhao/recallforge-skill/releases/latest">Download latest release</a> · <a href="#quick-start">Quick start</a> · <a href="docs/examples.md">Examples</a> · <a href="docs/materials.md">Supported materials</a> · <a href="docs/faq.md">FAQ</a></p>
 
 # RecallForge — AI Exam Review Skill
 
-**Forge course materials into exam-ready knowledge.**
+**Turn slides, scanned textbooks, notes, images, and past papers into an adaptive exam-review workflow.**
 
-RecallForge is a host-executed AI Skill for Codex and compatible Agent Skills hosts. Install the `recallforge` folder once, then use it inside your AI host to reconstruct knowledge, practice active recall, identify real weak areas, and prepare for exams. It is not a web app, a separate chatbot, an API service, or a program you need to run.
+RecallForge is a host-executed Skill for Codex and compatible Agent Skills hosts. It begins with material inspection—not a long summary—then reconstructs course knowledge, tests recall, diagnoses demonstrated weaknesses, targets repair, and can finish with a source-grounded mock exam.
+
+> Main contains **unreleased v2.2 development**. The latest downloadable GitHub Release remains **v2.1.2** until release authentication and host verification are complete.
 
 ```text
 $recallforge
-I have a final next week. Here are my lecture notes.
-Test what I actually know and focus on my weak areas.
+I have a final next week.
+Materials: 8 lecture decks, a scanned textbook, and 3 past papers.
+Build the course structure first, then test what I actually know.
 
-→ Knowledge map created. Let's start with a diagnostic recall round.
+→ RecallForge inspects the materials it can access, reports recognition issues,
+  builds a source map, then starts a short diagnostic recall round.
 ```
 
-## Download and install
+## What you can give it
 
-Download the latest [Release](https://github.com/SiriZhao/recallforge-skill/releases/latest). Choose once:
+| Material | Core path | Visual path | Verified status |
+|---|---|---|---|
+| PPTX | Titles, text boxes, tables, notes, slide order | Rendered slide for diagrams/layout when the host or LibreOffice path is available | Native fixture verified; visual path host-dependent |
+| Digital PDF | Page-level native text and layout blocks | Selective rendering for figures/formulas | Verified with self-authored fixtures |
+| Scanned PDF | Scan detection per page | Host vision first; optional local OCR fallback | Detection/rendering verified; host vision pending |
+| PNG/JPG/JPEG/WEBP | File detection | Host vision | Routing verified; host execution pending |
+| DOCX | Paragraphs and structured tables | Optional rendered verification | Native fixture verified |
+| TXT/Markdown | Native text | Not normally needed | Verified |
+| Formulas/tables/diagrams | Dedicated IR blocks and source anchors | Precision pass when uncertain | Static/native paths verified; host vision pending |
+| Past papers | Question/options/score/source structure when extractable | Multi-column/figure/handwriting verification | Fixture path verified |
 
-| You are… | Choose | Install to |
-|---|---|---|
-| A student or regular Codex user | `recallforge-skill-v2.1.2.zip` | User-level Skill folder |
-| A Windows user who wants the easiest setup | The Skill ZIP + `install.ps1` | User-level Skill folder |
-| A macOS/Linux user | The Skill ZIP + `install.sh` | User-level Skill folder |
-| A developer | Git clone | Project-local `.agents/skills` |
-| A Plugin user | `recallforge-plugin-v2.1.2.zip` | Host Plugin flow |
+Status language: **Verified** means an automated fixture ran here. **Host-dependent** means the workflow is implemented but depends on the selected AI host’s visual capability. No claim means “works everywhere.”
 
-### User installation (recommended)
-
-Extract `recallforge-skill-v2.1.2.zip`. It contains one folder: `recallforge`. Copy that folder to your user Skills directory:
-
-- **Windows:** `%USERPROFILE%\.agents\skills\recallforge`
-- **macOS/Linux:** `~/.agents/skills/recallforge`
-
-You do not need Python, npm, an API key, or a separate RecallForge app.
-
-**Windows PowerShell shortcut** (run from the extracted release):
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
-```
-
-**macOS/Linux shortcut** (run from the extracted release):
-
-```bash
-bash ./scripts/install.sh
-```
-
-Both scripts install only RecallForge and back up an existing RecallForge folder when invoked with `--force` / `-Force`.
-
-### Project-only installation
-
-For a single project, create this structure at the project root instead:
-
-```text
-your-project/
-└── .agents/
-    └── skills/
-        └── recallforge/
-            └── SKILL.md
-```
-
-This keeps RecallForge available only when Codex is launched in that project. Developers can use:
-
-```bash
-git clone https://github.com/SiriZhao/recallforge-skill.git
-cp -R recallforge-skill/skill/recallforge ./your-project/.agents/skills/
-```
-
-## 30-second installation test
-
-1. Start a **new Codex turn** so it discovers the newly installed Skill.
-2. Run: `$recallforge self-test`
-3. Confirm the response includes `Status: READY`.
-
-Expected result: the mini probability course yields four topics, one active-recall question, one exam-style question, and a next step. If it does not, see [Troubleshooting](docs/troubleshooting.md).
-
-## See RecallForge in action
+## Material Intelligence
 
 ```mermaid
 flowchart LR
-  A[Install RecallForge] --> B[Open Codex]
-  B --> C[$recallforge]
-  C --> D[Attach or paste course notes]
-  D --> E[Knowledge reconstruction]
-  E --> F[Active recall]
-  F --> G[Weakness diagnosis]
-  G --> H[Targeted practice]
-  H --> I[Mock exam / cram]
+  A[Slides / PDFs / scans / images / past papers] --> B[Fast catalog]
+  B --> C{Page or slide route}
+  C -->|Reliable digital text| D[Native extraction]
+  C -->|Visual or scan-heavy| E[Host vision]
+  C -->|Optional offline fallback| F[Local OCR]
+  D --> G[StudyDocument + source anchors]
+  E --> G
+  F --> G
+  G --> H[Knowledge map]
+  H --> I[Diagnostic recall]
+  I --> J[Weakness repair]
+  J --> K[Mock exam]
 ```
 
-### Your first real review
+RecallForge does not reduce every page to OCR text. It preserves slide grouping, tables, formulas, diagrams, annotations, question structure, confidence, and page/slide anchors. Every unit must be processed or carry a reason; uncertain formulas and visual blocks stay uncertain.
+
+## Example gallery
+
+All gallery assets are **documentation illustrations built from self-authored fixtures**, not screenshots of a proprietary UI or private course material.
+
+| Lecture slides | Scanned textbook | Past exam |
+|---|---|---|
+| [PPTX → slide blocks and source anchors](assets/showcase/lecture-slides.svg) | [Scan → vision/OCR with uncertainty](assets/showcase/scanned-page.svg) | [Questions → choices, scores, annotations](assets/showcase/past-paper.svg) |
+| Formula-heavy | Organic chemistry | Botany diagram |
+| [Formula → raw + interpreted + confidence](assets/showcase/formula.svg) | [Reaction structure stays visual](assets/showcase/organic-chemistry.svg) | [Labels and relationships stay visual](assets/showcase/botany.svg) |
+
+See the [complete learning-flow examples](docs/examples.md).
+
+## Quick start
+
+The core Skill needs no Python, API key, server, or separate RecallForge program. Optional local OCR acceleration may require additional local dependencies.
+
+1. Download `recallforge-skill-v2.1.2.zip` from the [latest formal Release](https://github.com/SiriZhao/recallforge-skill/releases/latest).
+2. Extract it and copy the `recallforge` folder to `%USERPROFILE%\.agents\skills` on Windows or `~/.agents/skills` on macOS/Linux.
+3. Start a new Codex turn.
+4. Run `$recallforge self-test` and confirm `Status: READY`.
+5. Attach one chapter or a small set of materials and run `$recallforge inspect-materials`.
+6. Start your review with the prompt below.
 
 ```text
 $recallforge
 I am preparing for an exam.
-Course: [course name]
-Exam date: [optional]
-Materials: [attach files or paste notes]
-Please first build an exam-focused knowledge structure. Then guide me through active recall and identify my weak areas. Do not overwhelm me with everything at once.
+Course: [course]
+Materials: [attach slides, PDFs, scans, images, or paste notes]
+Inspect the material first. Build an exam-focused course structure,
+then guide me through active recall and focus on demonstrated weak areas.
+Do not overwhelm me with everything at once.
 ```
 
-### Useful modes
+For project-only installation, Windows/macOS/Linux instructions, updates, and removal, use the [Codex guide](docs/codex.md) or [beginner guide](docs/getting-started.md).
 
-```text
-$recallforge
-I have 90 minutes before my exam. Prioritize the highest-value concepts, test me using active recall, and focus on mistakes and weak areas.
-```
+## Self-tests
 
-```text
-$recallforge
-I already studied this once. Do not summarize everything again. Test me first, identify what I do not understand, and only review my weak areas.
-```
+### 30-second text test
 
-```text
-$recallforge
-Create a mock exam based only on the material I provided. Do not reveal answers first. Grade my answers, explain mistakes, and create a targeted final review.
-```
+Run `$recallforge self-test`. A correct response ends with `Status: READY` and includes four probability topics, an active-recall question, one practice item, and a next step.
 
-## Explicit and automatic invocation
+### Multimodal test
 
-- **Explicit:** `$recallforge` is the most reliable first-use path. Use it for self-test and any review session.
-- **Automatic:** Codex may select RecallForge when users mention final/midterm preparation, course or lecture notes, active recall, weak topics, mock exams, study guides, revision, or exam practice. Automatic matching depends on the host; use explicit invocation when it does not trigger.
-- **Not a trigger:** code/PR review, contract review, movie/product review, translation-only tasks, and generic summaries without an exam-learning goal.
+Attach or expose [the self-authored test slide](skill/recallforge/assets/self-test/multimodal/probability-slide.svg), then run `$recallforge multimodal-test`. A capable host should identify the formula, table comparison, and arrow relationship, and end with `Status: MULTIMODAL_READY`.
 
-## Functional test (2 minutes)
+If the host cannot inspect the asset, the expected result is `MULTIMODAL_HOST_CAPABILITY_UNAVAILABLE`—not a fabricated pass. Follow the [2–3 minute manual verification](docs/manual-verification.md).
 
-Paste this into Codex, with `$recallforge` if needed:
+## What RecallForge is—and is not
 
-```text
-I have a short probability quiz. My notes: Conditional probability describes the probability of A given B: P(A|B)=P(A∩B)/P(B). If A and B are independent: P(A∩B)=P(A)P(B). Bayes' theorem reverses conditional probability: P(A|B)=P(B|A)P(A)/P(B). Use RecallForge to help me review this material.
-```
+RecallForge is a **material-to-adaptive-review workflow executed by your AI host**. It is not a PDF summarizer, OCR product, flashcard-only generator, standalone chatbot, web app, model, or upload service. Native extraction and the optional Python toolkit support development and local preprocessing; the installed core Skill remains instruction-driven and zero-config.
 
-**Pass:** you see a knowledge structure, exam focus, active recall, at least one practice item, and a next step. **Not a pass:** only a paraphrased summary. In that case run `$recallforge` explicitly and retry.
+Past-paper frequency and explicit teacher wording can inform priorities, but never prove what will appear on the next exam. Course sources remain the primary scope; external model knowledge must be labeled as supplementary.
 
-## Compatibility
+## Compatibility and privacy
 
-| Host | Status | Installation | Verified |
-|---|---|---|---|
-| Codex local Skill discovery | Supported | User or repo Skill | Yes — package, installer, and host discovery path validated |
-| Codex Skill Installer | Supported | GitHub repo path: `skill/recallforge` | Yes — official installer contract verified; use on a new turn |
-| Codex Plugin flow | Supported | Plugin ZIP | Package manifest validated locally |
-| Other Agent Skills hosts | Compatible by standard | Manual `recallforge/` folder | Not host-tested |
-| ChatGPT Desktop UI | OpenAI metadata included | Host-dependent | Not UI-tested here |
+| Host/path | Status |
+|---|---|
+| Codex user/repo Skill directories | Structure and installer verified; `/skills` runtime check blocked in this environment |
+| Codex/ChatGPT Skill UI metadata | Included; UI not verified here |
+| Skills-only Plugin | Manifest/package validated locally |
+| Other Agent Skills hosts | Standard-compatible core folder; not individually host-tested |
 
-For exact Windows, macOS, Linux, updates, removal, and host behavior, read [RecallForge for Codex](docs/codex.md) and [compatible hosts](docs/compatible-hosts.md). The [Chinese Codex guide](docs/codex.zh-CN.md) covers the same onboarding in Chinese.
+RecallForge operates no server or upload service. Material handling by the AI model follows the privacy and data policies of the host and model provider you choose. Use only materials you own or are authorized to process, and remove unnecessary personal data.
 
-## What makes it different?
+## Documentation
 
-Normal chat often starts and ends with “summarize this PDF.” RecallForge runs a learning loop: material → knowledge structure → priorities → active recall → observed weaknesses → targeted review → mock exam. It does not claim mastery, source coverage, or exam likelihood without support.
+- [Getting started](docs/getting-started.md) · [Codex](docs/codex.md)
+- [Materials guide](docs/materials.md) · [Multimodal guide](docs/multimodal.md)
+- [Why RecallForge](docs/why-recallforge.md) · [Architecture](docs/architecture.md)
+- [Examples](docs/examples.md) · [FAQ](docs/faq.md) · [Troubleshooting](docs/troubleshooting.md)
+- [Manual host verification](docs/manual-verification.md)
+- [Native ingestion benchmark](benchmarks/README.md)
 
-Use only authorized material and follow academic-integrity rules. See [Security](SECURITY.md), [Contributing](CONTRIBUTING.md), and [Architecture](docs/architecture.md).
+If RecallForge helps, starring the repository, reporting an issue, or contributing an improvement is appreciated. See [Contributing](CONTRIBUTING.md), [Security](SECURITY.md), and [MIT License](LICENSE).

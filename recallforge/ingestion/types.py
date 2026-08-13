@@ -33,6 +33,15 @@ class NativePage:
     table_signals: bool = False
     language_hint: str | None = None
     warning: str | None = None
+    blocks: list[dict[str, Any]] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+    native_confidence: float = 0.0
+    image_coverage: float = 0.0
+    suspicious_char_ratio: float = 0.0
+    rotation: int = 0
+    visual_emphasis: list[dict[str, Any]] = field(default_factory=list)
+    source_anchor: str = ""
+    page_hash: str = ""
 
 
 @dataclass
@@ -67,6 +76,9 @@ class ExamQuestion:
     score: str | None = None
     answer_area: str | None = None
     handwritten_annotation: str | None = None
+    printed_answer: str | None = None
+    user_annotation: str | None = None
+    annotation_type: str = "unknown"
     confidence: float = 0.5
 
 
@@ -116,6 +128,50 @@ class Evidence:
     evidence_id: str = ""
     created_at: str = field(default_factory=_now_iso)
 
+    @property
+    def source_anchor(self) -> str:
+        label = "slide" if self.document_type == "pptx" else "p."
+        return f"{self.source_file}, {label} {self.page_or_slide}"
+
+
+@dataclass
+class MaterialPage:
+    """One page/slide in RecallForge's normalized StudyDocument IR."""
+
+    index: str
+    source_anchor: str
+    title: str | None = None
+    blocks: list[dict[str, Any]] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
+    confidence: float = 0.0
+    route: str = "unresolved"
+    processing_level: str = "fast"
+    status: str = "pending"
+    warnings: list[str] = field(default_factory=list)
+    page_hash: str = ""
+
+
+@dataclass
+class StudyDocument:
+    """Host-neutral normalized representation consumed by later review stages."""
+
+    document_id: str
+    filename: str
+    document_type: str
+    file_hash: str
+    language: str | None = None
+    pages: list[MaterialPage] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+
+@dataclass
+class PageProcessingStatus:
+    source_anchor: str
+    status: str
+    route: str
+    processing_level: str
+    reason: str = ""
+
 
 @dataclass
 class IngestOptions:
@@ -137,6 +193,8 @@ class IngestResult:
     evidence_duplicates: int = 0
     unresolved_pages: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    page_statuses: list[PageProcessingStatus] = field(default_factory=list)
+    study_documents: list[StudyDocument] = field(default_factory=list)
 
     def warn(self, message: str) -> None:
         if message not in self.warnings:
@@ -161,4 +219,5 @@ def evidence_to_dict(evidence: Evidence) -> dict:
         "synthetic": evidence.synthetic,
         "content_hash": evidence.content_hash,
         "created_at": evidence.created_at,
+        "source_anchor": evidence.source_anchor,
     }

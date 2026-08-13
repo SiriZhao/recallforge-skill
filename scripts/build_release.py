@@ -2,8 +2,16 @@
 from __future__ import annotations
 import hashlib, shutil, tarfile, zipfile
 from pathlib import Path
-ROOT=Path(__file__).resolve().parent.parent; VERSION="2.1.3"; DIST=ROOT/"dist"
+ROOT=Path(__file__).resolve().parent.parent; VERSION="2.2.0-candidate"; DIST=ROOT/"dist"
 SKILL=ROOT/"skill"/"recallforge"; PLUGIN=ROOT/"recallforge-plugin"
+def sync_plugin_skill():
+    target = PLUGIN/"skills"/"recallforge"
+    if target.exists(): shutil.rmtree(target)
+    shutil.copytree(SKILL, target)
+    assets = PLUGIN/"assets"
+    assets.mkdir(exist_ok=True)
+    shutil.copy2(SKILL/"assets"/"recallforge-mark.svg", assets/"recallforge-mark.svg")
+    shutil.copy2(SKILL/"assets"/"recallforge-banner.svg", assets/"recallforge-banner.svg")
 def archive(source: Path, out: Path, prefix: str=""):
     with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as z:
         for p in sorted(source.rglob("*")):
@@ -16,6 +24,7 @@ def normalized_tarinfo(tarinfo: tarfile.TarInfo) -> tarfile.TarInfo:
     return tarinfo
 
 def main():
+    sync_plugin_skill()
     DIST.mkdir(exist_ok=True)
     for p in DIST.iterdir(): p.unlink()
     skill_zip=DIST/f"recallforge-skill-v{VERSION}.zip"; plugin_zip=DIST/f"recallforge-plugin-v{VERSION}.zip"; tar=DIST/f"recallforge-skill-v{VERSION}.tar.gz"

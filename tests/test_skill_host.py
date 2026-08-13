@@ -14,3 +14,11 @@ def test_self_test_contract():
     for line in ("✓ Skill activated", "✓ Course material parsed", "✓ Knowledge structure created", "✓ Active-recall question generated", "✓ Exam-style practice generated", "Status: READY"):
         assert line in skill
     assert (ROOT/"skill/recallforge/assets/self-test/mini-course.md").is_file()
+
+def test_multimodal_contract():
+    skill=(ROOT/"skill/recallforge/SKILL.md").read_text(encoding="utf-8")
+    reference=(ROOT/"skill/recallforge/references/material-intelligence.md").read_text(encoding="utf-8")
+    assert "multimodal-test" in skill
+    assert "MULTIMODAL_HOST_CAPABILITY_UNAVAILABLE" in skill
+    assert "Status: MULTIMODAL_READY" in reference
+    assert (ROOT/"skill/recallforge/assets/self-test/multimodal/probability-slide.svg").is_file()

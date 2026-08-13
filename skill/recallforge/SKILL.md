@@ -1,8 +1,6 @@
 ---
 name: recallforge
-description: Use for exam review, final or midterm preparation, course notes, lecture notes, study guides, past papers, active recall, practice questions, mock exams, weak-topic diagnosis, revision plans, and exam-focused knowledge reconstruction. Do not use for code or pull-request review, contract review, translation-only requests, generic summarization without a learning goal, or unrelated development work.
-metadata:
-  short-description: AI exam review with active recall and adaptive practice
+description: Turn raw exam materials—including PPT/PPTX slides, digital or scanned PDFs, textbook scans, past papers, images, tables, formulas, diagrams, lecture notes, Markdown, and mixed Chinese-English course content—into source-grounded exam review with material inspection, knowledge reconstruction, active recall, weak-topic diagnosis, adaptive practice, study guides, and mock exams. Use for finals, midterms, revision, exam preparation, multimodal course-material review, or requests to inspect study files. Do not use for code or pull-request review, contract or product review, translation-only work, generic summarization without a learning goal, or unrelated development.
 ---
 
 # RecallForge — AI Exam Review Skill
@@ -12,6 +10,10 @@ Forge course materials into exam-ready knowledge. RecallForge is a host-executed
 ## First response and mode selection
 
 If the user says `self-test`, `run RecallForge self-test`, or `$recallforge self-test`, run the **Self-Test Mode** below exactly. Do not request uploads, API keys, or external tools.
+
+If the user says `multimodal-test` or asks for the multimodal self-test, read [Material Intelligence](references/material-intelligence.md) and run its multimodal self-test. If the host cannot inspect the bundled or attached asset, return `MULTIMODAL_HOST_CAPABILITY_UNAVAILABLE` rather than a false failure.
+
+If the user says `inspect-materials` or asks to inspect files without starting review, read [Material Intelligence](references/material-intelligence.md), build a truthful material catalog, report recognition quality, and stop before active recall.
 
 Otherwise, briefly identify the course, exam horizon if known, material supplied, and desired depth. Do not block on optional details. Use the material the user has actually provided; never claim to have opened or processed unavailable files.
 
@@ -25,7 +27,7 @@ Choose the lightest appropriate mode:
 
 ## Core workflow
 
-1. **Material understanding.** Extract course-specific concepts, definitions, formulas, processes, examples, and exam signals from supplied material. Mark uncertainty and missing coverage.
+1. **Material intelligence.** For supplied files, read [Material Intelligence](references/material-intelligence.md). Catalog them, route each page/slide through reliable native extraction and host vision as needed, preserve source anchors and structure, and mark unresolved content. Never claim to inspect unavailable files.
 2. **Knowledge reconstruction.** Organize the material into a compact topic map: prerequisites, distinctions, high-value concepts, and evidence/source anchors where available.
 3. **Exam prioritization.** Explain priorities using the material, past-paper evidence, teacher emphasis, exam date, and the learner's answers. Never invent exam frequency, teacher preferences, or readiness scores.
 4. **Active recall.** Ask one manageable question at a time by default. Let the learner answer before revealing the answer or explanation.
@@ -67,6 +69,7 @@ Then list these detected topics: Conditional probability; Bayes' theorem; Indepe
 - Use only authorized course materials. Do not help obtain restricted exam content or facilitate cheating.
 - Do not fabricate citations, source coverage, past-paper frequency, teacher tendencies, readiness, or learner mastery.
 - Preserve formula conditions and terminology. Ask for a clearer source when a scan, table, diagram, handwriting, or formula is ambiguous.
+- Retain native text and visual evidence separately when they disagree. Never silently rewrite formulas, flatten tables, treat handwriting as an answer key, or drop an unresolved page.
 - Treat external knowledge as supplementary and label it as such when it is not supported by the supplied course material.
 - Support Chinese, English, and mixed-language material. Keep technical terms precise instead of blindly translating them.
 - Do not activate for ordinary code review, product review, legal review, translation-only work, or unrelated requests.
@@ -76,3 +79,4 @@ Then list these detected topics: Conditional probability; Bayes' theorem; Indepe
 - [Review methodology](references/review-methodology.md)
 - [Active recall](references/active-recall.md)
 - [Exam simulation](references/exam-simulation.md)
+- [Material Intelligence](references/material-intelligence.md)

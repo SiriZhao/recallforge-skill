@@ -32,6 +32,15 @@ def route_page(
             return RoutingDecision("vision", ["image-only page (no text layer)"])
         return RoutingDecision("unresolved", ["no text layer and no images"])
 
+    if page.native_confidence and page.native_confidence < 0.55:
+        reasons.append(f"unreliable native text confidence {page.native_confidence:.2f}")
+
+    if page.suspicious_char_ratio > 0.05:
+        reasons.append("native text contains suspicious characters")
+
+    if page.rotation not in (0, 360):
+        reasons.append(f"rotated page ({page.rotation} degrees)")
+
     if page.has_images:
         reasons.append("embedded images/diagrams need visual understanding")
 

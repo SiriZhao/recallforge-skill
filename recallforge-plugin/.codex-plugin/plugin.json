@@ -1,7 +1,7 @@
 {
   "name": "recallforge-plugin",
-  "version": "2.1.3",
-  "description": "RecallForge — AI exam review skill for active recall and adaptive practice.",
+  "version": "2.2.0-dev.0",
+  "description": "RecallForge — multimodal exam review Skill for material inspection, active recall, and adaptive practice.",
   "author": {"name": "RecallForge contributors", "url": "https://github.com/SiriZhao/recallforge-skill"},
   "homepage": "https://github.com/SiriZhao/recallforge-skill",
   "repository": "https://github.com/SiriZhao/recallforge-skill",
@@ -10,8 +10,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "RecallForge",
-    "shortDescription": "AI exam review with active recall and adaptive practice.",
-    "longDescription": "Turn authorized course materials into a structured, exam-focused active-recall workflow.",
+    "shortDescription": "Turn raw course materials into adaptive exam review.",
+    "longDescription": "Inspect authorized slides, PDFs, scans, images, and past papers before running a source-grounded active-recall workflow.",
     "developerName": "RecallForge contributors",
     "category": "Education",
     "capabilities": ["Interactive", "Study support"],
@@ -19,6 +19,6 @@
     "brandColor": "#FB923C",
     "composerIcon": "./assets/recallforge-mark.svg",
     "logo": "./assets/recallforge-banner.svg",
-    "defaultPrompt": ["Help me review my course notes with active recall."]
+    "defaultPrompt": ["Inspect my course materials, build a source-grounded knowledge structure, then guide me through active recall."]
   }
 }

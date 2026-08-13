@@ -209,15 +209,18 @@ def _b64(data: bytes) -> str:
 
 def _vision_prompt(*, native_text: str) -> str:
     return (
-        "Return strict JSON for this page: "
+        "Reconstruct visible reading order and relationships. Return strict JSON for this page: "
         '{"text_blocks":[{"role":"text","text":"..."}],'
-        '"formulas":[{"text":"...","signals":[]}],'
-        '"tables":[{"text":"...","rows":3,"cols":2}],'
-        '"figures":[{"kind":"diagram","caption":""}],'
-        '"handwriting":[{"text":""}],'
+        '"formulas":[{"raw":"...","interpreted":"...","signals":[],"confidence":0.0}],'
+        '"tables":[{"headers":[],"rows":[[]],"confidence":0.0}],'
+        '"figures":[{"kind":"diagram","caption":"","relationships":[],"confidence":0.0}],'
+        '"handwriting":[{"text":"","annotation_type":"user_annotation|unknown","confidence":0.0}],'
+        '"exam":{"questions":[{"question_number":"","body":"","options":[],"subquestions":[],"score":null,"printed_answer":null,"user_annotation":null}]},'
         '"source_language":"zh-CN|en-US|mixed",'
         '"confidence":0.0} '
-        "Do not invent content that is not visible. "
+        "Do not invent content that is not visible. Preserve table rows and columns. "
+        "Treat chemical structures and biological diagrams as visual concepts rather than forced OCR. "
+        "Never treat handwriting as a verified answer. If OCR/native text conflicts with the image, retain both and lower confidence. "
         f"Native text layer (may be empty):\n{native_text[:2000]}"
     )
 
@@ -235,14 +238,37 @@ def _parse_structured_response(response: dict, *, page_or_slide: str, method: st
         raise ProviderUnavailable("provider returned no structured JSON")
     data = json.loads(match.group(0))
     confidence = float(data.get("confidence", 0.5))
+    from .types import FormulaRegion, Region
+    formulas = [FormulaRegion(
+        region=Region(page_or_slide=page_or_slide, region_type="formula"),
+        text=str(item.get("interpreted") or item.get("raw") or item.get("text") or ""),
+        signals=list(item.get("signals", [])), confidence=float(item.get("confidence", 0.5)))
+        for item in data.get("formulas", []) if isinstance(item, dict)
+    ]
+    exam = None
+    exam_data = data.get("exam") or {}
+    if isinstance(exam_data, dict) and isinstance(exam_data.get("questions"), list):
+        from .types import ExamPageStructure, ExamQuestion
+        questions = []
+        for item in exam_data["questions"]:
+            if not isinstance(item, dict) or not item.get("question_number"):
+                continue
+            questions.append(ExamQuestion(
+                question_number=str(item.get("question_number")), body=str(item.get("body", "")),
+                options=list(item.get("options", [])), subquestions=list(item.get("subquestions", [])),
+                score=str(item["score"]) if item.get("score") is not None else None,
+                printed_answer=item.get("printed_answer"), user_annotation=item.get("user_annotation"),
+                annotation_type="user_annotation" if item.get("user_annotation") else "unknown",
+                confidence=float(item.get("confidence", confidence))))
+        exam = ExamPageStructure(page_or_slide=page_or_slide, questions=questions, confidence=confidence)
     return ProviderUnderstanding(
         page_or_slide=page_or_slide,
         text_blocks=data.get("text_blocks", []),
-        formulas=[],
+        formulas=formulas,
         tables=data.get("tables", []),
         figures=data.get("figures", []),
         handwriting=data.get("handwriting", []),
-        exam=None,
+        exam=exam,
         source_language=data.get("source_language"),
         confidence=confidence,
         synthetic=False,

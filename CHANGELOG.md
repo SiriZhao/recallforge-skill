@@ -4,9 +4,15 @@ All notable changes to RecallForge are documented here. This project follows the
 
 ## [Unreleased]
 
+### Added
+
+- Material Intelligence Layer with page/slide routing, StudyDocument IR, source anchors, material catalog, multimodal self-test, and zero-silent-page-drop status tracking.
+- Native PPTX spatial blocks, notes, structured tables, WEBP routing, visual uncertainty handling, self-authored multimodal fixtures, gallery, and bilingual material guides.
+
 ### Changed
 
 - Made release archive creation and checksum generation reproducible.
+- Prepared v2.2.0 candidate packages without creating a release tag while GitHub authentication remains blocked.
 
 ## [2.1.2] - 2026-08-13
 

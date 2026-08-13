@@ -37,6 +37,9 @@ jobs:
           python scripts/build_release.py
           python -m pytest tests/test_packaging.py
 
+      - name: Run lightweight Material Intelligence benchmark
+        run: python scripts/material_benchmark.py
+
       - name: Validate host-installable Skill
         run: python scripts/validate_skill.py
 

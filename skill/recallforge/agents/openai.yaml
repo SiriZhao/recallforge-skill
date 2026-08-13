@@ -1,9 +1,9 @@
 interface:
   display_name: "RecallForge"
-  short_description: "AI exam review with active recall and adaptive practice."
-  icon_small: "../assets/recallforge-mark.svg"
-  icon_large: "../assets/recallforge-banner.svg"
+  short_description: "Turn raw course materials into adaptive exam review."
+  icon_small: "./assets/recallforge-mark.svg"
+  icon_large: "./assets/recallforge-banner.svg"
   brand_color: "#FB923C"
-  default_prompt: "Help me turn my course materials into an active-recall exam review session."
+  default_prompt: "Use $recallforge to inspect my course materials, build a source-grounded knowledge structure, then guide active recall."
 policy:
   allow_implicit_invocation: true

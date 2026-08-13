@@ -9,9 +9,11 @@ are preferred. Vision is used only when cheap routing says a page actually needs
 Local OCR is disabled by default and never supports high-confidence conclusions.
 """
 
-from . import classifier, evidence, native_parser, pipeline, provider, renderer, router, types
+from . import catalog, classifier, evidence, native_parser, pipeline, provider, renderer, router, types
+from .catalog import CatalogEntry, catalog_to_dict, inspect_materials
 
 __all__ = [
+    "catalog",
     "classifier",
     "evidence",
     "native_parser",
@@ -20,4 +22,7 @@ __all__ = [
     "renderer",
     "router",
     "types",
+    "CatalogEntry",
+    "catalog_to_dict",
+    "inspect_materials",
 ]

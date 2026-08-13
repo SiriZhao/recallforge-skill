@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">RecallForge multimodal probability self-test</title>
+  <desc id="desc">A self-authored slide with a conditional probability formula, comparison table, and arrow diagram.</desc>
+  <rect width="1200" height="675" fill="#101827"/>
+  <rect x="55" y="45" width="1090" height="585" rx="28" fill="#172235" stroke="#33445f" stroke-width="3"/>
+  <text x="95" y="120" fill="#fb923c" font-family="Arial, sans-serif" font-size="48" font-weight="700">Probability Basics</text>
+  <text x="95" y="185" fill="#f8fafc" font-family="Arial, sans-serif" font-size="33">Conditional probability</text>
+  <rect x="95" y="215" width="465" height="105" rx="16" fill="#0f172a" stroke="#fb923c" stroke-width="3"/>
+  <text x="135" y="282" fill="#f8fafc" font-family="Arial, sans-serif" font-size="42">P(A|B) = P(A ∩ B) / P(B)</text>
+  <rect x="650" y="175" width="425" height="205" rx="16" fill="#0f172a" stroke="#64748b" stroke-width="2"/>
+  <line x1="650" y1="240" x2="1075" y2="240" stroke="#64748b" stroke-width="2"/>
+  <line x1="840" y1="175" x2="840" y2="380" stroke="#64748b" stroke-width="2"/>
+  <text x="680" y="220" fill="#f8fafc" font-family="Arial, sans-serif" font-size="25">Relationship</text>
+  <text x="875" y="220" fill="#f8fafc" font-family="Arial, sans-serif" font-size="25">Condition</text>
+  <text x="680" y="285" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="24">Independent</text>
+  <text x="875" y="285" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="22">P(A∩B)=P(A)P(B)</text>
+  <text x="680" y="345" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="24">Exclusive</text>
+  <text x="875" y="345" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="22">P(A∩B)=0</text>
+  <rect x="115" y="430" width="270" height="90" rx="45" fill="#26364d"/>
+  <rect x="810" y="430" width="270" height="90" rx="45" fill="#26364d"/>
+  <text x="176" y="486" fill="#f8fafc" font-family="Arial, sans-serif" font-size="28">Joint event</text>
+  <text x="868" y="486" fill="#f8fafc" font-family="Arial, sans-serif" font-size="28">Given event</text>
+  <line x1="405" y1="475" x2="785" y2="475" stroke="#fb923c" stroke-width="8"/>
+  <polygon points="785,475 750,455 750,495" fill="#fb923c"/>
+  <text x="485" y="450" fill="#fdba74" font-family="Arial, sans-serif" font-size="25">normalize by P(B)</text>
+  <text x="95" y="590" fill="#94a3b8" font-family="Arial, sans-serif" font-size="22">Self-authored test asset · source: RecallForge</text>
+</svg>
