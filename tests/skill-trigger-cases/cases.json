@@ -1,0 +1,4 @@
+{
+  "should_trigger": ["Help me review these lecture notes for my final exam.", "Create active-recall questions from my course notes.", "Test my weak topics before a midterm.", "Make a mock exam from this study guide."],
+  "should_not_trigger": ["Review this Python pull request for bugs.", "Review this employment contract.", "Translate these lecture notes into Chinese.", "Summarize this article with no study goal."]
+}

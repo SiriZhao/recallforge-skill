@@ -1,5 +1,9 @@
 # Troubleshooting
 
+## RecallForge does not appear in Skills or `$recallforge` fails
+
+Check that the final path is exactly `.../.agents/skills/recallforge/SKILL.md`, not `recallforge/recallforge/SKILL.md`. Start a new Codex turn after copying it. Confirm you installed it in the user directory or in the project where Codex was launched. If explicit `$recallforge self-test` works, installation is correct even if automatic invocation did not occur.
+
 ## `recallforge` is not recognized
 
 Run `python -m recallforge --help` from the installed folder. If it works, the package is installed but your Python scripts directory is not on PATH; keep using `python -m recallforge`, or repair your Python installation. On Windows, try `py -m recallforge --help`.

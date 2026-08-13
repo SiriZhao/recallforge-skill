@@ -37,6 +37,9 @@ jobs:
           python scripts/build_release.py
           python -m pytest tests/test_packaging.py
 
+      - name: Validate host-installable Skill
+        run: python scripts/validate_skill.py
+
       - name: Check public branding and placeholder markers
         run: |
           ! git grep -n -i -E 'exam-review-skill|exam_review_skill|examforge' -- ':!.github/workflows/tests.yml'

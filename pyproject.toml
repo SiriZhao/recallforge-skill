@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "recallforge-skill"
-version = "2.0.4"
+version = "2.1.0"
 description = "Open-source AI exam review skill for active recall, knowledge reconstruction, weakness detection, adaptive practice, and exam simulation."
 readme = "README.md"
 requires-python = ">=3.10"
