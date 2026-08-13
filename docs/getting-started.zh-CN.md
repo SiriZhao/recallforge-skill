@@ -11,7 +11,7 @@ RecallForge 用你自己的课程资料建立考试复习闭环：资料理解�
 ## 安装
 
 1. 打开 [Releases 页面](https://github.com/SiriZhao/recallforge-skill/releases/latest)。
-2. 下载 `recallforge-skill-v2.0.3.zip` 并解压。
+2. 下载 `recallforge-skill-v2.0.4.zip` 并解压。
 3. 在解压目录打开 PowerShell 或终端。
 4. 运行 `python -m pip install .`。
 5. 运行 `recallforge --help`。

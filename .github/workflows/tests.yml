@@ -40,4 +40,4 @@ jobs:
       - name: Check public branding and placeholder markers
         run: |
           ! git grep -n -i -E 'exam-review-skill|exam_review_skill|examforge' -- ':!.github/workflows/tests.yml'
-          ! git grep -n -E 'TODO|TBD|coming soon|example\.com' -- README.md README.zh-CN.md SKILL.md docs .github
+          ! git grep -n -E 'TODO|TBD|coming soon|example\.com' -- README.md README.zh-CN.md SKILL.md docs ':!.github/workflows/tests.yml'

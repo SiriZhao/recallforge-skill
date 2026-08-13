@@ -9,7 +9,7 @@ import pytest
 
 
 DIST = Path(__file__).resolve().parent.parent / "dist"
-VERSION = "2.0.3"
+VERSION = "2.0.4"
 
 
 @pytest.fixture(scope="module")

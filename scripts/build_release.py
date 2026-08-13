@@ -1,6 +1,6 @@
 """Build RecallForge release artifacts in dist/:
-  - recallforge-skill-v2.0.3.zip           (source distribution)
-  - recallforge-skill-v2.0.3.tar.gz
+  - recallforge-skill-v2.0.4.zip           (source distribution)
+  - recallforge-skill-v2.0.4.tar.gz
   - SHA256SUMS.txt                          (combined checksums)
 
 Only release-needed content is included. Excluded: .git, caches, __pycache__,
@@ -18,7 +18,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = "2.0.3"
+VERSION = "2.0.4"
 DIST = ROOT / "dist"
 ZIP_OUT = DIST / f"recallforge-skill-v{VERSION}.zip"
 TAR_OUT = DIST / f"recallforge-skill-v{VERSION}.tar.gz"
